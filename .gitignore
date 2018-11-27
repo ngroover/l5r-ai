@@ -1,0 +1,7 @@
+**/CMakeFiles/**
+CMakeCache.txt
+*.so
+*.a
+Makefile
+cmake_install.cmake
+engine/simulator
