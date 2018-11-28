@@ -193,6 +193,7 @@ void pregameEngine::doDynastyMulligan(choice c)
 {
    playercards &gameCards=shared->getCurrentPlayerCards();
    playercards &opponentCards = shared->getOpponentCards();
+   int numOfPendingMulliganCards=0;
    if( c.getType() == choicetype::card )
    {
       // set pending mulligan card
@@ -202,9 +203,14 @@ void pregameEngine::doDynastyMulligan(choice c)
          {
             gameCards.pending_dynasty_mulligan[i] = true;
          }
+         if( gameCards.pending_dynasty_mulligan[i] )
+         {
+            numOfPendingMulliganCards++;
+         }
       }
    }
-   else if( c.getType() == choicetype::pass )
+   // process a pass on mulligan or a full set of cards mulliganed
+   if( c.getType() == choicetype::pass || numOfPendingMulliganCards == NUM_DYNASTY_PROVINCES)
    {
       discardDynastyMulligans();
 
@@ -254,7 +260,8 @@ void pregameEngine::doConflictMulligan(choice c)
          throw "Couldn't find the mulligan card";
       }
    }
-   else if( c.getType() == choicetype::pass )
+   // process a pass on mulligan or a full set of cards mulliganed
+   if( c.getType() == choicetype::pass || gameCards.pending_conflict_mulligan.size() == STARTING_NUM_CONFLICT_CARDS)
    {
       std::cout << shared->getCurrentPlayer()->getName() << " mulligans" <<  std::endl;
       int numOfMulligans=gameCards.pending_conflict_mulligan.size();
