@@ -6,6 +6,7 @@
 
 #define NUM_PROVINCES 5
 #define NUM_DYNASTY_PROVINCES 4
+#define STARTING_NUM_CONFLICT_CARDS 4
 
 namespace l5r
 {
@@ -41,6 +42,7 @@ namespace l5r
          std::list<cards> conflict_hand;
          bool pending_dynasty_mulligan[NUM_DYNASTY_PROVINCES];
          std::list<cards> pending_conflict_mulligan;
+         int honorTokens;
          // dyntasy discard pile
          // conflict deck cards
          // conflict discard pile

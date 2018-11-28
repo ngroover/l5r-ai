@@ -22,17 +22,20 @@ namespace l5r
 
          card(std::string name, cardtype type,
               bool canBeStronghold,
-              int provinceStr);
+              int provinceStr,
+              int strongholdHonor);
          ~card();
 
          std::string getName() const;
          cardtype getType() const;
+         int getStrongholdHonor() const;
 
       private:
          std::string name;
          cardtype type;
          bool canBeStronghold;
          int provinceStr;
+         int strongholdHonor;
    };
 
    class card::builder
@@ -42,6 +45,7 @@ namespace l5r
          builder& setType(cardtype type);
          builder& setCanBeStronghold(bool canBeStronghold);
          builder& setProvinceStr(int provinceStr);
+         builder& setStrongholdHonor(int strongholdHonor);
 
          card build() const;
 
@@ -50,6 +54,7 @@ namespace l5r
          cardtype type = cardtype::invalid;
          bool canBeStronghold = true;
          int provinceStr = 0;
+         int strongholdHonor = 0;
    };
 };
 

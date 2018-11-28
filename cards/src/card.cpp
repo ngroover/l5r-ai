@@ -4,10 +4,12 @@ using namespace l5r;
 
 card::card(std::string name, cardtype type,
       bool canBeStronghold,
-      int provinceStr) :
+      int provinceStr,
+      int strongholdHonor) :
       name(name), type(type),
       canBeStronghold(canBeStronghold),
-      provinceStr(provinceStr)
+      provinceStr(provinceStr),
+      strongholdHonor(strongholdHonor)
 {
 }
 
@@ -24,6 +26,10 @@ cardtype card::getType() const
 {
    return type;
 }
+ int card::getStrongholdHonor() const
+ {
+   return strongholdHonor;
+ }
 
 card::builder& card::builder::setName(std::string name)
 {
@@ -49,6 +55,12 @@ card::builder& card::builder::setProvinceStr(int provinceStr)
    return *this;
 }
 
+card::builder& card::builder::setStrongholdHonor(int strongholdHonor)
+{
+   this->strongholdHonor = strongholdHonor;
+   return *this;
+}
+
 card card::builder::build() const
 {
    if( name == "Invalid" )
@@ -60,5 +72,5 @@ card card::builder::build() const
       throw "Invalid card type";
    }
    return card(name, type, canBeStronghold,
-      provinceStr);
+      provinceStr, strongholdHonor);
 }

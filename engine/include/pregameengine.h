@@ -5,7 +5,6 @@
 #include "choice.h"
 #include <memory>
 
-
 namespace l5r
 {
    class pregameEngine
@@ -19,6 +18,26 @@ namespace l5r
          void doAction(choice c);
       private:
          std::shared_ptr<engineShared> shared;
+
+         // decision functions
+         decision strongholdDecision();
+         decision dynastyMulliganDecision();
+         decision conflictMulliganDecision();
+
+         // action functions
+         void doStrongholdSelection(choice c);
+         void doDynastyMulligan(choice c);
+         void doConflictMulligan(choice c);
+
+         // support functions
+         void shiftProvinceRow();
+         void placeDynastyCards(std::string playerName, playercards &gameCards);
+         void drawConflictCards(std::string playerName, playercards &gameCards);
+
+         void discardDynastyMulligans();
+         void replaceDynastyMulligans();
+
+         void gainHonor(std::string playerName, playercards &gameCards);
    };
 }
 

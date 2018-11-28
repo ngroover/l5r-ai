@@ -23,10 +23,13 @@ namespace l5r
 
          // public functions
          std::unique_ptr<agent> &getCurrentPlayer();
+         std::unique_ptr<agent> &getOpponentPlayer();
          
          // with respect to currentAction
          playercards &getCurrentPlayerCards();
          playercards &getOpponentCards();
+
+         void swapCurrentActionPlayer();
    };
 }
 

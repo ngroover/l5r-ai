@@ -22,6 +22,18 @@ std::unique_ptr<agent> &engineShared::getCurrentPlayer()
    }
 }
 
+std::unique_ptr<agent> &engineShared::getOpponentPlayer()
+{
+   if(state.currentAction == player::player1)
+   {
+      return player2;
+   }
+   else
+   {
+      return player1;
+   }
+}
+
 playercards &engineShared::getCurrentPlayerCards()
 {
    if( state.currentAction == player::player1 )
@@ -43,5 +55,17 @@ playercards &engineShared::getOpponentCards()
    else
    {
       return state.player1Cards;
+   }
+}
+
+void engineShared::swapCurrentActionPlayer()
+{
+   if(state.currentAction == player::player1)
+   {
+      state.currentAction = player::player2;
+   }
+   else
+   {
+      state.currentAction = player::player1;
    }
 }
