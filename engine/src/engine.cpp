@@ -57,6 +57,7 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
 
    // initialize engine subsystems
    pregame = std::make_unique<pregameEngine>(shared);
+   dynasty = std::make_unique<dynastyEngine>(shared);
 }
 
 // destructor
@@ -104,6 +105,8 @@ decision engine::getDecision()
    {
       case phase::pregame:
          return pregame->getDecision();
+      case phase::dynasty:
+         return dynasty->getDecision();
       default:
          throw "Invalid phase";
    }
@@ -120,6 +123,14 @@ void engine::doAction(choice c)
    {
       case phase::pregame:
          pregame->doAction(c);
+         // allow transition to next phase
+         if(shared->state.currentPhase == phase::dynasty)
+         {
+            dynasty->doAction(c);
+         }
+         break;
+      case phase::dynasty:
+         dynasty->doAction(c);
          break;
       default:
          throw "Invalid phase";

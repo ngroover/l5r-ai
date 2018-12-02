@@ -15,6 +15,13 @@ namespace l5r
       invalid
    };
 
+   enum class dynastycardtype
+   {
+      none,
+      character,
+      holding
+   };
+
    class card
    {
       public:
@@ -23,12 +30,16 @@ namespace l5r
          card(std::string name, cardtype type,
               bool canBeStronghold,
               int provinceStr,
-              int strongholdHonor);
+              int strongholdHonor,
+              int fateCost,
+              dynastycardtype dynastyType);
          ~card();
 
          std::string getName() const;
          cardtype getType() const;
          int getStrongholdHonor() const;
+         int getFateCost() const;
+         dynastycardtype getDynastyType() const;
 
       private:
          std::string name;
@@ -36,6 +47,8 @@ namespace l5r
          bool canBeStronghold;
          int provinceStr;
          int strongholdHonor;
+         int fateCost;
+         dynastycardtype dynastyType;
    };
 
    class card::builder
@@ -46,6 +59,8 @@ namespace l5r
          builder& setCanBeStronghold(bool canBeStronghold);
          builder& setProvinceStr(int provinceStr);
          builder& setStrongholdHonor(int strongholdHonor);
+         builder& setFateCost(int fateCost);
+         builder& setDynastyType(dynastycardtype dynastyType);
 
          card build() const;
 
@@ -55,6 +70,8 @@ namespace l5r
          bool canBeStronghold = true;
          int provinceStr = 0;
          int strongholdHonor = 0;
+         int fateCost = 0;
+         dynastycardtype dynastyType = dynastycardtype::none;
    };
 };
 

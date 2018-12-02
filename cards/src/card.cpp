@@ -5,11 +5,15 @@ using namespace l5r;
 card::card(std::string name, cardtype type,
       bool canBeStronghold,
       int provinceStr,
-      int strongholdHonor) :
+      int strongholdHonor,
+      int fateCost,
+      dynastycardtype dynastyType) :
       name(name), type(type),
       canBeStronghold(canBeStronghold),
       provinceStr(provinceStr),
-      strongholdHonor(strongholdHonor)
+      strongholdHonor(strongholdHonor),
+      fateCost(fateCost),
+      dynastyType(dynastyType)
 {
 }
 
@@ -26,10 +30,21 @@ cardtype card::getType() const
 {
    return type;
 }
- int card::getStrongholdHonor() const
- {
-   return strongholdHonor;
- }
+
+int card::getStrongholdHonor() const
+{
+  return strongholdHonor;
+}
+
+int card::getFateCost() const
+{
+  return fateCost;
+}
+
+dynastycardtype card::getDynastyType() const
+{
+   return dynastyType;
+}
 
 card::builder& card::builder::setName(std::string name)
 {
@@ -61,6 +76,18 @@ card::builder& card::builder::setStrongholdHonor(int strongholdHonor)
    return *this;
 }
 
+card::builder& card::builder::setFateCost(int fateCost)
+{
+   this->fateCost = fateCost;
+   return *this;
+}
+
+card::builder& card::builder::setDynastyType(dynastycardtype dynastyType)
+{
+   this->dynastyType = dynastyType;
+   return *this;
+}
+
 card card::builder::build() const
 {
    if( name == "Invalid" )
@@ -71,6 +98,12 @@ card card::builder::build() const
    {
       throw "Invalid card type";
    }
+   if ( type == cardtype::dynasty && 
+      dynastyType == dynastycardtype::none)
+   {
+      throw "Invalid dynasty card type";
+   }
    return card(name, type, canBeStronghold,
-      provinceStr, strongholdHonor);
+      provinceStr, strongholdHonor,
+      fateCost,dynastyType);
 }

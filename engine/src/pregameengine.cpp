@@ -146,7 +146,7 @@ void pregameEngine::doStrongholdSelection(choice c)
    }
 }
 
-void pregameEngine::discardDynastyMulligans()
+bool pregameEngine::discardDynastyMulligans()
 {
    playercards &gameCards = shared->getCurrentPlayerCards();
    std::cout << shared->getCurrentPlayer()->getName() << " mulligans" <<  std::endl;
@@ -162,12 +162,14 @@ void pregameEngine::discardDynastyMulligans()
          card &provCard = shared->cardList.at(gameCards.province[i]);
          std::cout << " " << dynastyCard.getName() << " on " << provCard.getName() << std::endl;
       }
+      gameCards.facedown_provinces[i] = true;
    }
 
    if(noMulligans)
    {
       std::cout << " nothing" << std::endl;
    }
+   return noMulligans;
 }
 
 void pregameEngine::replaceDynastyMulligans()
@@ -212,9 +214,12 @@ void pregameEngine::doDynastyMulligan(choice c)
    // process a pass on mulligan or a full set of cards mulliganed
    if( c.getType() == choicetype::pass || numOfPendingMulliganCards == NUM_DYNASTY_PROVINCES)
    {
-      discardDynastyMulligans();
+      bool noMulligans = discardDynastyMulligans();
 
-      replaceDynastyMulligans();
+      if(!noMulligans)
+      {
+         replaceDynastyMulligans();
+      }
 
       if( shared->state.currentAction != shared->state.currentTurn )
       {
@@ -276,21 +281,26 @@ void pregameEngine::doConflictMulligan(choice c)
       {
          std::cout << " nothing" << std::endl;
       }
-      std::cout << shared->getCurrentPlayer()->getName() << " draws " << numOfMulligans << " cards" <<  std::endl;
-      auto cc = gameCards.conflict_drawdeck.begin();
-      for(int i=0;i<numOfMulligans;i++)
+      else
       {
-         card &conflictCard = shared->cardList.at(*cc);
-         std::cout << " " << conflictCard.getName() << std::endl;
-         gameCards.conflict_hand.push_back(*cc);
-         cc = gameCards.conflict_drawdeck.erase(cc);
+         std::cout << shared->getCurrentPlayer()->getName() << " draws " << numOfMulligans << " cards" <<  std::endl;
+         auto cc = gameCards.conflict_drawdeck.begin();
+         for(int i=0;i<numOfMulligans;i++)
+         {
+            card &conflictCard = shared->cardList.at(*cc);
+            std::cout << " " << conflictCard.getName() << std::endl;
+            gameCards.conflict_hand.push_back(*cc);
+            cc = gameCards.conflict_drawdeck.erase(cc);
+         }
       }
 
       if(shared->state.currentAction != shared->state.currentTurn)
       {
          gainHonor(shared->getOpponentPlayer()->getName(), opponentCards);
          gainHonor(shared->getCurrentPlayer()->getName(), gameCards);
-         shared->state.currentPhase = phase::gameover;
+
+         shared->state.currentPhase = phase::dynasty;
+         shared->state.currentSubPhase = subphase::dynasty_setup;
       }
       shared->swapCurrentActionPlayer();
    }
@@ -300,9 +310,10 @@ void pregameEngine::gainHonor(std::string playerName, playercards &gameCards)
 {
    card &stronghold = shared->cardList.at(gameCards.stronghold);
    int honorValue = stronghold.getStrongholdHonor();
-   std::cout << playerName << " receives " << honorValue << " from "
+   std::cout << playerName << " receives " << honorValue << " honor from "
       << stronghold.getName() <<std::endl;
    gameCards.honorTokens = honorValue;
+   gameCards.fate = 0;
 }
 
 void pregameEngine::doAction(choice c)

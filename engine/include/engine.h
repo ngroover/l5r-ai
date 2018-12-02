@@ -11,6 +11,7 @@
 #include "cardgenerator.h"
 #include "engineshared.h"
 #include "pregameengine.h"
+#include "dynastyengine.h"
 
 
 namespace l5r
@@ -34,6 +35,7 @@ namespace l5r
       private:
          std::shared_ptr<engineShared> shared;
          std::unique_ptr<pregameEngine> pregame;
+         std::unique_ptr<dynastyEngine> dynasty;
          cardgenerator cg;
 
          //gamestate state;

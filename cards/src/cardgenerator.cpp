@@ -82,171 +82,235 @@ card cardgenerator::generateCard(cards c)
          return card::builder{}
                .setName("Asahina Artisan")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(1)
                .build();
       case cards::asahina_storyteller:
          return card::builder{}
                .setName("Asahina Storyteller")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(4)
                .build();
       case cards::brash_samurai:
          return card::builder{}
                .setName("Brash Samurai")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::cautious_scout:
          return card::builder{}
                .setName("Cautious Scout")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::daidoji_nerishma:
          return card::builder{}
                .setName("Daidoji Nerishma")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::doji_challenger:
          return card::builder{}
                .setName("Doji Challenger")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(3)
                .build();
       case cards::doji_gift_giver:
          return card::builder{}
                .setName("Doji Gift Giver")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::doji_hotaru:
          return card::builder{}
                .setName("Doji Hotaru")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(5)
                .build();
       case cards::doji_whisperer:
          return card::builder{}
                .setName("Doji Whisperer")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(1)
                .build();
       case cards::guest_of_honor:
          return card::builder{}
                .setName("Guest of Honor")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(4)
                .build();
       case cards::kakita_asami:
          return card::builder{}
                .setName("Kakita Asami")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(3)
                .build();
       case cards::kakita_kaezin:
          return card::builder{}
                .setName("Kakita Kaezin")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(3)
                .build();
       case cards::savvy_politician:
          return card::builder{}
                .setName("Savvy Politician")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::artisan_academy:
          return card::builder{}
                .setName("Artisan Academy")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::holding)
                .build();
       case cards::otomo_courtier:
          return card::builder{}
                .setName("Otomo Courtier")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(1)
                .build();
       case cards::miya_mystic:
          return card::builder{}
                .setName("Miya Mystic")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::favorable_ground:
          return card::builder{}
                .setName("Favorable Ground")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::holding)
                .build();
       case cards::imperial_storehouse:
          return card::builder{}
                .setName("Imperial Storehouse")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::holding)
                .build();
       case cards::seppun_guardsman:
          return card::builder{}
                .setName("Seppun Guardsman")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(1)
                .build();
       case cards::wandering_ronin:
          return card::builder{}
                .setName("Wandering Ronin")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(3)
                .build();
       case cards::akodo_gunso:
          return card::builder{}
                .setName("Akodo Gunso")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::akodo_toturi:
          return card::builder{}
                .setName("Akodo Toturi")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(5)
                .build();
       case cards::deathseeker:
          return card::builder{}
                .setName("Deathseeker")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::honored_general:
          return card::builder{}
                .setName("Honored General")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(4)
                .build();
       case cards::ikoma_eiji:
          return card::builder{}
                .setName("Ikoma Eiji")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(4)
                .build();
       case cards::ikoma_prodigy:
          return card::builder{}
                .setName("Ikoma Prodigy")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(1)
                .build();
       case cards::kitsu_spiritcaller:
          return card::builder{}
                .setName("Kitsu Spiritcaller")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(3)
                .build();
       case cards::lions_pride_brawler:
          return card::builder{}
                .setName("Lions Pride Brawler")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(3)
                .build();
       case cards::matsu_beiona:
          return card::builder{}
                .setName("Matsu Beiona")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(3)
                .build();
       case cards::matsu_berserker:
          return card::builder{}
                .setName("Matsu Berserker")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(1)
                .build();
       case cards::obstinate_recruit:
          return card::builder{}
                .setName("Obstinate Recruit")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(0)
                .build();
       case cards::staging_ground:
          return card::builder{}
                .setName("Staging Ground")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::holding)
                .build();
       case cards::steadfast_samurai:
          return card::builder{}
                .setName("Steadfast Samurai")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(0)
                .build();
       case cards::venerable_historian:
          return card::builder{}
                .setName("Venerable Historian")
                .setType(cardtype::dynasty)
+               .setDynastyType(dynastycardtype::character)
+               .setFateCost(2)
                .build();
       case cards::above_question:
          return card::builder{}

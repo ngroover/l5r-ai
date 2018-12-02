@@ -7,12 +7,15 @@
 #define NUM_PROVINCES 5
 #define NUM_DYNASTY_PROVINCES 4
 #define STARTING_NUM_CONFLICT_CARDS 4
+// TODO: make this part of the stronghold card
+#define STRONGHOLD_FATE 7
 
 namespace l5r
 {
    enum class phase
    {
       pregame,
+      dynasty,
       gameover
    };
 
@@ -21,7 +24,12 @@ namespace l5r
       // pregame
       stronghold_selection,
       dynasty_mulligan,
-      conflict_mulligan
+      conflict_mulligan,
+
+      // dynasty
+      dynasty_setup,
+      province_play,
+      additional_fate,
    };
 
    enum class player
@@ -41,8 +49,12 @@ namespace l5r
          cards province_dynasty[NUM_DYNASTY_PROVINCES];
          std::list<cards> conflict_hand;
          bool pending_dynasty_mulligan[NUM_DYNASTY_PROVINCES];
+         bool facedown_provinces[NUM_DYNASTY_PROVINCES];
          std::list<cards> pending_conflict_mulligan;
+         cards pending_fate_card;// the province from which a dynasty card is to be played. (awaiting fate)
+         std::list<cards> at_home_characters;
          int honorTokens;
+         int fate;
          // dyntasy discard pile
          // conflict deck cards
          // conflict discard pile

@@ -34,10 +34,14 @@ namespace l5r
          void placeDynastyCards(std::string playerName, playercards &gameCards);
          void drawConflictCards(std::string playerName, playercards &gameCards);
 
-         void discardDynastyMulligans();
+         bool discardDynastyMulligans();
          void replaceDynastyMulligans();
 
          void gainHonor(std::string playerName, playercards &gameCards);
+
+         // dynasty phase setup
+         void flipProvinceCards(std::string playerName, playercards &gameCards);
+         void gainFate(std::string playerName, playercards &gameCards);
    };
 }
 

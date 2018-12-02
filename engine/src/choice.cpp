@@ -30,3 +30,13 @@ cards choice::getTargetCard() const
 {
    return targetCard;
 }
+
+void choice::setNumber(int number)
+{
+   this->number = number;
+}
+
+int choice::getNumber() const
+{
+   return number;
+}

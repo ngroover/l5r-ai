@@ -13,6 +13,7 @@ namespace l5r
       ring,
       bid,
       fate,
+      province_play,
       pass
    };
 
@@ -28,11 +29,14 @@ namespace l5r
          void setTargetCard(cards target);
          cards getTargetCard() const;
 
+         void setNumber(int number);
+         int getNumber() const;
+
       private:
          std::string text;
          choicetype type;
          cards targetCard;
-
+         int number;
    };
 };
 
