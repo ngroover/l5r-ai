@@ -55,6 +55,7 @@ namespace l5r
          std::list<cards> at_home_characters;
          int honorTokens;
          int fate;
+         bool passFirst;
          // dyntasy discard pile
          // conflict deck cards
          // conflict discard pile

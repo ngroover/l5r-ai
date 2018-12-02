@@ -30,6 +30,9 @@ namespace l5r
          playercards &getOpponentCards();
 
          void swapCurrentActionPlayer();
+
+         // get index of a province card
+         int getProvinceIndex(cards province, playercards &gameCards);
    };
 }
 

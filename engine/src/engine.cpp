@@ -101,15 +101,27 @@ void engine::setGameState(gamestate gs)
 
 decision engine::getDecision()
 {
-   switch(shared->state.currentPhase)
+   decision d;
+   do
    {
-      case phase::pregame:
-         return pregame->getDecision();
-      case phase::dynasty:
-         return dynasty->getDecision();
-      default:
-         throw "Invalid phase";
-   }
+      switch(shared->state.currentPhase)
+      {
+         case phase::pregame:
+            d = pregame->getDecision();
+            break;
+         case phase::dynasty:
+            d =  dynasty->getDecision();
+            break;
+         default:
+            throw "Invalid phase";
+      }
+      // if theres only 1 choice do it and keep going
+      if(d.getChoiceList().size() == 1)
+      {
+         doAction(*d.getChoiceList().begin());
+      }
+   } while(d.getChoiceList().size() == 1);
+   return d;
 }
 
 gamestate engine::getGameState()

@@ -1,4 +1,5 @@
 #include "engineshared.h"
+#include "gamestate.h"
 
 using namespace l5r;
 
@@ -67,5 +68,16 @@ void engineShared::swapCurrentActionPlayer()
    else
    {
       state.currentAction = player::player1;
+   }
+}
+
+int engineShared::getProvinceIndex(cards province, playercards &gameCards)
+{
+   for(int i=0;i<NUM_DYNASTY_PROVINCES;i++)
+   {
+      if(province == gameCards.province[i])
+      {
+         return i;
+      }
    }
 }

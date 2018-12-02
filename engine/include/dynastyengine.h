@@ -31,6 +31,7 @@ namespace l5r
          // support functions
          void flipProvinceCards(std::string playerName, playercards &gameCards);
          void gainFate(std::string playerName, playercards &gameCards);
+         void placeAdditionalFate(int fate);
    };
 }
 

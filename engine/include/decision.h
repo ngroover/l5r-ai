@@ -11,6 +11,7 @@ namespace l5r
    {
       public:
          decision(std::string prompt, std::list<choice> choiceList);
+         decision(){};
          ~decision();
 
          std::list<choice> &getChoiceList();

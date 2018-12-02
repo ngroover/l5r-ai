@@ -58,6 +58,9 @@ void dynastyEngine::doDynastySetup()
    gainFate(shared->getOpponentPlayer()->getName(), opponentCards);
 
    shared->state.currentSubPhase = subphase::province_play;
+
+   gameCards.passFirst = false;
+   opponentCards.passFirst = false;
 }
 
 void dynastyEngine::flipProvinceCards(std::string playerName, playercards &gameCards)
@@ -107,70 +110,63 @@ decision dynastyEngine::additionalFateDecision()
 {
    std::list<choice> choiceList;
    playercards &gameCards=shared->getCurrentPlayerCards();
-   for(int i=0;i<NUM_DYNASTY_PROVINCES;i++)
+   int index = shared->getProvinceIndex(gameCards.pending_fate_card, gameCards);
+   card &provinceCard = shared->cardList.at(gameCards.province[index]);
+   card &dynastyCard = shared->cardList.at(gameCards.province_dynasty[index]);
+   int leftOverFate = gameCards.fate - dynastyCard.getFateCost();
+   if( leftOverFate < 0)
    {
-      card &provinceCard = shared->cardList.at(gameCards.province[i]);
-      if(gameCards.pending_fate_card == gameCards.province[i])
-      {
-         card &dynastyCard = shared->cardList.at(gameCards.province_dynasty[i]);
-         int leftOverFate = gameCards.fate - dynastyCard.getFateCost();
-         if( leftOverFate < 0)
-         {
-            throw "Not enough fate to pay for card";
-         }
-         for(int j=0;j <= leftOverFate; j++)
-         {
-            std::stringstream ss;
-            ss << j;
-            std::string numFate;
-            ss >> numFate;
-            choice c(numFate+" Fate", choicetype::fate);
-            c.setNumber(j);
-            choiceList.push_back(c);
-         }
-         // TODO: if 0 fate is only option then dont enter this state
-         decision d("Choose fate to place on "+dynastyCard.getName(), choiceList);
-         return d;
-      }
+      throw "Not enough fate to pay for card";
    }
+   for(int j=0;j <= leftOverFate; j++)
+   {
+      std::stringstream ss;
+      ss << j;
+      std::string numFate;
+      ss >> numFate;
+      choice c(numFate+" Fate", choicetype::fate);
+      c.setNumber(j);
+      choiceList.push_back(c);
+   }
+   decision d("Choose fate to place on "+dynastyCard.getName(), choiceList);
+   return d;
+}
+
+void dynastyEngine::placeAdditionalFate(int fate)
+{
+   playercards &gameCards=shared->getCurrentPlayerCards();
+   int index = shared->getProvinceIndex(gameCards.pending_fate_card, gameCards);
+   card &provinceCard = shared->cardList.at(gameCards.province[index]);
+   card &dynastyCard = shared->cardList.at(gameCards.province_dynasty[index]);
+   std::string playerName = shared->getCurrentPlayer()->getName();
+   std::cout << playerName << " puts " << dynastyCard.getName() <<
+      " into play with " << fate << " fate " << std::endl;
+   gameCards.fate -= dynastyCard.getFateCost() + fate;
+   std::cout << playerName << " now has " << gameCards.fate
+      << " fate left" << std::endl;
+
+   gameCards.at_home_characters.push_back(gameCards.province_dynasty[index]);
+   auto topDynastyCard = gameCards.dynasty_drawdeck.begin();
+   gameCards.province_dynasty[index] = *topDynastyCard;
+   card &newdynastyCard = shared->cardList.at(*topDynastyCard);
+   std::cout << playerName << " places " << newdynastyCard.getName()
+      << " facedown onto " << provinceCard.getName() << std::endl;
+   gameCards.dynasty_drawdeck.erase(topDynastyCard);
+   gameCards.facedown_provinces[index] = true;
 }
 
 void dynastyEngine::doAdditionalFate(choice c)
 {
    if(c.getType() == choicetype::fate)
    {
-      playercards &gameCards=shared->getCurrentPlayerCards();
-      bool found = false;
-      for(int i=0;!found && i<NUM_DYNASTY_PROVINCES;i++)
+      placeAdditionalFate(c.getNumber());
+
+      playercards &opponentCards = shared->getOpponentCards();
+      if( !opponentCards.passFirst )
       {
-         card &provinceCard = shared->cardList.at(gameCards.province[i]);
-         if(gameCards.pending_fate_card == gameCards.province[i])
-         {
-            card &dynastyCard = shared->cardList.at(gameCards.province_dynasty[i]);
-            card &provinceCard = shared->cardList.at(gameCards.province[i]);
-            std::string playerName = shared->getCurrentPlayer()->getName();
-            int addedFate = c.getNumber();
-            std::cout << playerName << " puts " << dynastyCard.getName() <<
-               " into play from " << provinceCard.getName() << " with " <<
-                addedFate << " fate " << std::endl;
-            gameCards.fate -= dynastyCard.getFateCost() + addedFate;
-            std::cout << playerName << " now has " << gameCards.fate
-               << " fate left" << std::endl;
-
-            gameCards.at_home_characters.push_back(gameCards.province_dynasty[i]);
-            auto topDynastyCard = gameCards.dynasty_drawdeck.begin();
-            gameCards.province_dynasty[i] = *topDynastyCard;
-            card &newdynastyCard = shared->cardList.at(*topDynastyCard);
-            std::cout << playerName << " places " << newdynastyCard.getName()
-               << " facedown onto " << provinceCard.getName() << std::endl;
-            gameCards.dynasty_drawdeck.erase(topDynastyCard);
-            gameCards.facedown_provinces[i] = true;
-
-            shared->swapCurrentActionPlayer();
-            shared->state.currentSubPhase = subphase::province_play;
-            found = true;
-         }
+         shared->swapCurrentActionPlayer();
       }
+      shared->state.currentSubPhase = subphase::province_play;
    }
    else
    {
@@ -183,20 +179,30 @@ void dynastyEngine::doProvincePlay(choice c)
    if (c.getType() == choicetype::province_play )
    {
       playercards &gameCards=shared->getCurrentPlayerCards();
-      bool found = false;
-      for(int i=0;!found && i<NUM_DYNASTY_PROVINCES;i++)
-      {
-         card &provinceCard = shared->cardList.at(gameCards.province[i]);
-         if(c.getTargetCard() == gameCards.province[i])
-         {
-            gameCards.pending_fate_card = c.getTargetCard();
-            found = true;
-         }
-      }
+      int index = shared->getProvinceIndex(c.getTargetCard(), gameCards);
+      card &provinceCard = shared->cardList.at(c.getTargetCard());
+      gameCards.pending_fate_card = c.getTargetCard();
+      card &dynastyCard = shared->cardList.at(gameCards.province_dynasty[index]);
+
       shared->state.currentSubPhase = subphase::additional_fate;
    }
    else if (c.getType() == choicetype::pass)
    {
-      shared->state.currentPhase = phase::gameover;
+      playercards &opponentCards = shared->getOpponentCards();
+      if( opponentCards.passFirst )
+      {
+         std::cout << "Start bidding.." << std::endl;
+         shared->state.currentPhase = phase::gameover;
+      }
+      else
+      {
+         playercards &gameCards=shared->getCurrentPlayerCards();
+         gameCards.passFirst = true;
+         std::string playerName = shared->getCurrentPlayer()->getName();
+         shared->swapCurrentActionPlayer();
+         std::cout << playerName  << " passes first. " << playerName 
+            << " gains 1 fate" << std::endl;
+         gameCards.fate++;
+      }
    }
 }
