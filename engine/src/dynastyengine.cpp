@@ -192,7 +192,9 @@ void dynastyEngine::doProvincePlay(choice c)
       if( opponentCards.passFirst )
       {
          std::cout << "Start bidding.." << std::endl;
-         shared->state.currentPhase = phase::gameover;
+         shared->state.currentPhase = phase::draw;
+         shared->state.currentSubPhase = subphase::bid;
+         shared->state.currentAction = shared->state.currentTurn;
       }
       else
       {

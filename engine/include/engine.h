@@ -12,6 +12,7 @@
 #include "engineshared.h"
 #include "pregameengine.h"
 #include "dynastyengine.h"
+#include "drawengine.h"
 
 
 namespace l5r
@@ -36,6 +37,7 @@ namespace l5r
          std::shared_ptr<engineShared> shared;
          std::unique_ptr<pregameEngine> pregame;
          std::unique_ptr<dynastyEngine> dynasty;
+         std::unique_ptr<drawEngine> draw;
          cardgenerator cg;
 
          //gamestate state;

@@ -9,6 +9,8 @@
 #define STARTING_NUM_CONFLICT_CARDS 4
 // TODO: make this part of the stronghold card
 #define STRONGHOLD_FATE 7
+#define MAX_BID 5
+#define MIN_BID 1
 
 namespace l5r
 {
@@ -16,6 +18,7 @@ namespace l5r
    {
       pregame,
       dynasty,
+      draw,
       gameover
    };
 
@@ -30,6 +33,9 @@ namespace l5r
       dynasty_setup,
       province_play,
       additional_fate,
+
+      //draw
+      bid
    };
 
    enum class player
@@ -56,6 +62,7 @@ namespace l5r
          int honorTokens;
          int fate;
          bool passFirst;
+         int honorDial;
          // dyntasy discard pile
          // conflict deck cards
          // conflict discard pile
