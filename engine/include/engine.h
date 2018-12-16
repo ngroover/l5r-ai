@@ -13,6 +13,7 @@
 #include "pregameengine.h"
 #include "dynastyengine.h"
 #include "drawengine.h"
+#include "conflictengine.h"
 
 
 namespace l5r
@@ -38,6 +39,7 @@ namespace l5r
          std::unique_ptr<pregameEngine> pregame;
          std::unique_ptr<dynastyEngine> dynasty;
          std::unique_ptr<drawEngine> draw;
+         std::unique_ptr<conflictEngine> conflict;
          cardgenerator cg;
 
          //gamestate state;

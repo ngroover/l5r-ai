@@ -22,7 +22,7 @@ void drawEngine::doAction(choice c)
          doBid(c);
          break;
       default:
-         throw "Invalid substate";
+         throw std::runtime_error("Invalid substate");
    }
 }
 
@@ -33,7 +33,7 @@ decision drawEngine::getDecision()
       case subphase::bid:
          return getBidDecision();
       default:
-         throw "Invalid substate";
+         throw std::runtime_error("Invalid substate");
    }
 }
 
@@ -60,18 +60,21 @@ void drawEngine::doBid(choice c)
    playercards &gameCards=shared->getCurrentPlayerCards();
    playercards &opponentCards = shared->getOpponentCards();
    gameCards.honorDial = c.getNumber();
-   if(shared->state.currentTurn == shared->state.currentAction)
-   {
-      shared->swapCurrentActionPlayer();
-   }
-   else
+   if(shared->state.currentTurn != shared->state.currentAction)
    {
       exchangeHonor(shared->getOpponentPlayer()->getName(), opponentCards, gameCards);
       exchangeHonor(shared->getCurrentPlayer()->getName(), gameCards, opponentCards);
       drawCards(shared->getCurrentPlayer()->getName(), gameCards, gameCards.honorDial);
       drawCards(shared->getOpponentPlayer()->getName(), opponentCards, opponentCards.honorDial);
-      shared->state.currentPhase = phase::gameover;
+      gameCards.availableConflicts.push_back(conflicttype::military);
+      gameCards.availableConflicts.push_back(conflicttype::political);
+      opponentCards.availableConflicts.push_back(conflicttype::military);
+      opponentCards.availableConflicts.push_back(conflicttype::political);
+      shared->state.currentPhase = phase::conflict;
+      shared->state.currentSubPhase = subphase::choose_attackers;
+      shared->state.currentConflict = shared->state.currentTurn;
    }
+   shared->swapCurrentActionPlayer();
 }
 
 void drawEngine::exchangeHonor(std::string name, playercards &gameCards, playercards &opponentCards)
@@ -87,7 +90,7 @@ void drawEngine::exchangeHonor(std::string name, playercards &gameCards, playerc
    else if(honorTransfer < 0)
    {
       gameCards.honorTokens += honorTransfer;
-      std::cout << name << " losses " << -honorTransfer << " honor (" << gameCards.honorTokens << " total)" << std::endl;
+      std::cout << name << " loses " << -honorTransfer << " honor (" << gameCards.honorTokens << " total)" << std::endl;
    }
 }
 

@@ -19,6 +19,7 @@ namespace l5r
       pregame,
       dynasty,
       draw,
+      conflict,
       gameover
    };
 
@@ -35,7 +36,16 @@ namespace l5r
       additional_fate,
 
       //draw
-      bid
+      bid,
+
+      // conflict
+      //preconflict
+      choose_attackers,
+      choose_ring,
+      choose_conflicttype, // TODO: combine with ring
+      choose_province,
+      choose_defenders,
+      conflict_action
    };
 
    enum class player
@@ -43,6 +53,44 @@ namespace l5r
       player1,
       player2
    };
+
+   enum class ring
+   {
+      air,
+      fire,
+      earth,
+      water,
+      _void
+   };
+
+   enum class conflicttype
+   {
+      military,
+      political
+   };
+
+   enum class conflictring
+   {
+      military_air,
+      political_air,
+      military_fire,
+      political_fire,
+      military_earth,
+      political_earth,
+      military_water,
+      political_water,
+      military_void,
+      political_void,
+   };
+
+   // TODO: create some interfaces to manage gamestate
+   // DynastyDeckManager
+   // ConflictDeckmanager
+   // ProvinceManager
+   // Tokenmanager
+   // RingManager
+   // Dialmanager
+   // TurnManagement
 
    class playercards
    {
@@ -59,15 +107,13 @@ namespace l5r
          std::list<cards> pending_conflict_mulligan;
          cards pending_fate_card;// the province from which a dynasty card is to be played. (awaiting fate)
          std::list<cards> at_home_characters;
+         std::list<cards> in_conflict_characters;
          int honorTokens;
          int fate;
          bool passFirst;
          int honorDial;
-         // dyntasy discard pile
-         // conflict deck cards
-         // conflict discard pile
-         // dynasty province row
-         // conflict hand cards
+         std::list<conflicttype> availableConflicts;
+         std::list<conflictring> claimedrings;
    };
 
    class gamestate
@@ -79,9 +125,15 @@ namespace l5r
          phase currentPhase;
          subphase currentSubPhase;
          player currentTurn;
+         player currentConflict;
          player currentAction;
          playercards player1Cards;
          playercards player2Cards;
+
+         std::list<ring> unclaimed_rings;
+         ring contested_ring;
+         int contested_province;
+         conflicttype currentConflictType;
    };
 };
 

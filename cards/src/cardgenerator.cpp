@@ -84,6 +84,7 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(1)
+               .setGlory(2)
                .build();
       case cards::asahina_storyteller:
          return card::builder{}
@@ -91,6 +92,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(4)
+               .setMilitarySkill(2)
+               .setPoliticalSkill(4)
+               .setGlory(2)
                .build();
       case cards::brash_samurai:
          return card::builder{}
@@ -98,6 +102,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitarySkill(2)
+               .setPoliticalSkill(1)
+               .setGlory(2)
                .build();
       case cards::cautious_scout:
          return card::builder{}
@@ -105,6 +112,8 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitarySkill(2)
+               .setGlory(1)
                .build();
       case cards::daidoji_nerishma:
          return card::builder{}
@@ -112,6 +121,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitarySkill(3)
+               .setPoliticalSkill(1)
+               .setGlory(1)
                .build();
       case cards::doji_challenger:
          return card::builder{}
@@ -119,6 +131,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(3)
+               .setMilitarySkill(3)
+               .setPoliticalSkill(3)
+               .setGlory(2)
                .build();
       case cards::doji_gift_giver:
          return card::builder{}
@@ -126,6 +141,8 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setPoliticalSkill(2)
+               .setGlory(1)
                .build();
       case cards::doji_hotaru:
          return card::builder{}
@@ -133,6 +150,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(5)
+               .setMilitarySkill(3)
+               .setPoliticalSkill(6)
+               .setGlory(3)
                .build();
       case cards::doji_whisperer:
          return card::builder{}
@@ -140,6 +160,8 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(1)
+               .setPoliticalSkill(3)
+               .setGlory(1)
                .build();
       case cards::guest_of_honor:
          return card::builder{}
@@ -147,6 +169,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(4)
+               .setMilitarySkill(1)
+               .setPoliticalSkill(4)
+               .setGlory(1)
                .build();
       case cards::kakita_asami:
          return card::builder{}
@@ -154,6 +179,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(3)
+               .setMilitarySkill(1)
+               .setPoliticalSkill(3)
+               .setGlory(2)
                .build();
       case cards::kakita_kaezin:
          return card::builder{}
@@ -161,6 +189,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(3)
+               .setMilitarySkill(3)
+               .setPoliticalSkill(2)
+               .setGlory(2)
                .build();
       case cards::savvy_politician:
          return card::builder{}
@@ -168,6 +199,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitarySkill(1)
+               .setPoliticalSkill(2)
+               .setGlory(1)
                .build();
       case cards::artisan_academy:
          return card::builder{}
@@ -181,6 +215,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(1)
+               .setMilitaryDash(true)
+               .setPoliticalSkill(2)
+               .setGlory(1)
                .build();
       case cards::miya_mystic:
          return card::builder{}
@@ -188,6 +225,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitarySkill(1)
+               .setPoliticalSkill(1)
+               .setGlory(1)
                .build();
       case cards::favorable_ground:
          return card::builder{}
@@ -207,6 +247,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(1)
+               .setMilitarySkill(2)
+               .setPoliticalDash(true)
+               .setGlory(1)
                .build();
       case cards::wandering_ronin:
          return card::builder{}
@@ -214,6 +257,8 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(3)
+               .setMilitarySkill(2)
+               .setPoliticalSkill(2)
                .build();
       case cards::akodo_gunso:
          return card::builder{}
@@ -221,6 +266,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitarySkill(2)
+               .setPoliticalSkill(1)
+               .setGlory(2)
                .build();
       case cards::akodo_toturi:
          return card::builder{}
@@ -228,6 +276,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(5)
+               .setMilitarySkill(6)
+               .setPoliticalSkill(3)
+               .setGlory(3)
                .build();
       case cards::deathseeker:
          return card::builder{}
@@ -235,6 +286,8 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitarySkill(2)
+               .setPoliticalSkill(1)
                .build();
       case cards::honored_general:
          return card::builder{}
@@ -242,6 +295,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(4)
+               .setMilitarySkill(3)
+               .setPoliticalSkill(1)
+               .setGlory(2)
                .build();
       case cards::ikoma_eiji:
          return card::builder{}
@@ -249,6 +305,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(4)
+               .setMilitarySkill(1)
+               .setPoliticalSkill(3)
+               .setGlory(3)
                .build();
       case cards::ikoma_prodigy:
          return card::builder{}
@@ -256,6 +315,8 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(1)
+               .setPoliticalSkill(2)
+               .setGlory(1)
                .build();
       case cards::kitsu_spiritcaller:
          return card::builder{}
@@ -263,6 +324,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(3)
+               .setMilitarySkill(1)
+               .setPoliticalSkill(3)
+               .setGlory(2)
                .build();
       case cards::lions_pride_brawler:
          return card::builder{}
@@ -270,6 +334,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(3)
+               .setMilitarySkill(3)
+               .setPoliticalSkill(2)
+               .setGlory(1)
                .build();
       case cards::matsu_beiona:
          return card::builder{}
@@ -277,6 +344,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(3)
+               .setMilitarySkill(3)
+               .setPoliticalSkill(2)
+               .setGlory(2)
                .build();
       case cards::matsu_berserker:
          return card::builder{}
@@ -284,6 +354,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(1)
+               .setMilitarySkill(3)
+               .setPoliticalDash(true)
+               .setGlory(1)
                .build();
       case cards::obstinate_recruit:
          return card::builder{}
@@ -291,6 +364,7 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(0)
+               .setMilitarySkill(2)
                .build();
       case cards::staging_ground:
          return card::builder{}
@@ -303,7 +377,10 @@ card cardgenerator::generateCard(cards c)
                .setName("Steadfast Samurai")
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
-               .setFateCost(0)
+               .setFateCost(1)
+               .setMilitarySkill(1)
+               .setPoliticalSkill(1)
+               .setGlory(1)
                .build();
       case cards::venerable_historian:
          return card::builder{}
@@ -311,6 +388,9 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::character)
                .setFateCost(2)
+               .setMilitaryDash(true)
+               .setPoliticalSkill(1)
+               .setGlory(3)
                .build();
       case cards::above_question:
          return card::builder{}
@@ -451,6 +531,10 @@ card cardgenerator::generateCard(cards c)
          return card::builder{}
                .setName("Master of the Spear")
                .setType(cardtype::conflict)
+               .setFateCost(3)
+               .setMilitarySkill(2)
+               .setPoliticalSkill(2)
+               .setGlory(1)
                .build();
       case cards::ready_for_battle:
          return card::builder{}
@@ -476,6 +560,10 @@ card cardgenerator::generateCard(cards c)
          return card::builder{}
                .setName("Vengeful Oathkeeper")
                .setType(cardtype::conflict)
+               .setFateCost(2)
+               .setMilitarySkill(2)
+               .setPoliticalSkill(1)
+               .setGlory(0)
                .build();
       case cards::way_of_the_lion:
          return card::builder{}
@@ -483,7 +571,7 @@ card cardgenerator::generateCard(cards c)
                .setType(cardtype::conflict)
                .build();
       default:
-         throw "Invalid card type";
+         throw std::runtime_error("Invalid card type");
          // throw exception
          break;
    }

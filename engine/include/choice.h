@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "cards.h"
+#include "gamestate.h"
 
 namespace l5r
 {
@@ -14,6 +15,8 @@ namespace l5r
       bid,
       fate,
       province_play,
+      province_attack,
+      conflict_type,
       pass
    };
 
@@ -32,11 +35,19 @@ namespace l5r
          void setNumber(int number);
          int getNumber() const;
 
+         void setChosenRing(ring chosen);
+         ring getChosenRing() const;
+
+         void setConflictType(conflicttype type);
+         conflicttype getConflictType() const;
+
       private:
          std::string text;
          choicetype type;
          cards targetCard;
          int number;
+         ring chosenring;
+         conflicttype conflictType;
    };
 };
 

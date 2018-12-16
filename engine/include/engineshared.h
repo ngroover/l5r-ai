@@ -33,6 +33,11 @@ namespace l5r
 
          // get index of a province card
          int getProvinceIndex(cards province, playercards &gameCards);
+
+         std::string getRingName(ring r);
+         std::string getConflictTypeName(conflicttype type);
+
+         conflictring getConflictRing(ring r, conflicttype ct);
    };
 }
 

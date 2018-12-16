@@ -1,4 +1,5 @@
 #include "pregameengine.h"
+#include "gamestate.h"
 #include <algorithm>
 #include <iostream>
 
@@ -76,7 +77,7 @@ decision pregameEngine::getDecision()
       case subphase::conflict_mulligan:
          return conflictMulliganDecision();
       default:
-         throw "Invalid substate";
+         throw std::runtime_error("Invalid substate");
    }
 }
 
@@ -142,7 +143,7 @@ void pregameEngine::doStrongholdSelection(choice c)
    }
    else
    {
-      throw "Not a card choice!";
+      throw std::runtime_error("Not a card choice!");
    }
 }
 
@@ -262,7 +263,7 @@ void pregameEngine::doConflictMulligan(choice c)
       }
       if(!found)
       {
-         throw "Couldn't find the mulligan card";
+         throw std::runtime_error("Couldn't find the mulligan card");
       }
    }
    // process a pass on mulligan or a full set of cards mulliganed
@@ -299,6 +300,14 @@ void pregameEngine::doConflictMulligan(choice c)
          gainHonor(shared->getOpponentPlayer()->getName(), opponentCards);
          gainHonor(shared->getCurrentPlayer()->getName(), gameCards);
 
+         // add unclaimed rings
+         shared->state.unclaimed_rings.clear();
+         shared->state.unclaimed_rings.push_back(ring::air);
+         shared->state.unclaimed_rings.push_back(ring::fire);
+         shared->state.unclaimed_rings.push_back(ring::earth);
+         shared->state.unclaimed_rings.push_back(ring::water);
+         shared->state.unclaimed_rings.push_back(ring::_void);
+
          shared->state.currentPhase = phase::dynasty;
          shared->state.currentSubPhase = subphase::dynasty_setup;
       }
@@ -330,6 +339,6 @@ void pregameEngine::doAction(choice c)
          doConflictMulligan(c);
          break;
       default:
-         throw "Invalid substate";
+         throw std::runtime_error("Invalid substate");
    }
 }

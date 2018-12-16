@@ -59,6 +59,7 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
    pregame = std::make_unique<pregameEngine>(shared);
    dynasty = std::make_unique<dynastyEngine>(shared);
    draw = std::make_unique<drawEngine>(shared);
+   conflict = std::make_unique<conflictEngine>(shared);
 }
 
 // destructor
@@ -116,8 +117,11 @@ decision engine::getDecision()
          case phase::draw:
             d = draw->getDecision();
             break;
+         case phase::conflict:
+            d = conflict->getDecision();
+            break;
          default:
-            throw "Invalid phase";
+            throw std::runtime_error("Invalid phase");
       }
       // if theres only 1 choice do it and keep going
       if(d.getChoiceList().size() == 1)
@@ -151,8 +155,11 @@ void engine::doAction(choice c)
       case phase::draw:
          draw->doAction(c);
          break;
+      case phase::conflict:
+         conflict->doAction(c);
+         break;
       default:
-         throw "Invalid phase";
+         throw std::runtime_error("Invalid phase");
    }
 }
 

@@ -81,3 +81,71 @@ int engineShared::getProvinceIndex(cards province, playercards &gameCards)
       }
    }
 }
+
+std::string engineShared::getRingName(ring r)
+{
+   switch(r)
+   {
+      case ring::air:
+         return "Air";
+      case ring::fire:
+         return "Fire";
+      case ring::earth:
+         return "Earth";
+      case ring::water:
+         return "Water";
+      case ring::_void:
+         return "Void";
+      default:
+         throw std::runtime_error("Invalid ring");
+   }
+}
+
+std::string engineShared::getConflictTypeName(conflicttype type)
+{
+   switch(type)
+   {
+      case conflicttype::military:
+         return "Military";
+      case conflicttype::political:
+         return "Political";
+      default:
+         throw std::runtime_error("Invalid conflict type");
+   }
+}
+
+conflictring engineShared::getConflictRing(ring r, conflicttype ct)
+{
+   if(ct == conflicttype::military)
+   {
+      switch(r)
+      {
+         case ring::fire:
+            return conflictring::military_fire;
+         case ring::air:
+            return conflictring::military_air;
+         case ring::water:
+            return conflictring::military_water;
+         case ring::_void:
+            return conflictring::military_void;
+         case ring::earth:
+            return conflictring::military_earth;
+      }
+   }
+   else
+   {
+      switch(r)
+      {
+         case ring::fire:
+            return conflictring::political_fire;
+         case ring::air:
+            return conflictring::political_air;
+         case ring::water:
+            return conflictring::political_water;
+         case ring::_void:
+            return conflictring::political_void;
+         case ring::earth:
+            return conflictring::political_earth;
+      }
+   }
+}

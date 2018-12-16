@@ -28,7 +28,7 @@ void dynastyEngine::doAction(choice c)
          doAdditionalFate(c);
          break;
       default:
-         throw "Invalid substate";
+         throw std::runtime_error("Invalid substate");
    }
 }
 
@@ -41,7 +41,7 @@ decision dynastyEngine::getDecision()
       case subphase::additional_fate:
          return additionalFateDecision();
       default:
-         throw "Invalid substate";
+         throw std::runtime_error("Invalid substate");
    }
 }
 
@@ -116,7 +116,7 @@ decision dynastyEngine::additionalFateDecision()
    int leftOverFate = gameCards.fate - dynastyCard.getFateCost();
    if( leftOverFate < 0)
    {
-      throw "Not enough fate to pay for card";
+      throw std::runtime_error("Not enough fate to pay for card");
    }
    for(int j=0;j <= leftOverFate; j++)
    {
@@ -170,7 +170,7 @@ void dynastyEngine::doAdditionalFate(choice c)
    }
    else
    {
-      throw "Must be fate choice";
+      throw std::runtime_error("Must be fate choice");
    }
 }
 
@@ -191,7 +191,9 @@ void dynastyEngine::doProvincePlay(choice c)
       playercards &opponentCards = shared->getOpponentCards();
       if( opponentCards.passFirst )
       {
-         std::cout << "Start bidding.." << std::endl;
+         std::string playerName = shared->getCurrentPlayer()->getName();
+         std::cout << playerName << " passes." << std::endl;
+         std::cout << "Begin draw phase..." << std::endl;
          shared->state.currentPhase = phase::draw;
          shared->state.currentSubPhase = subphase::bid;
          shared->state.currentAction = shared->state.currentTurn;

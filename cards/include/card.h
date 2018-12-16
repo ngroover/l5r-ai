@@ -32,7 +32,12 @@ namespace l5r
               int provinceStr,
               int strongholdHonor,
               int fateCost,
-              dynastycardtype dynastyType);
+              dynastycardtype dynastyType,
+              int militarySkill,
+              int politicalSkill,
+              int glory,
+              bool miiltaryDash,
+              bool politicalDash);
          ~card();
 
          std::string getName() const;
@@ -40,6 +45,11 @@ namespace l5r
          int getStrongholdHonor() const;
          int getFateCost() const;
          dynastycardtype getDynastyType() const;
+         int getMilitarySkill() const;
+         int getPoliticalSkill() const;
+         int getGlory() const;
+         bool getMilitaryDash() const;
+         bool getPoliticalDash() const;
 
       private:
          std::string name;
@@ -49,6 +59,11 @@ namespace l5r
          int strongholdHonor;
          int fateCost;
          dynastycardtype dynastyType;
+         int militarySkill;
+         int politicalSkill;
+         int glory;
+         bool militaryDash;
+         bool politicalDash;
    };
 
    class card::builder
@@ -61,6 +76,11 @@ namespace l5r
          builder& setStrongholdHonor(int strongholdHonor);
          builder& setFateCost(int fateCost);
          builder& setDynastyType(dynastycardtype dynastyType);
+         builder& setMilitarySkill(int militarySkill);
+         builder& setPoliticalSkill(int politicalSkill);
+         builder& setGlory(int glory);
+         builder& setMilitaryDash(bool militaryDash);
+         builder& setPoliticalDash(bool politicalDash);
 
          card build() const;
 
@@ -71,6 +91,11 @@ namespace l5r
          int provinceStr = 0;
          int strongholdHonor = 0;
          int fateCost = 0;
+         int militarySkill = 0;
+         int politicalSkill = 0;
+         int glory = 0;
+         bool militaryDash = false;
+         bool politicalDash = false;
          dynastycardtype dynastyType = dynastycardtype::none;
    };
 };

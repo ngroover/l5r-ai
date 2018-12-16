@@ -1,4 +1,5 @@
 #include "card.h"
+#include <stdexcept>
 
 using namespace l5r;
 
@@ -7,13 +8,23 @@ card::card(std::string name, cardtype type,
       int provinceStr,
       int strongholdHonor,
       int fateCost,
-      dynastycardtype dynastyType) :
+      dynastycardtype dynastyType,
+      int militarySkill,
+      int politicalSkill,
+      int glory,
+      bool militaryDash,
+      bool politicalDash) :
       name(name), type(type),
       canBeStronghold(canBeStronghold),
       provinceStr(provinceStr),
       strongholdHonor(strongholdHonor),
       fateCost(fateCost),
-      dynastyType(dynastyType)
+      dynastyType(dynastyType),
+      militarySkill(militarySkill),
+      politicalSkill(politicalSkill),
+      glory(glory),
+      militaryDash(militaryDash),
+      politicalDash(politicalDash)
 {
 }
 
@@ -44,6 +55,31 @@ int card::getFateCost() const
 dynastycardtype card::getDynastyType() const
 {
    return dynastyType;
+}
+
+int card::getMilitarySkill() const
+{
+   return militarySkill;
+}
+
+int card::getPoliticalSkill() const
+{
+   return politicalSkill;
+}
+
+int card::getGlory() const
+{
+   return glory;
+}
+
+bool card::getMilitaryDash() const
+{
+   return militaryDash;
+}
+
+bool card::getPoliticalDash() const
+{
+   return politicalDash;
 }
 
 card::builder& card::builder::setName(std::string name)
@@ -88,22 +124,53 @@ card::builder& card::builder::setDynastyType(dynastycardtype dynastyType)
    return *this;
 }
 
+card::builder& card::builder::setMilitarySkill(int militarySkill)
+{
+   this->militarySkill = militarySkill;
+   return *this;
+}
+
+card::builder& card::builder::setPoliticalSkill(int politicalSkill)
+{
+   this->politicalSkill = politicalSkill;
+   return *this;
+}
+
+card::builder& card::builder::setGlory(int glory)
+{
+   this->glory = glory;
+   return *this;
+}
+
+card::builder& card::builder::setMilitaryDash(bool militaryDash)
+{
+   this->militaryDash = militaryDash;
+   return *this;
+}
+
+card::builder& card::builder::setPoliticalDash(bool politcalDash)
+{
+   this->politicalDash = politicalDash;
+   return *this;
+}
+
 card card::builder::build() const
 {
    if( name == "Invalid" )
    {
-      throw "Invalid card name";
+      throw std::runtime_error("Invalid card name");
    }
    if( type == cardtype::invalid )
    {
-      throw "Invalid card type";
+      throw std::runtime_error("Invalid card type");
    }
    if ( type == cardtype::dynasty && 
       dynastyType == dynastycardtype::none)
    {
-      throw "Invalid dynasty card type";
+      throw std::runtime_error("Invalid dynasty card type");
    }
    return card(name, type, canBeStronghold,
       provinceStr, strongholdHonor,
-      fateCost,dynastyType);
+      fateCost,dynastyType, militarySkill, politicalSkill, glory,
+      militaryDash, politicalDash);
 }

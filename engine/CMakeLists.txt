@@ -9,7 +9,8 @@ add_library( engine SHARED src/engine.cpp
                         src/pregameengine.cpp
                         src/engineshared.cpp
                         src/dynastyengine.cpp
-                        src/drawengine.cpp)
+                        src/drawengine.cpp
+                        src/conflictengine.cpp)
 
 add_executable( simulator test/main.cpp )
 

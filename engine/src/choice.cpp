@@ -40,3 +40,23 @@ int choice::getNumber() const
 {
    return number;
 }
+
+void choice::setChosenRing(ring r)
+{
+   this->chosenring = r;
+}
+
+ring choice::getChosenRing() const
+{
+   return chosenring;
+}
+
+void choice::setConflictType(conflicttype type)
+{
+   this->conflictType = type;
+}
+
+conflicttype choice::getConflictType() const
+{
+   return conflictType;
+}
