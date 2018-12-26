@@ -327,18 +327,4 @@ void pregameEngine::gainHonor(std::string playerName, playercards &gameCards)
 
 void pregameEngine::doAction(choice c)
 {
-   switch(shared->state.currentSubPhase)
-   {
-      case subphase::stronghold_selection:
-         doStrongholdSelection(c);
-         break;
-      case subphase::dynasty_mulligan:
-         doDynastyMulligan(c);
-         break;
-      case subphase::conflict_mulligan:
-         doConflictMulligan(c);
-         break;
-      default:
-         throw std::runtime_error("Invalid substate");
-   }
 }

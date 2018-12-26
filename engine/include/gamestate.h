@@ -2,6 +2,7 @@
 #define _GAMESTATE_H_
 
 #include <list>
+#include <vector>
 #include "cards.h"
 
 #define NUM_PROVINCES 5
@@ -42,7 +43,7 @@ namespace l5r
       //preconflict
       choose_attackers,
       choose_ring,
-      choose_conflicttype, // TODO: combine with ring
+      choose_conflicttype,
       choose_province,
       choose_defenders,
       conflict_action
@@ -52,6 +53,12 @@ namespace l5r
    {
       player1,
       player2
+   };
+
+   enum class relativePlayer
+   {
+      myself,
+      opponent
    };
 
    enum class ring
@@ -83,37 +90,36 @@ namespace l5r
       political_void,
    };
 
-   // TODO: create some interfaces to manage gamestate
-   // DynastyDeckManager
-   // ConflictDeckmanager
-   // ProvinceManager
-   // Tokenmanager
-   // RingManager
-   // Dialmanager
-   // TurnManagement
-
-   class playercards
+   class provinceStack
    {
       public:
-         cards stronghold;
-         cards strongholdProvince;
-         cards province[NUM_PROVINCES];
-         std::list<cards> dynasty_drawdeck;
-         std::list<cards> conflict_drawdeck;
-         cards province_dynasty[NUM_DYNASTY_PROVINCES];
-         std::list<cards> conflict_hand;
-         bool pending_dynasty_mulligan[NUM_DYNASTY_PROVINCES];
-         bool facedown_provinces[NUM_DYNASTY_PROVINCES];
-         std::list<cards> pending_conflict_mulligan;
-         cards pending_fate_card;// the province from which a dynasty card is to be played. (awaiting fate)
-         std::list<cards> at_home_characters;
-         std::list<cards> in_conflict_characters;
+         int provinceCard;
+         int dynastyCard;
+         bool facedownDynasty;
+   };
+
+   class playerstate
+   {
+      public:
+         // all these integers are referencing cardIds (below)
+         std::list<int> dynastyDeck;
+         std::list<int> conflictDeck;
+         std::list<int> conflictHand;
+         std::list<int> pendingMulligan;
+         int pendingFateCard; // card awaiting fate
+         std::list<provinceStack> provinceArea;
+         int strongholdProvince;
+         int stronghold;
+         std::list<int> atHome;
+         std::list<int> inConflict;
+
          int honorTokens;
          int fate;
-         bool passFirst;
+         bool passed;
          int honorDial;
+
          std::list<conflicttype> availableConflicts;
-         std::list<conflictring> claimedrings;
+         std::list<conflictring> claimedRings;
    };
 
    class gamestate
@@ -122,18 +128,24 @@ namespace l5r
          gamestate();
          ~gamestate();
 
+         // global card ids
+         std::vector<cards> cardIds;
+
          phase currentPhase;
          subphase currentSubPhase;
          player currentTurn;
          player currentConflict;
          player currentAction;
-         playercards player1Cards;
-         playercards player2Cards;
+         playerstate player1State;
+         playerstate player2State;
 
          std::list<ring> unclaimed_rings;
-         ring contested_ring;
+         conflictring contested_ring;
          int contested_province;
-         conflicttype currentConflictType;
+
+         // dynamically get playerstate
+         playerstate &getPlayerState(int playerNum);
+         playerstate &getPlayerState(relativePlayer rp);
    };
 };
 

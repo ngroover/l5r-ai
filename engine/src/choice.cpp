@@ -21,16 +21,6 @@ std::string choice::getText() const
    return text;
 }
 
-void choice::setTargetCard(cards target)
-{
-   targetCard = target;
-}
-
-cards choice::getTargetCard() const
-{
-   return targetCard;
-}
-
 void choice::setNumber(int number)
 {
    this->number = number;

@@ -2,20 +2,36 @@
 #include <random>
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 using namespace l5r;
 
 // constructor
 engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
 {
-   shared = std::make_shared<engineShared>();
+   state = std::make_shared<gamestate>();
 
-   shared->player1 = std::move(player1);
-   shared->player2 = std::move(player2);
+   // initialize managers
+   agentMgr = std::make_shared<agentManager>(std::move(player1),std::move(player2),state);
+   cardDataMgr = std::make_shared<cardDataManager>(state);
+   dynastyMgr = std::make_shared<dynastyCardManager>(state, cardDataMgr, agentMgr);
+   turnMgr = std::make_shared<turnManager>(state);
+   conflictMgr = std::make_shared<conflictCardManager>(state, cardDataMgr, agentMgr);
+   provinceMgr = std::make_shared<provinceCardManager>(state, cardDataMgr, agentMgr);
+   tokenMgr = std::make_shared<tokenManager>(state, cardDataMgr);
+   ringMgr = std::make_shared<ringManager>(state);
+   phaseMgr = std::make_shared<phaseManager>(state, dynastyMgr, conflictMgr, provinceMgr, turnMgr, tokenMgr, ringMgr,agentMgr);
 
+   // setup the gamestate
    std::cout << "Setting up game:" << std::endl;
-   std::cout << shared->player1->getName() << " (" << shared->player1->getDeckList().getName() << ")" <<std::endl;
-   std::cout << shared->player2->getName() << " (" << shared->player2->getDeckList().getName() << ")" <<std::endl;
+   for(int i=1;i<=2;i++)
+   {
+      std::cout << agentMgr->getPlayerName(i) << " (" << agentMgr->getPlayerDecklist(i).getName() << ")" <<std::endl;
+      cardDataMgr->loadDecklist(agentMgr->getPlayerDecklist(i), i);
+      dynastyMgr->createDeck(agentMgr->getPlayerDecklist(i), i);
+      conflictMgr->createDeck(agentMgr->getPlayerDecklist(i), i);
+      provinceMgr->createDeck(agentMgr->getPlayerDecklist(i), i);
+   }
 
    // randomly determine first player
    std::random_device rd;
@@ -23,43 +39,25 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
 
    std::uniform_int_distribution<int> d(1,2);
    int choice = d(gen);
-   if( choice == 1 )
+   if( choice == 1 || choice == 2 )
    {
-      std::cout << "First player is " << shared->player1->getName() << std::endl;
-      shared->state.currentAction = player::player1;
-      shared->state.currentTurn =  player::player1;
+      std::cout << "First player is " << agentMgr->getPlayerName(choice) << std::endl;
+      turnMgr->setCurrentTurnAndAction(choice);
    }
    else
    {
-      std::cout << "First player is " << shared->player2->getName() << std::endl;
-      shared->state.currentAction = player::player2;
-      shared->state.currentTurn =  player::player2;
+      std::stringstream ss;
+      ss << choice;
+      std::string strChoice;
+      ss >> strChoice;
+      strChoice = "Invalid random choice" + strChoice;
+      throw std::runtime_error(strChoice.c_str());
    }
 
    // select stronghold is the first player decision
-   shared->state.currentPhase = phase::pregame;
-   shared->state.currentSubPhase = subphase::stronghold_selection;
+   phaseMgr->goToStrongholdSelection();
 
-   // TODO: Validate the decklists
-   std::map<cards,card> list1 = populateCards(shared->player1, shared->state.player1Cards);
-   std::map<cards,card> list2 = populateCards(shared->player2, shared->state.player2Cards);
 
-   shared->cardList = list1;
-
-   // merge card info
-   for( auto const c : list2 )
-   {
-      if ( shared->cardList.find(c.first) == shared->cardList.end() )
-      {
-         shared->cardList.insert(std::pair<cards,card>(c.first,c.second));
-      }
-   }
-
-   // initialize engine subsystems
-   pregame = std::make_unique<pregameEngine>(shared);
-   dynasty = std::make_unique<dynastyEngine>(shared);
-   draw = std::make_unique<drawEngine>(shared);
-   conflict = std::make_unique<conflictEngine>(shared);
 }
 
 // destructor
@@ -67,62 +65,12 @@ engine::~engine()
 {
 }
 
-std::map<cards,card> engine::populateCards(std::unique_ptr<agent> &player, playercards &gameCards)
-{
-   // get cards and put them into the gamestate
-   std::map<cards,card> tmpList = cg.generateCards(player->getDeckList());
-   int provinceSlot=0;
-
-   for(auto c : tmpList )
-   {
-      if ( c.second.getType() == cardtype::stronghold )
-      {
-         gameCards.stronghold = c.first;
-      }
-      else if ( c.second.getType() == cardtype::province )
-      {
-         gameCards.province[provinceSlot++] = c.first;
-      }
-      else if (c.second.getType() == cardtype::dynasty )
-      {
-         gameCards.dynasty_drawdeck.push_back(c.first);
-      }
-      else if (c.second.getType() == cardtype::conflict )
-      {
-         gameCards.conflict_drawdeck.push_back(c.first);
-      }
-   }
-
-   return tmpList;
-}
-
-void engine::setGameState(gamestate gs)
-{
-   shared->state = gs;
-}
-
 decision engine::getDecision()
 {
    decision d;
    do
    {
-      switch(shared->state.currentPhase)
-      {
-         case phase::pregame:
-            d = pregame->getDecision();
-            break;
-         case phase::dynasty:
-            d =  dynasty->getDecision();
-            break;
-         case phase::draw:
-            d = draw->getDecision();
-            break;
-         case phase::conflict:
-            d = conflict->getDecision();
-            break;
-         default:
-            throw std::runtime_error("Invalid phase");
-      }
+      d = phaseMgr->getDecision();
       // if theres only 1 choice do it and keep going
       if(d.getChoiceList().size() == 1)
       {
@@ -132,44 +80,23 @@ decision engine::getDecision()
    return d;
 }
 
-gamestate engine::getGameState()
+std::shared_ptr<gamestate> engine::getGameState()
 {
-   return shared->state;
+   return state;
 }
 
 void engine::doAction(choice c)
 {
-   switch(shared->state.currentPhase)
-   {
-      case phase::pregame:
-         pregame->doAction(c);
-         // allow transition to next phase
-         if(shared->state.currentPhase == phase::dynasty)
-         {
-            dynasty->doAction(c);
-         }
-         break;
-      case phase::dynasty:
-         dynasty->doAction(c);
-         break;
-      case phase::draw:
-         draw->doAction(c);
-         break;
-      case phase::conflict:
-         conflict->doAction(c);
-         break;
-      default:
-         throw std::runtime_error("Invalid phase");
-   }
+   phaseMgr->doAction(c);
 }
 
 
 void engine::run()
 {
-   while( shared->state.currentPhase != phase::gameover )
+   while( state->currentPhase != phase::gameover )
    {
       decision d = getDecision();
-      choice c = shared->getCurrentPlayer()->chooseAction(d);
+      choice c = agentMgr->getCurrentPlayerChoice(d);
       doAction(c);
    }
 }

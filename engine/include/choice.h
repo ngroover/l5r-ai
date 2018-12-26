@@ -29,9 +29,6 @@ namespace l5r
          std::string getText() const;
          choicetype getType() const;
 
-         void setTargetCard(cards target);
-         cards getTargetCard() const;
-
          void setNumber(int number);
          int getNumber() const;
 

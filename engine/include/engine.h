@@ -4,16 +4,18 @@
 #include <gamestate.h>
 #include <action.h>
 #include <list>
-#include <agent.h>
 #include <map>
 #include <memory>
 #include "agent.h"
-#include "cardgenerator.h"
-#include "engineshared.h"
-#include "pregameengine.h"
-#include "dynastyengine.h"
-#include "drawengine.h"
-#include "conflictengine.h"
+#include "dynastycardmanager.h"
+#include "conflictcardmanager.h"
+#include "provincecardmanager.h"
+#include "carddatamanager.h"
+#include "turnmanager.h"
+#include "phasemanager.h"
+#include "agentmanager.h"
+#include "tokenmanager.h"
+#include "ringmanager.h"
 
 
 namespace l5r
@@ -25,32 +27,29 @@ namespace l5r
          ~engine();
 
          // useful for testing
-         void setGameState(gamestate gs);
-
-         gamestate getGameState();
+         std::shared_ptr<gamestate> getGameState();
 
          decision getDecision();
 
          void doAction(choice c);
 
          void run();
+
       private:
-         std::shared_ptr<engineShared> shared;
-         std::unique_ptr<pregameEngine> pregame;
-         std::unique_ptr<dynastyEngine> dynasty;
-         std::unique_ptr<drawEngine> draw;
-         std::unique_ptr<conflictEngine> conflict;
-         cardgenerator cg;
 
-         //gamestate state;
-         //std::unique_ptr<agent> player1,player2;
-         
-         //std::map<cards,card> cardList;
+         // shared state
+         std::shared_ptr<gamestate> state;
 
-         std::map<cards,card> populateCards(std::unique_ptr<agent> &player, playercards &gameCards);
-         // actiongenerator
-         // actionprocessor
-         // pregameinitializer
+         // state managers
+         std::shared_ptr<dynastyCardManager> dynastyMgr;
+         std::shared_ptr<conflictCardManager> conflictMgr;
+         std::shared_ptr<provinceCardManager> provinceMgr;
+         std::shared_ptr<turnManager> turnMgr;
+         std::shared_ptr<phaseManager> phaseMgr;
+         std::shared_ptr<agentManager> agentMgr;
+         std::shared_ptr<cardDataManager> cardDataMgr;
+         std::shared_ptr<tokenManager> tokenMgr;
+         std::shared_ptr<ringManager> ringMgr;
    };
 };
 

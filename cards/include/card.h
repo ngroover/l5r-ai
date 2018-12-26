@@ -38,6 +38,7 @@ namespace l5r
               int glory,
               bool miiltaryDash,
               bool politicalDash);
+         card(){};
          ~card();
 
          std::string getName() const;
