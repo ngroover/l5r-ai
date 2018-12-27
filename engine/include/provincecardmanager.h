@@ -24,6 +24,8 @@ namespace l5r
 
          std::list<choice> getStrongholdChoices();
 
+         std::list<choice> getProvinceChoices(playerstate &pState);
+
       private:
          std::shared_ptr<gamestate> state;
          std::shared_ptr<cardDataManager> cardMgr;

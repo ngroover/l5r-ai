@@ -164,3 +164,79 @@ void dynastyCardManager::playCharacter(playerstate &pState, std::string playerNa
       }
    }
 }
+
+void dynastyCardManager::chooseAttacker(playerstate &pState, int cardChoice)
+{
+   for(auto ch=pState.atHome.begin();ch!=pState.atHome.end();ch++)
+   {
+      if(*ch == cardChoice)
+      {
+         pState.atHome.erase(ch);
+         ch = pState.atHome.end();
+         pState.inConflict.push_back(cardChoice);
+      }
+   }
+}
+
+std::list<choice> dynastyCardManager::getAttackerChoices(playerstate &pState)
+{
+   std::list<choice> list;
+   for(auto ch=pState.atHome.begin();ch!=pState.atHome.end();ch++)
+   {
+      // TODO: check dashed types can't be mixed into conflict
+      choice c(cardMgr->getCardName(*ch), choicetype::card);
+      c.setNumber(*ch);
+      list.push_back(c);
+   }
+   return list;
+}
+
+void dynastyCardManager::printAttackers(playerstate &pState)
+{
+   for(auto ch=pState.inConflict.begin();ch!=pState.inConflict.end();ch++)
+   {
+      std::cout << " " << cardMgr->getCardName(*ch) << std::endl;
+   }
+}
+
+int dynastyCardManager::getNumAttackingCharacters(playerstate &pState)
+{
+   return pState.inConflict.size();
+}
+
+
+void dynastyCardManager::passConflict(playerstate &pState)
+{
+   pState.numConflicts--;
+}
+
+std::list<choice> dynastyCardManager::getDefenderChoices(playerstate &pState)
+{
+   std::list<choice> list;
+   for(auto ch=pState.atHome.begin();ch!=pState.atHome.end();ch++)
+   {
+      // TODO: check dashed types can't be mixed into conflict
+      choice c(cardMgr->getCardName(*ch), choicetype::card);
+      c.setNumber(*ch);
+      list.push_back(c);
+   }
+   return list;
+}
+
+void dynastyCardManager::chooseDefender(playerstate &pState, int cardChoice)
+{
+   for(auto ch=pState.atHome.begin();ch!=pState.atHome.end();ch++)
+   {
+      if(*ch == cardChoice)
+      {
+         pState.atHome.erase(ch);
+         ch = pState.atHome.end();
+         pState.inConflict.push_back(cardChoice);
+      }
+   }
+}
+
+int dynastyCardManager::conflictTotal(playerstate &pState)
+{
+   return 0;
+}

@@ -90,12 +90,20 @@ namespace l5r
       political_void,
    };
 
+   enum class provinceCardStatus
+   {
+      unrevealed,
+      revealed,
+      broken
+   };
+
    class provinceStack
    {
       public:
          int provinceCard;
          int dynastyCard;
          bool facedownDynasty;
+         provinceCardStatus provinceStatus;
    };
 
    class playerstate
@@ -119,6 +127,7 @@ namespace l5r
          int honorDial;
 
          std::list<conflicttype> availableConflicts;
+         int numConflicts;
          std::list<conflictring> claimedRings;
    };
 
@@ -140,7 +149,8 @@ namespace l5r
          playerstate player2State;
 
          std::list<ring> unclaimed_rings;
-         conflictring contested_ring;
+         ring contested_ring;
+         conflicttype conflict_type;
          int contested_province;
 
          // dynamically get playerstate

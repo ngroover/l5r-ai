@@ -35,6 +35,13 @@ namespace l5r
          
          void chooseCharacterToPlay(playerstate &pState, int cardChoice);
 
+         //TODO refactor to 1 function
+         // choose an attacker
+         void chooseAttacker(playerstate &pState, int cardChoice);
+
+         // choose a defender
+         void chooseDefender(playerstate &pState, int cardChoice);
+
          // performs the dynasty mulligan
          void performMulligan();
 
@@ -49,6 +56,21 @@ namespace l5r
 
          // play pending character
          void playCharacter(playerstate &pState, std::string playerName);
+
+         // get characters that can attack
+         std::list<choice> getAttackerChoices(playerstate &pState);
+
+         // get characters that can defend
+         std::list<choice> getDefenderChoices(playerstate &pState);
+
+         // print the list of attacking characters
+         void printAttackers(playerstate &pState);
+
+         int getNumAttackingCharacters(playerstate &pState);
+
+         void passConflict(playerstate &pState);
+
+         int conflictTotal(playerstate &pState);
 
       private:
          std::shared_ptr<gamestate> state;

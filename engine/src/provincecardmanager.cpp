@@ -29,6 +29,7 @@ void provinceCardManager::createDeck(decklist deck, int playerNum)
          ps.provinceCard = state->cardIds.size() -1;
          ps.dynastyCard = -1;// no dynasty card yet
          ps.facedownDynasty = false;
+         ps.provinceStatus = provinceCardStatus::unrevealed;
 
          state->getPlayerState(playerNum).provinceArea.push_back(ps);
       }
@@ -73,6 +74,21 @@ std::list<choice> provinceCardManager::getStrongholdChoices()
       choice c(cardMgr->getCardName(prov.provinceCard), choicetype::card);
       c.setNumber(prov.provinceCard);
       list.push_back(c);
+   }
+   return list;
+}
+
+std::list<choice> provinceCardManager::getProvinceChoices(playerstate &pState)
+{
+   std::list<choice> list;
+   for(auto pc:pState.provinceArea)
+   {
+      if(pc.provinceStatus != provinceCardStatus::broken)
+      {
+         choice c(cardMgr->getCardName(pc.provinceCard), choicetype::card);
+         c.setNumber(pc.provinceCard);
+         list.push_back(c);
+      }
    }
    return list;
 }

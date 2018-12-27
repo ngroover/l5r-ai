@@ -14,7 +14,8 @@ add_library( engine SHARED src/engine.cpp
                         src/tokenmanager.cpp
                         src/ringmanager.cpp
                         src/agentmanager.cpp
-                        src/turnmanager.cpp)
+                        src/turnmanager.cpp
+                        src/conflictmanager.cpp)
                         #src/pregameengine.cpp
                         #src/engineshared.cpp
                         #src/dynastyengine.cpp

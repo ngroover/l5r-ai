@@ -12,11 +12,12 @@ phaseManager::phaseManager(std::shared_ptr<gamestate> state,
             std::shared_ptr<turnManager> turnMgr,
             std::shared_ptr<tokenManager> tokenMgr,
             std::shared_ptr<ringManager> ringMgr,
-            std::shared_ptr<agentManager> agentMgr):
+            std::shared_ptr<agentManager> agentMgr,
+            std::shared_ptr<conflictManager> conflictDataMgr):
             state(state),dynastyMgr(dynastyMgr),
             conflictMgr(conflictMgr), provinceMgr(provinceMgr),
             turnMgr(turnMgr), tokenMgr(tokenMgr),ringMgr(ringMgr),
-            agentMgr(agentMgr)
+            agentMgr(agentMgr), conflictDataMgr(conflictDataMgr)
 {
 }
 
@@ -51,6 +52,22 @@ void phaseManager::goToConflictMulligan()
    state->currentSubPhase = subphase::conflict_mulligan;
 }
 
+void phaseManager::goToChooseConflictType()
+{
+   state->currentSubPhase = subphase::choose_conflicttype;
+}
+
+void phaseManager::goToConflictPhase()
+{
+   state->currentPhase = phase::conflict;
+   state->currentSubPhase = subphase::choose_attackers;
+   for(int i=1;i<=2;i++)
+   {
+      playerstate &pState = state->getPlayerState(i);
+      ringMgr->initializeConflicts(pState);
+   }
+}
+
 void phaseManager::doAction(choice c)
 {
    switch(state->currentPhase)
@@ -63,6 +80,9 @@ void phaseManager::doAction(choice c)
          break;
       case phase::draw:
          drawDoAction(c);
+         break;
+      case phase::conflict:
+         conflictDoAction(c);
          break;
       default:
          throw std::runtime_error("Invalid phase");
@@ -81,6 +101,30 @@ void phaseManager::pregameDoAction(choice c)
          break;
       case subphase::conflict_mulligan:
          doConflictMulligan(c);
+         break;
+      default:
+         throw std::runtime_error("Invalid substate");
+   }
+}
+
+void phaseManager::conflictDoAction(choice c)
+{
+   switch(state->currentSubPhase)
+   {
+      case subphase::choose_attackers:
+         doChooseAttackers(c);
+         break;
+      case subphase::choose_conflicttype:
+         doChooseConflictType(c);
+         break;
+      case subphase::choose_ring:
+         doChooseRing(c);
+         break;
+      case subphase::choose_province:
+         doChooseProvince(c);
+         break;
+      case subphase::choose_defenders:
+         doChooseDefenders(c);
          break;
       default:
          throw std::runtime_error("Invalid substate");
@@ -137,6 +181,35 @@ void phaseManager::doStrongholdSelection(choice c)
    }
 }
 
+void phaseManager::doChooseAttackers(choice c)
+{
+   if(c.getType() == choicetype::card)
+   {
+      std::cout << "Processing attacker choice" << std::endl;
+      playerstate &pState = state->getPlayerState(relativePlayer::myself);
+      dynastyMgr->chooseAttacker(pState, c.getNumber());
+   }
+   else if(c.getType() == choicetype::pass)
+   {
+      playerstate &pState = state->getPlayerState(relativePlayer::myself);
+      if(dynastyMgr->getNumAttackingCharacters(pState) > 0)
+      {
+         dynastyMgr->printAttackers(pState);
+         goToChooseConflictType();
+      }
+      else
+      {
+         std::cout << "Pass conflict" << std::endl;
+         dynastyMgr->passConflict(pState);
+         turnMgr->swapAction();
+      }
+   }
+   else
+   {
+      throw std::runtime_error("Not a card choice!");
+   }
+}
+
 void phaseManager::doBid(choice c)
 {
    if(c.getType() == choicetype::bid)
@@ -163,7 +236,11 @@ void phaseManager::doBid(choice c)
          }
          conflictMgr->drawCards(myhonor, pState, name);
          conflictMgr->drawCards(hishonor, oppState, oppname);
-         state->currentPhase = phase::gameover;
+         //TODO: draw phase action
+
+         goToConflictPhase();
+
+         turnMgr->setActionToCurrentTurn();
       }
       else
       {
@@ -338,6 +415,8 @@ decision phaseManager::getDecision()
          return getDynastyDecision();
       case phase::draw:
          return getDrawDecision();
+      case phase::conflict:
+         return getConflictDecision();
    }
 }
 
@@ -351,6 +430,25 @@ decision phaseManager::getPreGameDecision()
          return getDynastyMulliganDecision();
       case subphase::conflict_mulligan:
          return getConflictMulliganDecision();
+      default:
+         throw std::runtime_error("Invalid substate");
+   }
+}
+
+decision phaseManager::getConflictDecision()
+{
+   switch(state->currentSubPhase)
+   {
+      case subphase::choose_attackers:
+         return getAttackersDecision();
+      case subphase::choose_conflicttype:
+         return getConflictTypeDecision();
+      case subphase::choose_ring:
+         return getRingDecision();
+      case subphase::choose_province:
+         return getAttackProvinceDecision();
+      case subphase::choose_defenders:
+         return getDefendersDecision();
       default:
          throw std::runtime_error("Invalid substate");
    }
@@ -384,6 +482,15 @@ decision phaseManager::getStrongholdDecision()
 {
    std::list<choice> list = provinceMgr->getStrongholdChoices();
    decision d("Choose a stronghold", list);
+   return d;
+}
+
+decision phaseManager::getAttackersDecision()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   std::list<choice> list = dynastyMgr->getAttackerChoices(pState);
+   list.push_back(choice("Pass", choicetype::pass));
+   decision d("Choose an attacker", list);
    return d;
 }
 
@@ -436,4 +543,113 @@ decision phaseManager::getAdditionalFateDecision()
    std::list<choice> list = tokenMgr->getAdditionalFateChoices(pState, dynastyMgr->getPendingFateCard(pState));
    decision d("Choose an amount of fate to add:", list);
    return d;
+}
+
+decision phaseManager::getConflictTypeDecision()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   std::list<choice> list = ringMgr->getConflictChoices(pState);
+   decision d("Choose conflict type", list);
+   return d;
+}
+
+void phaseManager::doChooseConflictType(choice c)
+{
+   if(c.getType() == choicetype::conflict_type)
+   {
+      ringMgr->chooseConflictType(c.getConflictType());
+      state->currentSubPhase = subphase::choose_ring;
+   }
+   else
+   {
+      throw std::runtime_error("Invalid choice");
+   }
+}
+
+decision phaseManager::getRingDecision()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   std::list<choice> list = ringMgr->getConflictRingChoices();
+   decision d("Choose ring", list);
+   return d;
+}
+
+void phaseManager::doChooseRing(choice c)
+{
+   if(c.getType() == choicetype::ring)
+   {
+      std::string name = agentMgr->getPlayerName(relativePlayer::myself);
+      playerstate &pState = state->getPlayerState(relativePlayer::myself);
+      ringMgr->chooseConflictRing(c.getChosenRing());
+      state->currentSubPhase = subphase::choose_province;
+   }
+   else
+   {
+      throw std::runtime_error("Invalid choice");
+   }
+}
+
+decision phaseManager::getAttackProvinceDecision()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::opponent);
+   std::list<choice> list = provinceMgr->getProvinceChoices(pState);
+   decision d("Choose province", list);
+   return d;
+}
+
+void phaseManager::doChooseProvince(choice c)
+{
+   if(c.getType() == choicetype::card)
+   {
+      std::string name = agentMgr->getPlayerName(relativePlayer::myself);
+      playerstate &pState = state->getPlayerState(relativePlayer::myself);
+      // TODO: move to a conflict manager
+      state->contested_province = c.getNumber();
+      ringMgr->printCurrentConflict(name);
+      std::cout << "at " << conflictDataMgr->getContestedProvince() << " with" << std::endl;
+      dynastyMgr->printAttackers(pState);
+      state->currentSubPhase = subphase::choose_defenders;
+      turnMgr->swapAction();
+   }
+   else
+   {
+      throw std::runtime_error("Invalid choice");
+   }
+}
+
+decision phaseManager::getDefendersDecision()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   std::list<choice> list = dynastyMgr->getDefenderChoices(pState);
+   list.push_back(choice("Pass", choicetype::pass));
+   decision d("Choose defender", list);
+   return d;
+}
+
+void phaseManager::doChooseDefenders(choice c)
+{
+   if(c.getType() == choicetype::card)
+   {
+      std::string name = agentMgr->getPlayerName(relativePlayer::myself);
+      playerstate &pState = state->getPlayerState(relativePlayer::myself);
+      dynastyMgr->chooseDefender(pState, c.getNumber());
+   }
+   else if(c.getType() == choicetype::pass)
+   {
+      std::cout << "Defending with" << std::endl;
+      playerstate &pState = state->getPlayerState(relativePlayer::myself);
+      dynastyMgr->printAttackers(pState);
+      // TODO: conflict actions
+      /*
+      playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
+      playerstate &pState = state->getPlayerState(relativePlayer::myself);
+      std::string name = agentMgr->getPlayerName(relativePlayer::myself);
+      int mytotal = dynastyMgr->conflictTotal(pState);
+      int histotal = dynastyMgr->conflictTotal(oppState);
+      */
+   }
+   else
+   {
+      throw std::runtime_error("Invalid choice");
+   }
 }

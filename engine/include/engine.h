@@ -16,6 +16,7 @@
 #include "agentmanager.h"
 #include "tokenmanager.h"
 #include "ringmanager.h"
+#include "conflictmanager.h"
 
 
 namespace l5r
@@ -50,6 +51,7 @@ namespace l5r
          std::shared_ptr<cardDataManager> cardDataMgr;
          std::shared_ptr<tokenManager> tokenMgr;
          std::shared_ptr<ringManager> ringMgr;
+         std::shared_ptr<conflictManager> conflictDataMgr;
    };
 };
 
