@@ -11,13 +11,12 @@ phaseManager::phaseManager(std::shared_ptr<gamestate> state,
             std::shared_ptr<provinceCardManager> provinceMgr,
             std::shared_ptr<turnManager> turnMgr,
             std::shared_ptr<tokenManager> tokenMgr,
-            std::shared_ptr<ringManager> ringMgr,
             std::shared_ptr<agentManager> agentMgr,
-            std::shared_ptr<conflictManager> conflictDataMgr):
+            std::shared_ptr<cardDataManager> cardMgr):
             state(state),dynastyMgr(dynastyMgr),
             conflictMgr(conflictMgr), provinceMgr(provinceMgr),
-            turnMgr(turnMgr), tokenMgr(tokenMgr),ringMgr(ringMgr),
-            agentMgr(agentMgr), conflictDataMgr(conflictDataMgr)
+            turnMgr(turnMgr), tokenMgr(tokenMgr),
+            agentMgr(agentMgr), cardMgr(cardMgr), conflictDataMgr(&state->conflict_state, cardMgr)
 {
 }
 
@@ -64,12 +63,15 @@ void phaseManager::goToConflictPhase()
    for(int i=1;i<=2;i++)
    {
       playerstate &pState = state->getPlayerState(i);
-      ringMgr->initializeConflicts(pState);
+      conflictDataMgr.initializeConflicts();
    }
+   // first player gets to be in conflict first
+   state->currentConflict = state->currentTurn;
 }
 
 void phaseManager::doAction(choice c)
 {
+   setupPointers();
    switch(state->currentPhase)
    {
       case phase::pregame:
@@ -86,6 +88,20 @@ void phaseManager::doAction(choice c)
          break;
       default:
          throw std::runtime_error("Invalid phase");
+   }
+}
+
+void phaseManager::setupPointers()
+{
+   if(state->currentConflict == player::player1)
+   {
+      conflictDataMgr.setAttacker(&state->player1State.conflict_state, agentMgr->getPlayerName(1));
+      conflictDataMgr.setDefender(&state->player2State.conflict_state, agentMgr->getPlayerName(2));
+   }
+   else
+   {
+      conflictDataMgr.setAttacker(&state->player2State.conflict_state, agentMgr->getPlayerName(2));
+      conflictDataMgr.setDefender(&state->player1State.conflict_state, agentMgr->getPlayerName(1));
    }
 }
 
@@ -185,22 +201,26 @@ void phaseManager::doChooseAttackers(choice c)
 {
    if(c.getType() == choicetype::card)
    {
-      std::cout << "Processing attacker choice" << std::endl;
+      // move character in
+      conflictDataMgr.addAttackingCharacter(c.getNumber());
       playerstate &pState = state->getPlayerState(relativePlayer::myself);
-      dynastyMgr->chooseAttacker(pState, c.getNumber());
+      // remove character from home
+      dynastyMgr->removeCharacterFromHome(pState, c.getNumber());
    }
    else if(c.getType() == choicetype::pass)
    {
-      playerstate &pState = state->getPlayerState(relativePlayer::myself);
-      if(dynastyMgr->getNumAttackingCharacters(pState) > 0)
+      if(conflictDataMgr.getAttackerNames().size() > 0)
       {
-         dynastyMgr->printAttackers(pState);
+         for(auto a:conflictDataMgr.getAttackerNames())
+         {
+            std::cout << " " << a << std::endl;
+         }
          goToChooseConflictType();
       }
       else
       {
          std::cout << "Pass conflict" << std::endl;
-         dynastyMgr->passConflict(pState);
+         conflictDataMgr.passConflict();
          turnMgr->swapAction();
       }
    }
@@ -226,13 +246,13 @@ void phaseManager::doBid(choice c)
          int hishonor = tokenMgr->getHonorDial(oppState); 
          if( myhonor > hishonor)
          {
-            tokenMgr->gainHonor(myhonor-hishonor, pState, name);
-            tokenMgr->gainHonor(hishonor-myhonor, oppState, oppname);
+            tokenMgr->gainHonor(myhonor-hishonor, oppState, oppname);
+            tokenMgr->gainHonor(hishonor-myhonor, pState, name);
          }
          else if(hishonor > myhonor)
          {
-            tokenMgr->gainHonor(hishonor-myhonor, pState, name);
-            tokenMgr->gainHonor(myhonor-hishonor, oppState, oppname);
+            tokenMgr->gainHonor(hishonor-myhonor, oppState, oppname);
+            tokenMgr->gainHonor(myhonor-hishonor, pState, name);
          }
          conflictMgr->drawCards(myhonor, pState, name);
          conflictMgr->drawCards(hishonor, oppState, oppname);
@@ -307,7 +327,7 @@ void phaseManager::doConflictMulligan(choice c)
          }
 
          // set rings unclaimed
-         ringMgr->setAllUnclaimed();
+         conflictDataMgr.unclaimAllRings();
 
          // setup dynasty
          doDynastyEntry();
@@ -547,8 +567,7 @@ decision phaseManager::getAdditionalFateDecision()
 
 decision phaseManager::getConflictTypeDecision()
 {
-   playerstate &pState = state->getPlayerState(relativePlayer::myself);
-   std::list<choice> list = ringMgr->getConflictChoices(pState);
+   std::list<choice> list = conflictDataMgr.getConflictChoices();
    decision d("Choose conflict type", list);
    return d;
 }
@@ -557,7 +576,7 @@ void phaseManager::doChooseConflictType(choice c)
 {
    if(c.getType() == choicetype::conflict_type)
    {
-      ringMgr->chooseConflictType(c.getConflictType());
+      conflictDataMgr.chooseConflictType(c.getConflictType());
       state->currentSubPhase = subphase::choose_ring;
    }
    else
@@ -568,8 +587,7 @@ void phaseManager::doChooseConflictType(choice c)
 
 decision phaseManager::getRingDecision()
 {
-   playerstate &pState = state->getPlayerState(relativePlayer::myself);
-   std::list<choice> list = ringMgr->getConflictRingChoices();
+   std::list<choice> list = conflictDataMgr.getConflictRingChoices();
    decision d("Choose ring", list);
    return d;
 }
@@ -580,7 +598,7 @@ void phaseManager::doChooseRing(choice c)
    {
       std::string name = agentMgr->getPlayerName(relativePlayer::myself);
       playerstate &pState = state->getPlayerState(relativePlayer::myself);
-      ringMgr->chooseConflictRing(c.getChosenRing());
+      conflictDataMgr.chooseConflictRing(c.getChosenRing());
       state->currentSubPhase = subphase::choose_province;
    }
    else
@@ -604,10 +622,14 @@ void phaseManager::doChooseProvince(choice c)
       std::string name = agentMgr->getPlayerName(relativePlayer::myself);
       playerstate &pState = state->getPlayerState(relativePlayer::myself);
       // TODO: move to a conflict manager
-      state->contested_province = c.getNumber();
-      ringMgr->printCurrentConflict(name);
-      std::cout << "at " << conflictDataMgr->getContestedProvince() << " with" << std::endl;
-      dynastyMgr->printAttackers(pState);
+      conflictDataMgr.chooseContestedProvince(c.getNumber());
+      std::cout << name << " initiated a " << conflictDataMgr.getCurrentConflictTypeName()
+         << " " << conflictDataMgr.getConflictRingName() << " "
+         << "at " << conflictDataMgr.getContestedProvinceName() << " with" << std::endl;
+      for(auto c: conflictDataMgr.getAttackerNames())
+      {
+         std::cout << " " << c << std::endl;
+      }
       state->currentSubPhase = subphase::choose_defenders;
       turnMgr->swapAction();
    }
@@ -632,21 +654,42 @@ void phaseManager::doChooseDefenders(choice c)
    {
       std::string name = agentMgr->getPlayerName(relativePlayer::myself);
       playerstate &pState = state->getPlayerState(relativePlayer::myself);
-      dynastyMgr->chooseDefender(pState, c.getNumber());
+      conflictDataMgr.addDefendingCharacter(c.getNumber());
+      dynastyMgr->removeCharacterFromHome(pState, c.getNumber());
    }
    else if(c.getType() == choicetype::pass)
    {
       std::cout << "Defending with" << std::endl;
       playerstate &pState = state->getPlayerState(relativePlayer::myself);
-      dynastyMgr->printAttackers(pState);
-      // TODO: conflict actions
-      /*
-      playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
-      playerstate &pState = state->getPlayerState(relativePlayer::myself);
-      std::string name = agentMgr->getPlayerName(relativePlayer::myself);
-      int mytotal = dynastyMgr->conflictTotal(pState);
-      int histotal = dynastyMgr->conflictTotal(oppState);
-      */
+      if(conflictDataMgr.getDefenderNames().size() > 0)
+      {
+         for(auto a:conflictDataMgr.getDefenderNames())
+         {
+            std::cout << " " << a << std::endl;
+         }
+      }
+      else
+      {
+         std::cout << " Nobody" << std::endl;
+      }
+
+      if(conflictDataMgr.attackerWonConflict())
+      {
+         std::cout << "Attacker won" << std::endl;
+         // TODO unopposed
+         // TODO Ring claiming
+         // TODO province breaking
+      }
+      else if(conflictDataMgr.defenderWonConflict())
+      {
+         std::cout << "Defender won" << std::endl;
+         // TODO Ring claiming
+      }
+      else
+      {
+         std::cout << "Nobody won" << std::endl;
+      }
+      state->currentPhase = phase::gameover;
    }
    else
    {

@@ -19,9 +19,7 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
    conflictMgr = std::make_shared<conflictCardManager>(state, cardDataMgr, agentMgr);
    provinceMgr = std::make_shared<provinceCardManager>(state, cardDataMgr, agentMgr);
    tokenMgr = std::make_shared<tokenManager>(state, cardDataMgr);
-   ringMgr = std::make_shared<ringManager>(state);
-   conflictDataMgr = std::make_shared<conflictManager>(state, cardDataMgr);
-   phaseMgr = std::make_shared<phaseManager>(state, dynastyMgr, conflictMgr, provinceMgr, turnMgr, tokenMgr, ringMgr,agentMgr,conflictDataMgr);
+   phaseMgr = std::make_shared<phaseManager>(state, dynastyMgr, conflictMgr, provinceMgr, turnMgr, tokenMgr, agentMgr, cardDataMgr);
 
    // setup the gamestate
    std::cout << "Setting up game:" << std::endl;

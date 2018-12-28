@@ -12,7 +12,6 @@ add_library( engine SHARED src/engine.cpp
                         src/conflictcardmanager.cpp
                         src/provincecardmanager.cpp
                         src/tokenmanager.cpp
-                        src/ringmanager.cpp
                         src/agentmanager.cpp
                         src/turnmanager.cpp
                         src/conflictmanager.cpp)

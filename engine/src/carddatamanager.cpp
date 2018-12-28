@@ -42,3 +42,13 @@ int cardDataManager::getFateCost(int index)
 {
    return cardMap[state->cardIds[index]].getFateCost();
 }
+
+int cardDataManager::getMilitaryStr(int index)
+{
+   return cardMap[state->cardIds[index]].getMilitarySkill();
+}
+
+int cardDataManager::getPoliticalStr(int index)
+{
+   return cardMap[state->cardIds[index]].getPoliticalSkill();
+}

@@ -106,6 +106,37 @@ namespace l5r
          provinceCardStatus provinceStatus;
    };
 
+   // player specific conflict data
+   class conflictPlayerState
+   {
+   public:
+      // list of cards in conflict
+      std::list<int> inConflict;
+
+      // conflicts available
+      std::list<conflicttype> availableConflicts;
+
+      // number of conflicts left for this player
+      int numConflicts;
+   };
+
+   // global conflict data
+   class conflictState
+   {
+   public:
+      // currently contested ring
+      ring contested_ring;
+
+      // current conflict type
+      conflicttype conflict_type;
+
+      // current contested province
+      int contested_province;
+
+      // unclaimed rings
+      std::list<ring> unclaimed_rings;
+   };
+
    class playerstate
    {
       public:
@@ -119,16 +150,13 @@ namespace l5r
          int strongholdProvince;
          int stronghold;
          std::list<int> atHome;
-         std::list<int> inConflict;
+
+         conflictPlayerState conflict_state;
 
          int honorTokens;
          int fate;
          bool passed;
          int honorDial;
-
-         std::list<conflicttype> availableConflicts;
-         int numConflicts;
-         std::list<conflictring> claimedRings;
    };
 
    class gamestate
@@ -148,11 +176,9 @@ namespace l5r
          playerstate player1State;
          playerstate player2State;
 
-         std::list<ring> unclaimed_rings;
-         ring contested_ring;
-         conflicttype conflict_type;
-         int contested_province;
+         conflictState conflict_state;
 
+         // TODO remove this
          // dynamically get playerstate
          playerstate &getPlayerState(int playerNum);
          playerstate &getPlayerState(relativePlayer rp);

@@ -23,7 +23,7 @@ void tokenManager::setHonor(int honor, int playerNum, std::string playerName)
 void tokenManager::gainFate(int fate, playerstate &pState, std::string playerName)
 {
    pState.fate += fate;
-   std::cout << playerName << " gains " << fate << " fate"  << std::endl;
+   std::cout << playerName << " gains " << fate << " fate" << std::endl;
 }
 
 int tokenManager::getFate(playerstate &pState)
@@ -77,10 +77,10 @@ void tokenManager::gainHonor(int honor, playerstate &pState, std::string playerN
    pState.honorTokens += honor;
    if(honor > 0)
    {
-      std::cout << playerName << " gains " << honor << " honor " << std::endl;
+      std::cout << playerName << " gains " << honor << " honor (" << pState.honorTokens << " total)" << std::endl;
    }
    else
    {
-      std::cout << playerName << " losses " << -honor << " honor " << std::endl;
+      std::cout << playerName << " losses " << -honor << " honor (" << pState.honorTokens << " total)" << std::endl;
    }
 }

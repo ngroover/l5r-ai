@@ -8,18 +8,18 @@
 #include "provincecardmanager.h"
 #include "turnmanager.h"
 #include "tokenmanager.h"
-#include "ringmanager.h"
 #include "agentmanager.h"
 #include "choice.h"
 #include "decision.h"
 #include "conflictmanager.h"
+#include "carddatamanager.h"
 
 namespace l5r
 {
    class phaseManager
    {
       public:
-         phaseManager(std::shared_ptr<gamestate> state, std::shared_ptr<dynastyCardManager> dynastyMgr,std::shared_ptr<conflictCardManager> conflictMgr, std::shared_ptr<provinceCardManager> provinceMgr, std::shared_ptr<turnManager> turnMgr, std::shared_ptr<tokenManager> tokenMgr, std::shared_ptr<ringManager> ringMgr, std::shared_ptr<agentManager> agentMgr, std::shared_ptr<conflictManager> conflictDataMgr);
+         phaseManager(std::shared_ptr<gamestate> state, std::shared_ptr<dynastyCardManager> dynastyMgr,std::shared_ptr<conflictCardManager> conflictMgr, std::shared_ptr<provinceCardManager> provinceMgr, std::shared_ptr<turnManager> turnMgr, std::shared_ptr<tokenManager> tokenMgr, std::shared_ptr<agentManager> agentMgr, std::shared_ptr<cardDataManager> cardMgr);
          ~phaseManager();
 
 
@@ -31,6 +31,8 @@ namespace l5r
          void goToStrongholdSelection();
 
       private:
+         void setupPointers();
+
          void goToDynastyMulligan();
          void goToConflictMulligan();
          void goToAdditionalFate();
@@ -85,9 +87,9 @@ namespace l5r
          std::shared_ptr<provinceCardManager> provinceMgr;
          std::shared_ptr<turnManager> turnMgr;
          std::shared_ptr<tokenManager> tokenMgr;
-         std::shared_ptr<ringManager> ringMgr;
          std::shared_ptr<agentManager> agentMgr;
-         std::shared_ptr<conflictManager> conflictDataMgr;
+         conflictManager conflictDataMgr;
+         std::shared_ptr<cardDataManager> cardMgr;
    };
 }
 

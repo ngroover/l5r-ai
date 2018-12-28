@@ -23,6 +23,9 @@ namespace l5r
          int getStrongholdHonor(int index);
          int getFateCost(int index);
 
+         int getMilitaryStr(int index);
+         int getPoliticalStr(int index);
+
       private:
          std::map<cards,card> cardMap;
          std::shared_ptr<gamestate> state;
