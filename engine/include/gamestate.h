@@ -103,7 +103,16 @@ namespace l5r
          int provinceCard;
          int dynastyCard;
          bool facedownDynasty;
+         bool isBroken;
          provinceCardStatus provinceStatus;
+   };
+
+   // in play characters
+   class inplaycharacter
+   {
+   public:
+      int characterCard;
+      bool bowed;
    };
 
    // player specific conflict data
@@ -111,10 +120,13 @@ namespace l5r
    {
    public:
       // list of cards in conflict
-      std::list<int> inConflict;
+      std::list<inplaycharacter> inConflict;
 
       // conflicts available
       std::list<conflicttype> availableConflicts;
+
+      // claimed rings
+      std::list<ring> claimed_rings;
 
       // number of conflicts left for this player
       int numConflicts;
@@ -137,6 +149,8 @@ namespace l5r
       std::list<ring> unclaimed_rings;
    };
 
+
+
    class playerstate
    {
       public:
@@ -149,7 +163,7 @@ namespace l5r
          std::list<provinceStack> provinceArea;
          int strongholdProvince;
          int stronghold;
-         std::list<int> atHome;
+         std::list<inplaycharacter> atHome;
 
          conflictPlayerState conflict_state;
 

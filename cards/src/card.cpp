@@ -82,6 +82,12 @@ bool card::getPoliticalDash() const
    return politicalDash;
 }
 
+
+int card::getProvinceStr() const
+{
+   return provinceStr;
+}
+
 card::builder& card::builder::setName(std::string name)
 {
    this->name = name;
@@ -174,3 +180,4 @@ card card::builder::build() const
       fateCost,dynastyType, militarySkill, politicalSkill, glory,
       militaryDash, politicalDash);
 }
+

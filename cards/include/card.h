@@ -51,6 +51,7 @@ namespace l5r
          int getGlory() const;
          bool getMilitaryDash() const;
          bool getPoliticalDash() const;
+         int getProvinceStr() const;
 
       private:
          std::string name;

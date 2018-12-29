@@ -90,6 +90,8 @@ namespace l5r
          std::shared_ptr<agentManager> agentMgr;
          conflictManager conflictDataMgr;
          std::shared_ptr<cardDataManager> cardMgr;
+
+         void processEndConflict(bool attackerActive);
    };
 }
 

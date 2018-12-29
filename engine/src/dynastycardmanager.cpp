@@ -160,21 +160,26 @@ void dynastyCardManager::playCharacter(playerstate &pState, std::string playerNa
             cardMgr->getCardName(prov->dynastyCard) << std::endl;
          // set no card on top of province
          prov->dynastyCard = -1;
-         pState.atHome.push_back(pState.pendingFateCard);
+         inplaycharacter ipc;
+         ipc.characterCard = pState.pendingFateCard;
+         ipc.bowed = false;
+         pState.atHome.push_back(ipc);
       }
    }
 }
 
-void dynastyCardManager::removeCharacterFromHome(playerstate &pState, int cardChoice)
+inplaycharacter dynastyCardManager::removeCharacterFromHome(playerstate &pState, int cardChoice)
 {
    for(auto ch=pState.atHome.begin();ch!=pState.atHome.end();ch++)
    {
-      if(*ch == cardChoice)
+      if(ch->characterCard == cardChoice)
       {
          pState.atHome.erase(ch);
+         return *ch;
          ch = pState.atHome.end();
       }
    }
+   throw std::runtime_error("Character not found");
 }
 
 std::list<choice> dynastyCardManager::getAttackerChoices(playerstate &pState)
@@ -183,9 +188,12 @@ std::list<choice> dynastyCardManager::getAttackerChoices(playerstate &pState)
    for(auto ch=pState.atHome.begin();ch!=pState.atHome.end();ch++)
    {
       // TODO: check dashed types can't be mixed into conflict
-      choice c(cardMgr->getCardName(*ch), choicetype::card);
-      c.setNumber(*ch);
-      list.push_back(c);
+      if(!ch->bowed)
+      {
+         choice c(cardMgr->getCardName(ch->characterCard), choicetype::card);
+         c.setNumber(ch->characterCard);
+         list.push_back(c);
+      }
    }
    return list;
 }
@@ -196,9 +204,12 @@ std::list<choice> dynastyCardManager::getDefenderChoices(playerstate &pState)
    for(auto ch=pState.atHome.begin();ch!=pState.atHome.end();ch++)
    {
       // TODO: check dashed types can't be mixed into conflict
-      choice c(cardMgr->getCardName(*ch), choicetype::card);
-      c.setNumber(*ch);
-      list.push_back(c);
+      if(!ch->bowed)
+      {
+         choice c(cardMgr->getCardName(ch->characterCard), choicetype::card);
+         c.setNumber(ch->characterCard);
+         list.push_back(c);
+      }
    }
    return list;
 }
@@ -206,4 +217,27 @@ std::list<choice> dynastyCardManager::getDefenderChoices(playerstate &pState)
 int dynastyCardManager::conflictTotal(playerstate &pState)
 {
    return 0;
+}
+
+void dynastyCardManager::sendCharactersHome(std::list<inplaycharacter> charlist, playerstate &pState)
+{
+   std::cout << "Sent home" << std::endl;
+   for(auto c: charlist)
+   {
+      std::cout << " " << cardMgr->getCardName(c.characterCard) << std::endl;
+      pState.atHome.push_back(c);
+   }
+}
+
+int dynastyCardManager::countFavorGlory(playerstate &pState)
+{
+   int gloryCount=0;
+   for(auto c: pState.atHome)
+   {
+      if(!c.bowed)
+      {
+         gloryCount += cardMgr->getGlory(c.characterCard);
+      }
+   }
+   return gloryCount;
 }

@@ -32,51 +32,61 @@ card cardgenerator::generateCard(cards c)
          return card::builder{}
                .setName("The Art of Peace")
                .setType(cardtype::province)
+               .setProvinceStr(4)
                .build();
       case cards::entrenched_position:
          return card::builder{}
                .setName("Entrenched Position")
                .setType(cardtype::province)
+               .setProvinceStr(5)
                .build();
       case cards::night_raid:
          return card::builder{}
                .setName("Night Raid")
                .setType(cardtype::province)
+               .setProvinceStr(4)
                .build();
       case cards::rally_to_the_cause:
          return card::builder{}
                .setName("Rally to the Cause")
                .setType(cardtype::province)
+               .setProvinceStr(4)
                .build();
       case cards::shameful_display:
          return card::builder{}
                .setName("Shameful Display")
                .setType(cardtype::province)
+               .setProvinceStr(3)
                .build();
       case cards::the_art_of_war:
          return card::builder{}
                .setName("The Art of War")
                .setType(cardtype::province)
+               .setProvinceStr(3)
                .build();
       case cards::ancestral_lands:
          return card::builder{}
                .setName("Ancestral Lands")
                .setType(cardtype::province)
+               .setProvinceStr(5)
                .build();
       case cards::manicured_gardens:
          return card::builder{}
                .setName("Manicured Garden")
                .setType(cardtype::province)
+               .setProvinceStr(4)
                .build();
       case cards::meditations_on_the_tao:
          return card::builder{}
                .setName("Meditations on the Tao")
                .setType(cardtype::province)
+               .setProvinceStr(4)
                .build();
       case cards::pilgrimage:
          return card::builder{}
                .setName("Pilgrimage")
                .setType(cardtype::province)
+               .setProvinceStr(5)
                .build();
       case cards::asahina_artisan:
          return card::builder{}

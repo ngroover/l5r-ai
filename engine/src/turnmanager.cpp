@@ -48,3 +48,15 @@ void turnManager::setActionToCurrentTurn()
 {
    state->currentAction = state->currentTurn;
 }
+
+void turnManager::swapConflict()
+{
+   if(state->currentConflict == player::player1)
+   {
+      state->currentConflict = player::player2;
+   }
+   else
+   {
+      state->currentConflict = player::player1;
+   }
+}

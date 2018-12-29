@@ -20,6 +20,7 @@ namespace l5r
          // chooses a stronghold for the currently active player
          void chooseStronghold(int provinceChoice);
 
+         void breakProvince(playerstate &pState, int cardIndex);
          int getStartingHonor(int playerNum);
 
          std::list<choice> getStrongholdChoices();

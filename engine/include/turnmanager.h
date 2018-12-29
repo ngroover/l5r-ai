@@ -17,6 +17,7 @@ namespace l5r
          void setActionToCurrentTurn();
 
          void swapAction();
+         void swapConflict();
 
       private:
          std::shared_ptr<gamestate> state;

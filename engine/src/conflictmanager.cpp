@@ -37,14 +37,14 @@ void conflictManager::setDefender(conflictPlayerState *defender, std::string def
    this->defenderName = defenderName;
 }
 
-void conflictManager::addAttackingCharacter(int cardIndex)
+void conflictManager::addAttackingCharacter(inplaycharacter character)
 {
-   attacker->inConflict.push_back(cardIndex);
+   attacker->inConflict.push_back(character);
 }
 
-void conflictManager::addDefendingCharacter(int cardIndex)
+void conflictManager::addDefendingCharacter(inplaycharacter character)
 {
-   defender->inConflict.push_back(cardIndex);
+   defender->inConflict.push_back(character);
 }
 void conflictManager::chooseContestedProvince(int cardIndex)
 {
@@ -66,7 +66,7 @@ std::list<std::string> conflictManager::getAttackerNames()
    std::list<std::string> list;
    for(auto ch=attacker->inConflict.begin();ch!=attacker->inConflict.end();ch++)
    {
-      list.push_back(cardMgr->getCardName(*ch));
+      list.push_back(cardMgr->getCardName(ch->characterCard));
    }
    return list;
 }
@@ -76,7 +76,7 @@ std::list<std::string> conflictManager::getDefenderNames()
    std::list<std::string> list;
    for(auto ch=defender->inConflict.begin();ch!=defender->inConflict.end();ch++)
    {
-      list.push_back(cardMgr->getCardName(*ch));
+      list.push_back(cardMgr->getCardName(ch->characterCard));
    }
    return list;
 }
@@ -84,6 +84,21 @@ std::list<std::string> conflictManager::getDefenderNames()
 void conflictManager::passConflict()
 {
    attacker->numConflicts--;
+}
+
+void conflictManager::completeConflict()
+{
+   attacker->numConflicts--;
+}
+
+bool conflictManager::attackerHasConflictsLeft()
+{
+   return attacker->numConflicts > 0;
+}
+
+bool conflictManager::defenderHasConflictsLeft()
+{
+   return defender->numConflicts > 0;
 }
 
 void conflictManager::unclaimAllRings()
@@ -194,36 +209,125 @@ std::string conflictManager::getCurrentConflictTypeName()
 
 bool conflictManager::attackerWonConflict()
 {
-   int attackerStr=0;
-   for(auto a:attacker->inConflict)
-   {
-      if(global->conflict_type == conflicttype::military)
-      {
-         attackerStr += cardMgr->getMilitaryStr(a);
-      }
-      else
-      {
-         attackerStr += cardMgr->getPoliticalStr(a);
-      }
-   }
-
-   int defenderStr=0;
-   for(auto d:defender->inConflict)
-   {
-      if(global->conflict_type == conflicttype::military)
-      {
-         defenderStr += cardMgr->getMilitaryStr(d);
-      }
-      else
-      {
-         defenderStr += cardMgr->getPoliticalStr(d);
-      }
-   }
-   std::cout << "Attacker str = " << attackerStr <<
-      " Defender str = " << defenderStr << std::endl;
-   return attackerStr >= defenderStr;
+   int attackerStr=calculateStr(attacker);
+   int defenderStr=calculateStr(defender);
+   return (attackerStr > 0 && attackerStr >= defenderStr);
 }
 
 bool conflictManager::defenderWonConflict()
 {
+   int attackerStr=calculateStr(attacker);
+   int defenderStr=calculateStr(defender);
+   return (defenderStr > 0 && defenderStr > attackerStr);
+}
+
+bool conflictManager::provinceBroke()
+{
+   int attackerStr=calculateStr(attacker);
+   int defenderStr=calculateStr(defender);
+   int provinceStr = cardMgr->getProvinceStr(global->contested_province);
+   return (attackerStr - defenderStr) >= provinceStr;
+}
+
+int conflictManager::calculateStr(conflictPlayerState *player)
+{
+   int strength=0;
+   for(auto a:player->inConflict)
+   {
+      if(global->conflict_type == conflicttype::military)
+      {
+         strength += cardMgr->getMilitaryStr(a.characterCard);
+      }
+      else
+      {
+         strength += cardMgr->getPoliticalStr(a.characterCard);
+      }
+   }
+   return strength;
+}
+
+void conflictManager::printConflictResult()
+{
+   int attackerStr=calculateStr(attacker);
+   int defenderStr=calculateStr(defender);
+   std::cout << "Conflict resolves" << std::endl;
+   std::cout << attackerName << ":" << attackerStr << std::endl;
+   std::cout << defenderName << ":" << defenderStr << std::endl;
+   if(attackerStr >= defenderStr)
+   {
+      std::cout << attackerName << " won the conflict!" << std::endl;
+   }
+   else if(defenderStr > 0)
+   {
+      std::cout << defenderName << " won the conflict!" << std::endl;
+   }
+   else
+   {
+      std::cout << "Conflict has no winner" << std::endl;
+   }
+}
+
+int conflictManager::getContestedProvince()
+{
+   return global->contested_province;
+}
+
+void conflictManager::attackerClaimRing()
+{
+   attacker->claimed_rings.push_back(global->contested_ring);
+   std::cout << attackerName << " claimed the " <<
+      getRingName(global->contested_ring) << " ring" << std::endl;
+}
+
+void conflictManager::defenderClaimRing()
+{
+   defender->claimed_rings.push_back(global->contested_ring);
+   std::cout << defenderName << " claimed the " <<
+      getRingName(global->contested_ring) << " ring" << std::endl;
+}
+
+void conflictManager::contestedRingUnclaimed()
+{
+   global->unclaimed_rings.push_back(global->contested_ring);
+   std::cout << getRingName(global->contested_ring) <<  " ring remained unclaimed" << std::endl;
+}
+
+void conflictManager::bowAttackers()
+{
+   std::cout << "Bowing characters" << std::endl;
+   for(auto &a:attacker->inConflict)
+   {
+      a.bowed = true;
+   }
+}
+
+void conflictManager::bowDefenders()
+{
+   std::cout << "Bowing characters" << std::endl;
+   for(auto &a:defender->inConflict)
+   {
+      a.bowed = true;
+   }
+}
+
+std::list<inplaycharacter> conflictManager::removeAllAttackingCharacters()
+{
+   std::list<inplaycharacter> charlist=attacker->inConflict;
+   for(auto c: charlist)
+   {
+      std::cout << " " << cardMgr->getCardName(c.characterCard) << std::endl;
+   }
+   attacker->inConflict.clear();
+   return charlist;
+}
+
+std::list<inplaycharacter> conflictManager::removeAllDefendingCharacters()
+{
+   std::list<inplaycharacter> charlist=defender->inConflict;
+   for(auto c: charlist)
+   {
+      std::cout << " " << cardMgr->getCardName(c.characterCard) << std::endl;
+   }
+   defender->inConflict.clear();
+   return charlist;
 }

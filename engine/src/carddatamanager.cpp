@@ -52,3 +52,13 @@ int cardDataManager::getPoliticalStr(int index)
 {
    return cardMap[state->cardIds[index]].getPoliticalSkill();
 }
+
+int cardDataManager::getProvinceStr(int index)
+{
+   return cardMap[state->cardIds[index]].getProvinceStr();
+}
+
+int cardDataManager::getGlory(int index)
+{
+   return cardMap[state->cardIds[index]].getGlory();
+}

@@ -20,12 +20,25 @@ namespace l5r
          void setDefender(conflictPlayerState *defender, std::string defenderName);
 
          // modifiers
-         void addAttackingCharacter(int cardIndex);
-         void addDefendingCharacter(int cardIndex);
+         void addAttackingCharacter(inplaycharacter character);
+         void addDefendingCharacter(inplaycharacter character);
+
+         void bowAttackers();
+         void bowDefenders();
+
+         std::list<inplaycharacter> removeAllAttackingCharacters();
+         std::list<inplaycharacter> removeAllDefendingCharacters();
+
          void chooseContestedProvince(int cardIndex);
          void chooseContestedRing(ring r);
          void chooseConflictType(conflicttype ct);
          void passConflict();
+         void completeConflict();
+         bool attackerHasConflictsLeft();
+         bool defenderHasConflictsLeft();
+         void attackerClaimRing();
+         void defenderClaimRing();
+         void contestedRingUnclaimed();
          void unclaimAllRings();
          void initializeConflicts();
          void chooseConflictRing(ring r);
@@ -40,7 +53,7 @@ namespace l5r
          bool defenderWonConflict();
          bool provinceBroke();
          bool wasUnopposed();
-         bool wasDraw();
+         int getContestedProvince();
 
          // string names
          std::list<std::string> getAttackerNames();
@@ -50,7 +63,11 @@ namespace l5r
          std::string getConflictTypeName(conflicttype type);
          std::string getCurrentConflictTypeName();
 
+         // print functions
+         void printConflictResult();
+
       private:
+         int calculateStr(conflictPlayerState *player);
          std::shared_ptr<cardDataManager> cardMgr;
 
          conflictState *global;

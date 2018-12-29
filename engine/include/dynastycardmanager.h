@@ -35,7 +35,7 @@ namespace l5r
          
          void chooseCharacterToPlay(playerstate &pState, int cardChoice);
 
-         void removeCharacterFromHome(playerstate &pState, int cardChoice);
+         inplaycharacter removeCharacterFromHome(playerstate &pState, int cardChoice);
 
          // performs the dynasty mulligan
          void performMulligan();
@@ -59,6 +59,10 @@ namespace l5r
          std::list<choice> getDefenderChoices(playerstate &pState);
 
          int conflictTotal(playerstate &pState);
+
+         void sendCharactersHome(std::list<inplaycharacter> charlist, playerstate &pState);
+
+         int countFavorGlory(playerstate &pState);
 
       private:
          std::shared_ptr<gamestate> state;
