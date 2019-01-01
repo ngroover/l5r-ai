@@ -39,7 +39,15 @@ namespace l5r
          void attackerClaimRing();
          void defenderClaimRing();
          void contestedRingUnclaimed();
-         void unclaimAllRings();
+
+         void initializeRings();
+         void unclaimRings();
+         void putFateOnRings();
+         void initializeFavor();
+         bool attackerGainsFavor(int attackerGlory, int defenderGlory);
+         bool defenderGainsFavor(int attackerGlory, int defenderGlory);
+         void changeFavorType(conflicttype newtype);
+
          void initializeConflicts();
          void chooseConflictRing(ring r);
 
@@ -47,6 +55,7 @@ namespace l5r
          std::list<choice> getConflictChoices();
          std::list<choice> getConflictRingChoices();
          std::string getRingName(ring r);
+         std::list<choice> getFavorChoices();
 
          // state information
          bool attackerWonConflict();

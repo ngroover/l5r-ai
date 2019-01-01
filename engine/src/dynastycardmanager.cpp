@@ -117,7 +117,7 @@ void dynastyCardManager::flipAllDynastyFaceup(playerstate &pState, std::string p
    }
 }
 
-std::list<choice> dynastyCardManager::getProvinceDynastyChoicesWithFate(dynastyCardStatus dcs, int fateCost)
+std::list<choice> dynastyCardManager::getProvinceDynastyChoicesWithFateCost(dynastyCardStatus dcs, int fateCost)
 {
    playerstate &pState = state->getPlayerState(relativePlayer::myself);
    std::list<choice> list;
@@ -140,6 +140,22 @@ std::list<choice> dynastyCardManager::getProvinceDynastyChoicesWithFate(dynastyC
    return list;
 }
 
+std::list<choice> dynastyCardManager::getCharactersWithNoFate()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   std::list<choice> list;
+   for(auto ch:pState.atHome)
+   {
+      if(ch.fateAttached == 0)
+      {
+         choice c(cardMgr->getCardName(ch.characterCard), choicetype::card);
+         c.setNumber(ch.characterCard);
+         list.push_back(c);
+      }
+   }
+   return list;
+}
+
 void dynastyCardManager::chooseCharacterToPlay(playerstate &pState, int index)
 {
    pState.pendingFateCard = index;
@@ -150,7 +166,7 @@ int dynastyCardManager::getPendingFateCard(playerstate &pState)
    return pState.pendingFateCard;
 }
 
-void dynastyCardManager::playCharacter(playerstate &pState, std::string playerName)
+void dynastyCardManager::playCharacter(playerstate &pState, std::string playerName, int extraFate)
 {
    for(auto prov=pState.provinceArea.begin();prov!=pState.provinceArea.end();++prov)
    {
@@ -163,6 +179,7 @@ void dynastyCardManager::playCharacter(playerstate &pState, std::string playerNa
          inplaycharacter ipc;
          ipc.characterCard = pState.pendingFateCard;
          ipc.bowed = false;
+         ipc.fateAttached = extraFate;
          pState.atHome.push_back(ipc);
       }
    }
@@ -240,4 +257,74 @@ int dynastyCardManager::countFavorGlory(playerstate &pState)
       }
    }
    return gloryCount;
+}
+
+void dynastyCardManager::discardCharacter(int cardIndex)
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   for(auto ptr=pState.atHome.begin();
+      ptr!=pState.atHome.end();
+      ptr++)
+   {
+      if(ptr->characterCard == cardIndex)
+      {
+         pState.dynastyDiscard.push_back(ptr->characterCard);
+         std::cout << "Discarding " << cardMgr->getCardName(cardIndex) << std::endl;
+         pState.atHome.erase(ptr);
+         ptr = pState.atHome.end();
+      }
+   }
+}
+
+void dynastyCardManager::removeFateFromCharacters()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
+   for(auto &ch:pState.atHome)
+   {
+      if(ch.fateAttached > 0)
+      {
+         ch.fateAttached--;
+         std::cout << "Removed 1 fate from " << cardMgr->getCardName(ch.characterCard) << std::endl;
+      }
+   }
+   for(auto &ch:oppState.atHome)
+   {
+      if(ch.fateAttached > 0)
+      {
+         ch.fateAttached--;
+         std::cout << "Removed 1 fate from " << cardMgr->getCardName(ch.characterCard) << std::endl;
+      }
+   }
+}
+
+void dynastyCardManager::discardProvinceCard(int cardIndex)
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   for(auto ptr=pState.provinceArea.begin();
+      ptr!=pState.provinceArea.end();
+      ptr++)
+   {
+      if(ptr->dynastyCard == cardIndex)
+      {
+         pState.dynastyDiscard.push_back(ptr->dynastyCard);
+         ptr->dynastyCard = -1;
+         std::cout << "Discarding " << cardMgr->getCardName(cardIndex) << std::endl;
+      }
+   }
+}
+void dynastyCardManager::readyAllCharacters()
+{
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
+   for(auto &ch:pState.atHome)
+   {
+      ch.bowed = false;
+      std::cout << cardMgr->getCardName(ch.characterCard) << " readied" << std::endl;
+   }
+   for(auto &ch:oppState.atHome)
+   {
+      ch.bowed = false;
+      std::cout << cardMgr->getCardName(ch.characterCard) << " readied" << std::endl;
+   }
 }

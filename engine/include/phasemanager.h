@@ -47,6 +47,8 @@ namespace l5r
          void dynastyDoAction(choice c);
          void drawDoAction(choice c);
          void conflictDoAction(choice c);
+         void fateDoAction(choice c);
+         void regroupDoAction(choice c);
          void doStrongholdSelection(choice c);
          void doDynastyMulligan(choice c);
          void doConflictMulligan(choice c);
@@ -56,6 +58,9 @@ namespace l5r
          void doChooseRing(choice c);
          void doChooseProvince(choice c);
          void doChooseDefenders(choice c);
+         void doChooseFavor(choice c);
+         void doChooseFateDiscard(choice c);
+         void doRegroupDiscard(choice c);
 
          // dynasty actions
          void doProvincePlayAction(choice c);
@@ -72,11 +77,16 @@ namespace l5r
          decision getDrawDecision();
          decision getBidDecision();
          decision getConflictDecision();
+         decision getFateDecision();
          decision getAttackersDecision();
          decision getConflictTypeDecision();
          decision getRingDecision();
          decision getAttackProvinceDecision();
          decision getDefendersDecision();
+         decision getFavorDecision();
+         decision getFateDiscardDecision();
+         decision getRegroupDecision();
+         decision getRegroupDiscardDecision();
 
          // dynasty choices
 

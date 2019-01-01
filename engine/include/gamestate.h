@@ -21,6 +21,8 @@ namespace l5r
       dynasty,
       draw,
       conflict,
+      fate,
+      regroup,
       gameover
    };
 
@@ -46,7 +48,11 @@ namespace l5r
       choose_conflicttype,
       choose_province,
       choose_defenders,
-      conflict_action
+      conflict_action,
+      choose_favor,
+      
+      // fate phase and regroup phase
+      choose_discard
    };
 
    enum class player
@@ -103,7 +109,6 @@ namespace l5r
          int provinceCard;
          int dynastyCard;
          bool facedownDynasty;
-         bool isBroken;
          provinceCardStatus provinceStatus;
    };
 
@@ -113,6 +118,14 @@ namespace l5r
    public:
       int characterCard;
       bool bowed;
+      int fateAttached;
+   };
+
+   class Unclaimedring
+   {
+   public:
+      ring type;
+      int fate;
    };
 
    // player specific conflict data
@@ -130,6 +143,8 @@ namespace l5r
 
       // number of conflicts left for this player
       int numConflicts;
+
+      bool hasImperialFavor;
    };
 
    // global conflict data
@@ -146,7 +161,9 @@ namespace l5r
       int contested_province;
 
       // unclaimed rings
-      std::list<ring> unclaimed_rings;
+      std::list<Unclaimedring> unclaimed_rings;
+
+      conflicttype favorType;
    };
 
 
@@ -156,6 +173,7 @@ namespace l5r
       public:
          // all these integers are referencing cardIds (below)
          std::list<int> dynastyDeck;
+         std::list<int> dynastyDiscard;
          std::list<int> conflictDeck;
          std::list<int> conflictHand;
          std::list<int> pendingMulligan;

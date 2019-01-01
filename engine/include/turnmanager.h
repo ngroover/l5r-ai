@@ -15,6 +15,7 @@ namespace l5r
          void setCurrentTurnAndAction(int playerNum);
          bool ActionAndTurnDiffer();
          void setActionToCurrentTurn();
+         void passFirstPlayer();
 
          void swapAction();
          void swapConflict();

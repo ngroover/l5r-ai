@@ -44,13 +44,13 @@ namespace l5r
          std::list<choice> getProvinceDynastyChoices(dynastyCardStatus dcs);
 
          // get choices with fate cost or less
-         std::list<choice> getProvinceDynastyChoicesWithFate(dynastyCardStatus dcs, int fateCost);
+         std::list<choice> getProvinceDynastyChoicesWithFateCost(dynastyCardStatus dcs, int fateCost);
 
          // get pending dynasty card
          int getPendingFateCard(playerstate &pState);
 
          // play pending character
-         void playCharacter(playerstate &pState, std::string playerName);
+         void playCharacter(playerstate &pState, std::string playerName, int extraFate);
 
          // get characters that can attack
          std::list<choice> getAttackerChoices(playerstate &pState);
@@ -63,6 +63,16 @@ namespace l5r
          void sendCharactersHome(std::list<inplaycharacter> charlist, playerstate &pState);
 
          int countFavorGlory(playerstate &pState);
+
+         std::list<choice> getCharactersWithNoFate();
+
+         void discardCharacter(int cardIndex);
+
+         void removeFateFromCharacters();
+
+         void discardProvinceCard(int cardIndex);
+         
+         void readyAllCharacters();
 
       private:
          std::shared_ptr<gamestate> state;

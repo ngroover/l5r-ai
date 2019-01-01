@@ -60,3 +60,15 @@ void turnManager::swapConflict()
       state->currentConflict = player::player1;
    }
 }
+
+void turnManager::passFirstPlayer()
+{
+   if(state->currentTurn == player::player1)
+   {
+      state->currentTurn = player::player2;
+   }
+   else
+   {
+      state->currentTurn = player::player1;
+   }
+}

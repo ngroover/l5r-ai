@@ -75,7 +75,13 @@ decision engine::getDecision()
       {
          doAction(*d.getChoiceList().begin());
       }
-   } while(d.getChoiceList().size() == 1);
+      // feed in a none choice if theres no choices
+      if(d.getChoiceList().size() == 0)
+      {
+         choice c("", choicetype::none);
+         doAction(c);
+      }
+   } while(d.getChoiceList().size() <= 1);
    return d;
 }
 

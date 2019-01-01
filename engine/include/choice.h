@@ -17,7 +17,8 @@ namespace l5r
       province_play,
       province_attack,
       conflict_type,
-      pass
+      pass,
+      none  // internal choice type
    };
 
    class choice
