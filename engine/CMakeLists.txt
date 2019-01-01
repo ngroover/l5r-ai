@@ -18,4 +18,8 @@ add_library( engine SHARED src/engine.cpp
 
 add_executable( simulator sim/main.cpp )
 
+add_executable( unittest test/main.cpp test/pregametest.cpp )
+
 target_link_libraries( simulator decks engine cards )
+
+target_link_libraries( unittest cppunit decks engine cards)
