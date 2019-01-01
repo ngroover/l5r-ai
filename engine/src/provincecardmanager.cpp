@@ -81,6 +81,7 @@ std::list<choice> provinceCardManager::getStrongholdChoices()
 std::list<choice> provinceCardManager::getProvinceChoices(playerstate &pState)
 {
    std::list<choice> list;
+   int brokenCount=0;
    for(auto pc:pState.provinceArea)
    {
       if(pc.provinceStatus != provinceCardStatus::broken)
@@ -89,12 +90,24 @@ std::list<choice> provinceCardManager::getProvinceChoices(playerstate &pState)
          c.setNumber(pc.provinceCard);
          list.push_back(c);
       }
+      if(pc.provinceStatus == provinceCardStatus::broken)
+      {
+         brokenCount++;
+      }
+   }
+   if(brokenCount >= 3)
+   {
+      choice c(cardMgr->getCardName(pState.strongholdProvince), choicetype::card);
+      c.setNumber(pState.strongholdProvince);
+      list.push_back(c);
    }
    return list;
 }
 
 void provinceCardManager::breakProvince(playerstate &pState, int cardIndex)
 {
+   // nothing happens for stronghold
+   // handled outside this
    for(auto &p:pState.provinceArea)
    {
       if(p.provinceCard == cardIndex)
@@ -103,5 +116,10 @@ void provinceCardManager::breakProvince(playerstate &pState, int cardIndex)
          p.provinceStatus = provinceCardStatus::broken;
       }
    }
+}
+
+int provinceCardManager::getStrongholdProvince(playerstate &pState)
+{
+   return pState.strongholdProvince;
 }
 

@@ -20,6 +20,7 @@ namespace l5r
          void swapAction();
          void swapConflict();
 
+         void declareWinner();
       private:
          std::shared_ptr<gamestate> state;
    };

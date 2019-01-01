@@ -72,3 +72,8 @@ void turnManager::passFirstPlayer()
       state->currentTurn = player::player1;
    }
 }
+
+void turnManager::declareWinner()
+{
+   state->winner = state->currentTurn;
+}

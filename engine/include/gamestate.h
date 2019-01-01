@@ -205,6 +205,7 @@ namespace l5r
          player currentTurn;
          player currentConflict;
          player currentAction;
+         player winner;
          playerstate player1State;
          playerstate player2State;
 

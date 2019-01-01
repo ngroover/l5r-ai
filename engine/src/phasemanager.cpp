@@ -797,6 +797,13 @@ void phaseManager::doChooseDefenders(choice c)
          {
             int province = conflictDataMgr.getContestedProvince();
             provinceMgr->breakProvince(pState, province);
+            if(provinceMgr->getStrongholdProvince(oppState) == 
+               province)
+            {
+               std::cout << name << " wins!" << std::endl;
+               turnMgr->declareWinner();
+               state->currentPhase = phase::gameover;
+            }
          }
          conflictDataMgr.attackerClaimRing();
       }
