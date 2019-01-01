@@ -16,6 +16,6 @@ add_library( engine SHARED src/engine.cpp
                         src/turnmanager.cpp
                         src/conflictmanager.cpp)
 
-add_executable( simulator test/main.cpp )
+add_executable( simulator sim/main.cpp )
 
 target_link_libraries( simulator decks engine cards )
