@@ -27,7 +27,9 @@ namespace l5r
          ~engine();
 
          // useful for testing
-         std::shared_ptr<gamestate> getGameState();
+         gamestate getGameState();
+
+         void setGameState(gamestate &gs);
 
          decision getDecision();
 

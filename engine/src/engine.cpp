@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <algorithm>
 
 using namespace l5r;
 
@@ -32,31 +33,11 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
       provinceMgr->createDeck(agentMgr->getPlayerDecklist(i), i);
    }
 
-   // randomly determine first player
-   std::random_device rd;
-   std::mt19937 gen(rd());
-
-   std::uniform_int_distribution<int> d(1,2);
-   int choice = d(gen);
-   if( choice == 1 || choice == 2 )
-   {
-      std::cout << "First player is " << agentMgr->getPlayerName(choice) << std::endl;
-      turnMgr->setCurrentTurnAndAction(choice);
-   }
-   else
-   {
-      std::stringstream ss;
-      ss << choice;
-      std::string strChoice;
-      ss >> strChoice;
-      strChoice = "Invalid random choice" + strChoice;
-      throw std::runtime_error(strChoice.c_str());
-   }
+   std::cout << "First player is " << agentMgr->getPlayerName(1) << std::endl;
+   turnMgr->setCurrentTurnAndAction(1);
 
    // select stronghold is the first player decision
    phaseMgr->goToStrongholdSelection();
-
-
 }
 
 // destructor
@@ -85,16 +66,20 @@ decision engine::getDecision()
    return d;
 }
 
-std::shared_ptr<gamestate> engine::getGameState()
+gamestate engine::getGameState()
 {
-   return state;
+   return *state;
+}
+
+void engine::setGameState(gamestate &gs)
+{
+   *state = gs;
 }
 
 void engine::doAction(choice c)
 {
    phaseMgr->doAction(c);
 }
-
 
 void engine::run()
 {
