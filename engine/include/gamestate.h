@@ -4,6 +4,11 @@
 #include <list>
 #include <vector>
 #include "cards.h"
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/version.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 #define NUM_PROVINCES 5
 #define NUM_DYNASTY_PROVINCES 4
@@ -106,6 +111,16 @@ namespace l5r
    class provinceStack
    {
       public:
+         friend class boost::serialization::access;
+         template<class Archive>
+         void serialize(Archive & ar, const unsigned int version)
+         {
+            ar & provinceCard;
+            ar & dynastyCard;
+            ar & facedownDynasty;
+            ar & provinceStatus;
+         }
+
          int provinceCard;
          int dynastyCard;
          bool facedownDynasty;
@@ -116,6 +131,15 @@ namespace l5r
    class inplaycharacter
    {
    public:
+      friend class boost::serialization::access;
+      template<class Archive>
+      void serialize(Archive & ar, const unsigned int version)
+      {
+         ar & characterCard;
+         ar & bowed;
+         ar & fateAttached;
+      }
+
       int characterCard;
       bool bowed;
       int fateAttached;
@@ -124,6 +148,13 @@ namespace l5r
    class Unclaimedring
    {
    public:
+      template<class Archive>
+      void serialize(Archive & ar, const unsigned int version)
+      {
+         ar & type;
+         ar & fate;
+      }
+
       ring type;
       int fate;
    };
@@ -132,6 +163,17 @@ namespace l5r
    class conflictPlayerState
    {
    public:
+      friend class boost::serialization::access;
+      template<class Archive>
+      void serialize(Archive & ar, const unsigned int version)
+      {
+         ar & BOOST_SERIALIZATION_NVP(inConflict);
+         ar & BOOST_SERIALIZATION_NVP(availableConflicts);
+         ar & BOOST_SERIALIZATION_NVP(claimed_rings);
+         ar & numConflicts;
+         ar & hasImperialFavor;
+      }
+
       // list of cards in conflict
       std::list<inplaycharacter> inConflict;
 
@@ -151,6 +193,16 @@ namespace l5r
    class conflictState
    {
    public:
+      friend class boost::serialization::access;
+      template<class Archive>
+      void serialize(Archive & ar, const unsigned int version)
+      {
+         ar & contested_ring;
+         ar & conflict_type;
+         ar & contested_province;
+         ar & BOOST_SERIALIZATION_NVP(unclaimed_rings);
+         ar & favorType;
+      }
       // currently contested ring
       ring contested_ring;
 
@@ -171,6 +223,29 @@ namespace l5r
    class playerstate
    {
       public:
+         friend class boost::serialization::access;
+         template<class Archive>
+         void serialize(Archive & ar, const unsigned int version)
+         {
+            ar & BOOST_SERIALIZATION_NVP(dynastyDeck);
+            ar & BOOST_SERIALIZATION_NVP(dynastyDiscard);
+            ar & BOOST_SERIALIZATION_NVP(conflictDeck);
+            ar & BOOST_SERIALIZATION_NVP(conflictHand);
+            ar & pendingMulligan;
+            ar & pendingFateCard; // card awaiting fate
+            ar & provinceArea;
+            ar & strongholdProvince;
+            ar & stronghold;
+            ar & atHome;
+
+            ar & conflict_state;
+
+            ar & honorTokens;
+            ar & fate;
+            ar & passed;
+            ar & honorDial;
+         }
+
          // all these integers are referencing cardIds (below)
          std::list<int> dynastyDeck;
          std::list<int> dynastyDiscard;
@@ -197,6 +272,22 @@ namespace l5r
          gamestate();
          ~gamestate();
 
+         friend class boost::serialization::access;
+         template<class Archive>
+         void serialize(Archive & ar, const unsigned int version)
+         {
+            ar & BOOST_SERIALIZATION_NVP(cardIds);
+            ar & currentPhase;
+            ar & currentSubPhase;
+            ar & currentTurn;
+            ar & currentConflict;
+            ar & currentAction;
+            ar & winner;
+            ar & player1State;
+            ar & player2State;
+            ar & conflict_state;
+         }
+
          // global card ids
          std::vector<cards> cardIds;
 
@@ -217,5 +308,6 @@ namespace l5r
          playerstate &getPlayerState(relativePlayer rp);
    };
 };
+BOOST_CLASS_VERSION(l5r::gamestate, 1);
 
 #endif //_GAMESTATE_H_

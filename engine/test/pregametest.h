@@ -14,6 +14,7 @@ class PregameTest : public CppUnit::TestFixture
 {
    CPPUNIT_TEST_SUITE( PregameTest );
    CPPUNIT_TEST( testStrongholdDecision );
+   CPPUNIT_TEST( testNoMulligans );
    CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -21,6 +22,7 @@ public:
    void tearDown();
 
    void testStrongholdDecision();
+   void testNoMulligans();
 private:
    l5r::engine *gameEngine;
 };

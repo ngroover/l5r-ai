@@ -7,6 +7,8 @@
 #include "gamestate.h"
 #include "decision.h"
 #include <algorithm>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 using namespace l5r;
 
@@ -28,11 +30,11 @@ void GamestateTest::tearDown()
 void GamestateTest::testSerialize()
 {
    gamestate gs = gameEngine->getGameState();
-   std::string str;
    std::stringstream ss;
-   ss << gs;
-   ss >> str;
-   std::stringstream ss2;
-   ss2 << str;
-   ss2 >> gs;
+   boost::archive::text_oarchive oa(ss);
+   oa << gs;
+
+   gamestate gs2;
+   boost::archive::text_iarchive ia(ss);
+   ia >> gs2;
 }
