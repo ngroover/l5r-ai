@@ -15,10 +15,6 @@ void cardDataManager::loadDecklist(decklist dl, int playerNum)
 {
    // fill in cardMap
    std::map<cards,card> tmpList = cg.generateCards(dl);
-   for(auto const& x:tmpList)
-   {
-      state->cardIds.push_back(x.first);
-   }
    // merge map
    cardMap.insert(tmpList.begin(), tmpList.end());
 }
