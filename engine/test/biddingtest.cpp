@@ -43,6 +43,7 @@ void BiddingTest::tieAtFive()
 
    choiceSimulation(cl, gameEngine);
 
+   gamestate gs = gameEngine->getGameState();
    // output gamestate
    //boost::archive::text_oarchive oa(std::cout);
    //oa << gs;
