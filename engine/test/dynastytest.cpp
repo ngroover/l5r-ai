@@ -200,4 +200,32 @@ void DynastyTest::oneCharacterEach()
 
    //player2 put 3 fate on cautious scout
    gameEngine->doAction(*savedChoice);
+
+   gs = gameEngine->getGameState();
+
+   d = gameEngine->getDecision();
+
+   // up to 5 fate can be placed(including 0)
+   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)3);
+
+   choiceList = d.getChoiceList().begin();
+   savedChoice = d.getChoiceList().begin();
+   while( choiceList != d.getChoiceList().end())
+   {
+      std::cout << choiceList->getText() << std::endl;
+      if(choiceList->getType() == choicetype::pass)
+      {
+         savedChoice = choiceList;
+      }
+      choiceList++;
+   }
+
+   //player2 pass
+   gameEngine->doAction(*savedChoice);
+
+   gs = gameEngine->getGameState();
+
+   // output gamestate
+   //boost::archive::text_oarchive oa(std::cout);
+   //oa << gs;
 }

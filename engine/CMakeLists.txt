@@ -20,7 +20,8 @@ add_executable( simulator sim/main.cpp )
 
 add_executable( unittest test/main.cpp test/pregametest.cpp 
                            test/gamestatetest.cpp
-                           test/dynastytest.cpp)
+                           test/dynastytest.cpp
+                           test/biddingtest.cpp)
 
 target_link_libraries( simulator decks engine cards )
 
