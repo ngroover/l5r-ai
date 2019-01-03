@@ -5,6 +5,7 @@
 #include "starterdecklists.h"
 #include "pregametest.h"
 #include "decision.h"
+#include "choicesimulation.h"
 #include <algorithm>
 #include <fstream>
 
@@ -27,69 +28,12 @@ void PregameTest::tearDown()
 
 void PregameTest::testStrongholdDecision()
 {
-   decision d = gameEngine->getDecision();
-   // should get to choose from 5 provinces
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
+   std::list<choice> cl = {{"Pilgrimage", choicetype::card}, // player1 plays pilgrimage
+                           {"Rally to the Cause", choicetype::card}}; // player2 plays rally
+
+   choiceSimulation(cl, gameEngine);
 
    gamestate gs = gameEngine->getGameState();
-   CPPUNIT_ASSERT_EQUAL(gs.player1State.provinceArea.size(), (unsigned int)5);
-
-   // find pilgrimage
-   auto pilgrimage = std::find(gs.cardIds.begin(), gs.cardIds.end(), cards::pilgrimage);
-   int pilgrimage_index=std::distance(gs.cardIds.begin(), pilgrimage);
-
-   auto provList = gs.player1State.provinceArea.begin();
-   auto choiceList = d.getChoiceList().begin();
-   auto savedChoice = d.getChoiceList().begin();
-   while(provList != gs.player1State.provinceArea.end() &&
-      choiceList != d.getChoiceList().end())
-   {
-      CPPUNIT_ASSERT_EQUAL(provList->provinceCard, choiceList->getNumber());
-      // find pilgrimage
-      if(choiceList->getNumber() == pilgrimage_index)
-      {
-         savedChoice=choiceList;
-      }
-      provList++;
-      choiceList++;
-   }
-
-   gameEngine->doAction(*savedChoice);
-
-   // make sure one of the provinces was removed from area and set as stronghold province
-   gs = gameEngine->getGameState();
-   CPPUNIT_ASSERT_EQUAL(gs.player1State.provinceArea.size(), (unsigned int)4);
-   CPPUNIT_ASSERT_EQUAL(gs.player1State.strongholdProvince, pilgrimage_index);
-
-   d = gameEngine->getDecision();
-   // should get to choose from 5 provinces
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   // find rally_to_the_cause
-   auto rally = std::find(gs.cardIds.begin(), gs.cardIds.end(), cards::rally_to_the_cause);
-   int rally_index=std::distance(gs.cardIds.begin(), rally);
-
-   provList = gs.player2State.provinceArea.begin();
-   choiceList = d.getChoiceList().begin();
-   while(provList != gs.player2State.provinceArea.end() &&
-      choiceList != d.getChoiceList().end())
-   {
-      CPPUNIT_ASSERT_EQUAL(provList->provinceCard, choiceList->getNumber());
-      // find rally
-      if(choiceList->getNumber() == rally_index)
-      {
-         savedChoice=choiceList;
-      }
-      provList++;
-      choiceList++;
-   }
-
-   gameEngine->doAction(*savedChoice);
-
-   // make sure one of the provinces was removed from area and set as stronghold province
-   gs = gameEngine->getGameState();
-   CPPUNIT_ASSERT_EQUAL(gs.player2State.provinceArea.size(), (unsigned int)4);
-   CPPUNIT_ASSERT_EQUAL(gs.player2State.strongholdProvince, rally_index);
 
    // output gamestate
    //boost::archive::text_oarchive oa(std::cout);
@@ -108,91 +52,12 @@ void PregameTest::testNoMulligans()
 
    gameEngine->setGameState(gs);
 
-   decision d = gameEngine->getDecision();
+   std::list<choice> cl = {{"Pass", choicetype::pass}, // player1 passes dynasty mulligan
+                           {"Pass", choicetype::pass}, // player2 passes dynasty mulligan
+                           {"Pass", choicetype::pass}, // player1 passes conflict mulligan
+                           {"Pass", choicetype::pass}}; // player2 passes conflict mulligan
 
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   auto choiceList = d.getChoiceList().begin();
-   auto savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player1 pass dynasty mulligan
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player2 pass dynasty mulligan
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-   
-   //player1 pass conflict mulligan
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player2 pass conflict mulligan
-   gameEngine->doAction(*savedChoice);
+   choiceSimulation(cl, gameEngine);
 
    gs = gameEngine->getGameState();
 
@@ -200,4 +65,5 @@ void PregameTest::testNoMulligans()
    //boost::archive::text_oarchive oa(std::cout);
    //oa << gs;
 }
+
 

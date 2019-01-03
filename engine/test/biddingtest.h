@@ -14,8 +14,8 @@ class BiddingTest : public CppUnit::TestFixture
 {
    CPPUNIT_TEST_SUITE( BiddingTest );
    CPPUNIT_TEST( tieAtFive );
-//   CPPUNIT_TEST( tieAtOne );
- //  CPPUNIT_TEST( oneToFive );
+   CPPUNIT_TEST( tieAtOne );
+   CPPUNIT_TEST( oneToFive );
    CPPUNIT_TEST_SUITE_END();
 
 public:
