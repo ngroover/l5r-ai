@@ -5,6 +5,7 @@
 #include "starterdecklists.h"
 #include "dynastytest.h"
 #include "decision.h"
+#include "choicesimulation.h"
 #include <algorithm>
 #include <fstream>
 
@@ -37,66 +38,10 @@ void DynastyTest::passEverything()
 
    gameEngine->setGameState(gs);
 
-   decision d = gameEngine->getDecision();
+   std::list<choice> cl = {{"Pass", choicetype::pass}, // player1 passes
+                           {"Pass", choicetype::pass}}; // player2 passes
 
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   auto choiceList = d.getChoiceList().begin();
-   auto savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player1 pass dynasty phase (should gain a fate)
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player2 pass dynasty phase
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
+   choiceSimulation(cl, gameEngine);
 }
 
 void DynastyTest::oneCharacterEach()
@@ -111,117 +56,14 @@ void DynastyTest::oneCharacterEach()
 
    gameEngine->setGameState(gs);
 
-   decision d = gameEngine->getDecision();
+   std::list<choice> cl = {{"Akodo Toturi", choicetype::card}, // player1 plays Akodo
+                           {"2 fate", choicetype::fate}, // put 2 fate on him
+                           {"Cautious Scout", choicetype::card}, // player2 plays Cautious scout
+                           {"3 fate", choicetype::fate}, // with 3 fate
+                           // player1 passes automatically
+                           {"Pass", choicetype::pass}};  //player2 now passes
 
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   auto choiceList = d.getChoiceList().begin();
-   auto savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::card &&
-         choiceList->getText() == "Akodo Toturi")
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player1 plays akodo toturi
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // should be 3 choices
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)3);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::fate &&
-         choiceList->getNumber() == 2)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player1 put two fate on Akodo Totori
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // should be 4 choices plus a pass choice
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)5);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::card &&
-         choiceList->getText() == "Cautious Scout")
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player2 plays cautious scout
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // up to 5 fate can be placed(including 0)
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)6);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::fate &&
-         choiceList->getNumber() == 3)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player2 put 3 fate on cautious scout
-   gameEngine->doAction(*savedChoice);
-
-   gs = gameEngine->getGameState();
-
-   d = gameEngine->getDecision();
-
-   // up to 5 fate can be placed(including 0)
-   CPPUNIT_ASSERT_EQUAL(d.getChoiceList().size(), (unsigned int)3);
-
-   choiceList = d.getChoiceList().begin();
-   savedChoice = d.getChoiceList().begin();
-   while( choiceList != d.getChoiceList().end())
-   {
-      std::cout << choiceList->getText() << std::endl;
-      if(choiceList->getType() == choicetype::pass)
-      {
-         savedChoice = choiceList;
-      }
-      choiceList++;
-   }
-
-   //player2 pass
-   gameEngine->doAction(*savedChoice);
+   choiceSimulation(cl, gameEngine);
 
    gs = gameEngine->getGameState();
 
