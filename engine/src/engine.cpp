@@ -47,6 +47,22 @@ engine::~engine()
 
 decision engine::getDecision()
 {
+   return phaseMgr->getDecision();
+}
+
+gamestate engine::getGameState()
+{
+   return *state;
+}
+
+void engine::setGameState(gamestate &gs)
+{
+   *state = gs;
+}
+
+void engine::doAction(choice c)
+{
+   phaseMgr->doAction(c);
    decision d;
    do
    {
@@ -63,22 +79,6 @@ decision engine::getDecision()
          doAction(c);
       }
    } while(d.getChoiceList().size() <= 1);
-   return d;
-}
-
-gamestate engine::getGameState()
-{
-   return *state;
-}
-
-void engine::setGameState(gamestate &gs)
-{
-   *state = gs;
-}
-
-void engine::doAction(choice c)
-{
-   phaseMgr->doAction(c);
 }
 
 void engine::run()
