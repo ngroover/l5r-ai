@@ -1,7 +1,7 @@
 #ifndef _TURN_MANAGER_H_
 #define _TURN_MANAGER_H_
 
-#include "gamestate.h"
+#include "state/gamestate.h"
 #include <memory>
 
 namespace l5r

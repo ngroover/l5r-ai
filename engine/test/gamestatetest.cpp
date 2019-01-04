@@ -4,7 +4,7 @@
 #include "cpuagent.h"
 #include "starterdecklists.h"
 #include "gamestatetest.h"
-#include "gamestate.h"
+#include "state/gamestate.h"
 #include "decision.h"
 #include <algorithm>
 #include <boost/archive/text_oarchive.hpp>

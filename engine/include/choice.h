@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "cards.h"
-#include "gamestate.h"
+#include "state/gamestate.h"
 
 namespace l5r
 {

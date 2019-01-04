@@ -1,4 +1,4 @@
-#include "gamestate.h"
+#include "state/gamestate.h"
 #include <stdexcept>
 
 using namespace l5r;

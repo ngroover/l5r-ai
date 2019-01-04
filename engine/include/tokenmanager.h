@@ -1,7 +1,7 @@
 #ifndef _TOKEN_MANAGER_H_
 #define _TOKEN_MANAGER_H_
 
-#include "gamestate.h"
+#include "state/gamestate.h"
 #include "choice.h"
 #include "carddatamanager.h"
 #include <memory>

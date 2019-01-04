@@ -4,7 +4,7 @@
 #include <memory>
 #include "cardgenerator.h"
 #include "card.h"
-#include "gamestate.h"
+#include "state/gamestate.h"
 
 namespace l5r
 {

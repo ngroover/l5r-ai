@@ -1,7 +1,7 @@
 #ifndef _PROVINCE_CARD_MANAGER_H_
 #define _PROVINCE_CARD_MANAGER_H_
 
-#include "gamestate.h"
+#include "state/gamestate.h"
 #include "carddatamanager.h"
 #include "agentmanager.h"
 #include "choice.h"

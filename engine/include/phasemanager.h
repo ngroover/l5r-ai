@@ -1,7 +1,7 @@
 #ifndef _PHASE_MANAGER_H_
 #define _PHASE_MANAGER_H_
 
-#include "gamestate.h"
+#include "state/gamestate.h"
 #include <memory>
 #include "dynastycardmanager.h"
 #include "conflictcardmanager.h"

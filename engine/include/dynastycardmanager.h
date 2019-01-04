@@ -1,7 +1,7 @@
 #ifndef _DYNASTY_CARD_MANAGER_H_
 #define _DYNASTY_CARD_MANAGER_H_
 
-#include "gamestate.h"
+#include "state/gamestate.h"
 #include "decklist.h"
 #include "carddatamanager.h"
 #include "agentmanager.h"
