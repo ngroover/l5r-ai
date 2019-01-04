@@ -8,4 +8,7 @@
 
 void choiceSimulation(std::list<l5r::choice> choiceList, l5r::engine *eng);
 
+// helper function for debug
+void printChoices(l5r::engine *eng);
+
 #endif // _CHOICE_SIMULATION_H_

@@ -42,7 +42,8 @@ void ConflictTest::singleConflict()
                            {"Military", choicetype::conflict_type}, // military
                            {"Air", choicetype::ring},             // air ring
                            {"Entrenched Position", choicetype::card}, // at entrenched
-                           {"Cautious Scout", choicetype::card}}; // player2 defends with cautious scout
+                           {"Cautious Scout", choicetype::card}, // player2 defends with cautious scout
+                           {"Military", choicetype::conflict_type}}; //player1 claims favor
 
 
    choiceSimulation(cl, gameEngine);
@@ -50,8 +51,8 @@ void ConflictTest::singleConflict()
    gamestate gs = gameEngine->getGameState();
 
    // output gamestate
-   //boost::archive::text_oarchive oa(std::cout);
-   //oa << gs;
+   boost::archive::text_oarchive oa(std::cout);
+   oa << gs;
 }
 
 void ConflictTest::provinceBreak()

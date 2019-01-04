@@ -33,3 +33,16 @@ void choiceSimulation(std::list<choice> choiceList, engine *eng)
       overallChoiceList++;
    }
 }
+
+void printChoices(engine *eng)
+{
+   decision d = eng->getDecision();
+   std::cout << "Choices:" << std::endl;
+   auto currentChoiceList = d.getChoiceList().begin();
+   while( currentChoiceList != d.getChoiceList().end())
+   {
+      std::cout << currentChoiceList->getText() << std::endl;
+      currentChoiceList++;
+   }
+   std::cout << std::endl;
+}

@@ -23,7 +23,8 @@ add_executable( unittest test/main.cpp test/pregametest.cpp
                            test/dynastytest.cpp
                            test/biddingtest.cpp
                            test/choicesimulation.cpp
-                           test/conflicttest.cpp)
+                           test/conflicttest.cpp
+                           test/regrouptest.cpp)
 
 target_link_libraries( simulator decks engine cards )
 
