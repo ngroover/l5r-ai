@@ -224,6 +224,11 @@ std::string conflictManager::getCurrentConflictTypeName()
    return getConflictTypeName(global->conflict_type);
 }
 
+bool conflictManager::wasUnopposed()
+{
+   return (defender->inConflict.size() == 0);
+}
+
 bool conflictManager::attackerWonConflict()
 {
    int attackerStr=calculateStr(attacker);

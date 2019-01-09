@@ -61,8 +61,8 @@ namespace l5r
          bool attackerWonConflict();
          bool defenderWonConflict();
          bool provinceBroke();
-         bool wasUnopposed();
          int getContestedProvince();
+         bool wasUnopposed();
 
          // string names
          std::list<std::string> getAttackerNames();

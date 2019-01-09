@@ -792,7 +792,13 @@ void phaseManager::doChooseDefenders(choice c)
       conflictDataMgr.printConflictResult();
       if(conflictDataMgr.attackerWonConflict())
       {
-         // TODO unopposed
+         if(conflictDataMgr.wasUnopposed())
+         {
+            std::cout << "Unopposed conflict!" << std::endl;
+            playerstate &oppState = state->getPlayerState(relativePlayer::myself);
+            std::string oppname = agentMgr->getPlayerName(relativePlayer::myself);
+            tokenMgr->gainHonor(-1, oppState, oppname);
+         }
          if(conflictDataMgr.provinceBroke())
          {
             int province = conflictDataMgr.getContestedProvince();
@@ -800,7 +806,6 @@ void phaseManager::doChooseDefenders(choice c)
             if(provinceMgr->getStrongholdProvince(oppState) == 
                province)
             {
-               std::cout << name << " wins!" << std::endl;
                turnMgr->declareWinner();
                state->currentPhase = phase::gameover;
             }
