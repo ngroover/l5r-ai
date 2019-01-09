@@ -114,7 +114,7 @@ bool conflictManager::defenderHasConflictsLeft()
 void conflictManager::initializeRings()
 {
    global->unclaimed_rings.clear();
-   Unclaimedring ur;
+   unclaimedring ur;
    ur.fate = 0;
    ur.type = ring::air;
    global->unclaimed_rings.push_back(ur);
@@ -310,7 +310,7 @@ void conflictManager::defenderClaimRing()
 
 void conflictManager::contestedRingUnclaimed()
 {
-   Unclaimedring ur;
+   unclaimedring ur;
    ur.fate = 0;
    ur.type = global->contested_ring;
    global->unclaimed_rings.push_back(ur);
@@ -424,7 +424,7 @@ void conflictManager::unclaimRings()
          r!=attacker->claimed_rings.end();
          r++)
    {
-      Unclaimedring ur;
+      unclaimedring ur;
       ur.type = *r;
       ur.fate = 0;
       global->unclaimed_rings.push_back(ur);
@@ -435,7 +435,7 @@ void conflictManager::unclaimRings()
          r!=defender->claimed_rings.end();
          r++)
    {
-      Unclaimedring ur;
+      unclaimedring ur;
       ur.type = *r;
       ur.fate = 0;
       global->unclaimed_rings.push_back(ur);
