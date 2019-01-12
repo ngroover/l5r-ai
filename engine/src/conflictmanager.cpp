@@ -425,9 +425,8 @@ void conflictManager::putFateOnRings()
 
 void conflictManager::unclaimRings()
 {
-   for(auto r=attacker->claimed_rings.begin();
-         r!=attacker->claimed_rings.end();
-         r++)
+   auto r= attacker->claimed_rings.begin();
+   while(r!=attacker->claimed_rings.end())
    {
       unclaimedring ur;
       ur.type = *r;
@@ -436,9 +435,8 @@ void conflictManager::unclaimRings()
       std::cout << "Returning " << getRingName(*r) << " ring" << std::endl;
       r = attacker->claimed_rings.erase(r);
    }
-   for(auto r=defender->claimed_rings.begin();
-         r!=defender->claimed_rings.end();
-         r++)
+   r= defender->claimed_rings.begin();
+   while(r!=defender->claimed_rings.end())
    {
       unclaimedring ur;
       ur.type = *r;
