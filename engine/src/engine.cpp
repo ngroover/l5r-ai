@@ -67,18 +67,21 @@ void engine::doAction(choice c)
    do
    {
       d = phaseMgr->getDecision();
-      // if theres only 1 choice do it and keep going
-      if(d.getChoiceList().size() == 1)
+      if( state->currentPhase != phase::gameover )
       {
-         doAction(*d.getChoiceList().begin());
+         // if theres only 1 choice do it and keep going
+         if(d.getChoiceList().size() == 1)
+         {
+            doAction(*d.getChoiceList().begin());
+         }
+         // feed in a none choice if theres no choices
+         if(d.getChoiceList().size() == 0)
+         {
+            choice c("", choicetype::none);
+            doAction(c);
+         }
       }
-      // feed in a none choice if theres no choices
-      if(d.getChoiceList().size() == 0)
-      {
-         choice c("", choicetype::none);
-         doAction(c);
-      }
-   } while(d.getChoiceList().size() <= 1);
+   } while(d.getChoiceList().size() <= 1 && state->currentPhase != phase::gameover);
 }
 
 void engine::run()

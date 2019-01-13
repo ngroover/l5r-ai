@@ -92,6 +92,8 @@ void phaseManager::doAction(choice c)
       case phase::regroup:
          regroupDoAction(c);
          break;
+      case phase::gameover:
+         break;
       default:
          throw std::runtime_error("Invalid phase");
    }
@@ -537,6 +539,7 @@ void phaseManager::doAdditionalFate(choice c)
 
 decision phaseManager::getDecision()
 {
+   decision d;
    switch(state->currentPhase)
    {
       case phase::pregame:
@@ -551,6 +554,8 @@ decision phaseManager::getDecision()
          return getFateDecision();
       case phase::regroup:
          return getRegroupDecision();
+      case phase::gameover:
+         return d;
       default:
          throw std::runtime_error("Invalid state");
    }
