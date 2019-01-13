@@ -841,11 +841,12 @@ void phaseManager::doChooseDefenders(choice c)
          {
             int province = conflictDataMgr.getContestedProvince();
             provinceMgr->breakProvince(pState, province);
-            if(provinceMgr->getStrongholdProvince(oppState) == 
+            if(provinceMgr->getStrongholdProvince(pState) == 
                province)
             {
-               std::cout << name << " won the game!" << std::endl;
-               turnMgr->declareWinner();
+               std::string oppname = agentMgr->getPlayerName(relativePlayer::opponent);
+               std::cout << oppname << " won the game!" << std::endl;
+               turnMgr->declareLoser();
                state->currentPhase = phase::gameover;
             }
          }
