@@ -40,11 +40,18 @@ void conflictCardManager::drawCards(int numCards, playerstate &pState, std::stri
       for(int i=0;i<numCards;i++)
       {
          // add to hand
-         pState.conflictHand.push_back(*conflictDeckIter);
-         std::cout << " " << cardMgr->getCardName(*conflictDeckIter) << std::endl; 
+         if(conflictDeckIter != pState.conflictDeck.end())
+         {
+            pState.conflictHand.push_back(*conflictDeckIter);
+            std::cout << " " << cardMgr->getCardName(*conflictDeckIter) << std::endl; 
 
-         // erase from deck
-         conflictDeckIter = pState.conflictDeck.erase(conflictDeckIter);
+            // erase from deck
+            conflictDeckIter = pState.conflictDeck.erase(conflictDeckIter);
+         }
+         else
+         {
+            std::cout << "conflict deck empty" << std::endl;
+         }
       }
    }
 }

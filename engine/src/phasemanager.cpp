@@ -333,13 +333,40 @@ void phaseManager::doBid(choice c)
             tokenMgr->gainHonor(hishonor-myhonor, pState, name);
             tokenMgr->gainHonor(myhonor-hishonor, oppState, oppname);
          }
-         conflictMgr->drawCards(myhonor, pState, name);
-         conflictMgr->drawCards(hishonor, oppState, oppname);
-         //TODO: draw phase action
+         if(tokenMgr->getHonor(pState) == 0)
+         {
+            std::cout << name << " loses due to honor " << std::endl;
+            turnMgr->declareLoser();
+            state->currentPhase = phase::gameover;
+         }
+         if(tokenMgr->getHonor(pState) == 25)
+         {
+            std::cout << name << " wins by to honor" << std::endl;
+            turnMgr->declareWinner();
+            state->currentPhase = phase::gameover;
+         }
+         if(tokenMgr->getHonor(oppState) == 0)
+         {
+            std::cout << oppname << " loses due to honor " << std::endl;
+            turnMgr->declareWinner();
+            state->currentPhase = phase::gameover;
+         }
+         if(tokenMgr->getHonor(oppState) == 25)
+         {
+            std::cout << oppname << " wins due to honor " << std::endl;
+            turnMgr->declareLoser();
+            state->currentPhase = phase::gameover;
+         }
+         if(state->currentPhase != phase::gameover)
+         {
+            conflictMgr->drawCards(myhonor, pState, name);
+            conflictMgr->drawCards(hishonor, oppState, oppname);
+            //TODO: draw phase action
 
-         goToConflictPhase();
+            goToConflictPhase();
 
-         turnMgr->setActionToCurrentTurn();
+            turnMgr->setActionToCurrentTurn();
+         }
       }
       else
       {
@@ -798,6 +825,12 @@ void phaseManager::doChooseDefenders(choice c)
             playerstate &oppState = state->getPlayerState(relativePlayer::myself);
             std::string oppname = agentMgr->getPlayerName(relativePlayer::myself);
             tokenMgr->gainHonor(-1, oppState, oppname);
+            if(tokenMgr->getHonor(oppState) == 0)
+            {
+               std::cout << oppname << " loses due to honor loss" << std::endl;
+               turnMgr->declareLoser();
+               state->currentPhase = phase::gameover;
+            }
          }
          if(conflictDataMgr.provinceBroke())
          {
@@ -806,6 +839,7 @@ void phaseManager::doChooseDefenders(choice c)
             if(provinceMgr->getStrongholdProvince(oppState) == 
                province)
             {
+               std::cout << name << " won the game!" << std::endl;
                turnMgr->declareWinner();
                state->currentPhase = phase::gameover;
             }
@@ -819,23 +853,24 @@ void phaseManager::doChooseDefenders(choice c)
       else
       {
          conflictDataMgr.contestedRingUnclaimed();
-         // nobody wins TODO ring goes back
       }
-      //
-      conflictDataMgr.bowAttackers();
-      std::list<inplaycharacter> attackers= conflictDataMgr.removeAllAttackingCharacters();
-      dynastyMgr->sendCharactersHome(attackers, oppState);
+      if(state->currentPhase != phase::gameover)
+      {
+         conflictDataMgr.bowAttackers();
+         std::list<inplaycharacter> attackers= conflictDataMgr.removeAllAttackingCharacters();
+         dynastyMgr->sendCharactersHome(attackers, oppState);
 
 
-      conflictDataMgr.bowDefenders();
-      std::list<inplaycharacter> defenders= conflictDataMgr.removeAllDefendingCharacters();
-      dynastyMgr->sendCharactersHome(defenders, pState);
+         conflictDataMgr.bowDefenders();
+         std::list<inplaycharacter> defenders= conflictDataMgr.removeAllDefendingCharacters();
+         dynastyMgr->sendCharactersHome(defenders, pState);
 
-      conflictDataMgr.completeConflict();
+         conflictDataMgr.completeConflict();
 
 
-      // process next conflict
-      processEndConflict(false);
+         // process next conflict
+         processEndConflict(false);
+      }
    }
    else
    {

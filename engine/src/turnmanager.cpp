@@ -75,5 +75,17 @@ void turnManager::passFirstPlayer()
 
 void turnManager::declareWinner()
 {
-   state->winner = state->currentTurn;
+   state->winner = state->currentAction;
+}
+
+void turnManager::declareLoser()
+{
+   if(state->currentAction == player::player1)
+   {
+      state->winner = player::player2;
+   }
+   else
+   {
+      state->winner = player::player1;
+   }
 }

@@ -21,6 +21,7 @@ namespace l5r
          void swapConflict();
 
          void declareWinner();
+         void declareLoser();
       private:
          std::shared_ptr<gamestate> state;
    };

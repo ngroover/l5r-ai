@@ -84,3 +84,8 @@ void tokenManager::gainHonor(int honor, playerstate &pState, std::string playerN
       std::cout << playerName << " losses " << -honor << " honor (" << pState.honorTokens << " total)" << std::endl;
    }
 }
+
+int tokenManager::getHonor(playerstate &pState)
+{
+   return pState.honorTokens;
+}

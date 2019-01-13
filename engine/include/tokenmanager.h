@@ -17,8 +17,9 @@ namespace l5r
          ~tokenManager();
 
          void setHonor(int honor, int playerNum, std::string playerName);
+         int getHonor(playerstate &pState);
          void gainHonor(int honor, playerstate &pState, std::string playerName);
-         void setHonorDial(int honor, playerstate &pState, std::string playerNae);
+         void setHonorDial(int honor, playerstate &pState, std::string playerName);
          int getHonorDial(playerstate &pState);
          void gainFate(int honor, playerstate &pState, std::string playerName);
 

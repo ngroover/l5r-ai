@@ -34,6 +34,15 @@ void dynastyCardManager::createDeck(decklist deck, int playerNum)
 void dynastyCardManager::fillProvinces(playerstate &pState, std::string playerName)
 {
    auto dynastyDeck = pState.dynastyDeck.begin();
+   if(dynastyDeck == pState.dynastyDeck.end())
+   {
+      std::cout << "Deck is empty!" << std::endl;
+      pState.dynastyDeck = pState.dynastyDiscard;
+      pState.dynastyDiscard.clear();
+      dynastyDeck = pState.dynastyDeck.begin();
+      std::cout << " top card is " << cardMgr->getCardName(*dynastyDeck) << std::endl;
+      
+   }
    for(auto prov=pState.provinceArea.begin();prov!=pState.provinceArea.end();++prov)
    {
       if(prov->dynastyCard == -1)
@@ -41,6 +50,15 @@ void dynastyCardManager::fillProvinces(playerstate &pState, std::string playerNa
          prov->dynastyCard = *dynastyDeck;
          prov->facedownDynasty = true;
          dynastyDeck = pState.dynastyDeck.erase(dynastyDeck);
+         if(dynastyDeck == pState.dynastyDeck.end())
+         {
+            std::cout << "Deck is empty!" << std::endl;
+            pState.dynastyDeck = pState.dynastyDiscard;
+            pState.dynastyDiscard.clear();
+            dynastyDeck = pState.dynastyDeck.begin();
+            std::cout << " top card is " << cardMgr->getCardName(*dynastyDeck) << std::endl;
+            
+         }
          std::cout << playerName
             << " placed " << cardMgr->getCardName(prov->dynastyCard)
             << " on top of " << cardMgr->getCardName(prov->provinceCard)
