@@ -19,6 +19,8 @@ namespace l5r
          // shortcut functions
          cardtype getCardType(cards c);
 
+         dynastycardtype getDynastyCardType(int index);
+
          std::string getCardName(int index);
          int getStrongholdHonor(int index);
          int getFateCost(int index);

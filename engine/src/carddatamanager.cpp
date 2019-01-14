@@ -24,6 +24,11 @@ cardtype cardDataManager::getCardType(cards c)
    return cardMap[c].getType();
 }
 
+dynastycardtype cardDataManager::getDynastyCardType(int index)
+{
+   return cardMap[state->cardIds[index]].getDynastyType();
+}
+
 std::string cardDataManager::getCardName(int index)
 {
    return cardMap[state->cardIds[index]].getName();

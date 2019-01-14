@@ -141,7 +141,7 @@ std::list<choice> dynastyCardManager::getProvinceDynastyChoicesWithFateCost(dyna
    std::list<choice> list;
    for(auto prov:pState.provinceArea)
    {
-      if(prov.dynastyCard != -1)
+      if(prov.dynastyCard != -1 && cardMgr->getDynastyCardType(prov.dynastyCard) == dynastycardtype::character)
       {
          int cardCost = cardMgr->getFateCost(prov.dynastyCard);
          if( ((dcs == dynastyCardStatus::facedown && prov.facedownDynasty) ||

@@ -43,6 +43,7 @@ namespace l5r
 
          std::string getName() const;
          cardtype getType() const;
+
          int getStrongholdHonor() const;
          int getFateCost() const;
          dynastycardtype getDynastyType() const;
