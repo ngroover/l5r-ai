@@ -184,6 +184,11 @@ int dynastyCardManager::getPendingFateCard(playerstate &pState)
    return pState.pendingFateCard;
 }
 
+int dynastyCardManager::getPendingCharCost(playerstate &pState)
+{
+   return cardMgr->getFateCost(pState.pendingFateCard);
+}
+
 void dynastyCardManager::playCharacter(playerstate &pState, std::string playerName, int extraFate)
 {
    for(auto prov=pState.provinceArea.begin();prov!=pState.provinceArea.end();++prov)

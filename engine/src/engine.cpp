@@ -4,6 +4,7 @@
 #include <memory>
 #include <sstream>
 #include <algorithm>
+#include "gamestateintfc.h"
 
 using namespace l5r;
 
@@ -12,6 +13,8 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
 {
    state = std::make_shared<gamestate>();
 
+   stateIntfc = std::make_shared<GameStateIntfc>(state, player1->getName(), player2->getName());
+
    // initialize managers
    agentMgr = std::make_shared<agentManager>(std::move(player1),std::move(player2),state);
    cardDataMgr = std::make_shared<cardDataManager>(state);
@@ -19,8 +22,7 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
    turnMgr = std::make_shared<turnManager>(state);
    conflictMgr = std::make_shared<conflictCardManager>(state, cardDataMgr, agentMgr);
    provinceMgr = std::make_shared<provinceCardManager>(state, cardDataMgr, agentMgr);
-   tokenMgr = std::make_shared<tokenManager>(state, cardDataMgr);
-   phaseMgr = std::make_shared<phaseManager>(state, dynastyMgr, conflictMgr, provinceMgr, turnMgr, tokenMgr, agentMgr, cardDataMgr);
+   phaseMgr = std::make_shared<phaseManager>(state, dynastyMgr, conflictMgr, provinceMgr, turnMgr, agentMgr, cardDataMgr, stateIntfc);
 
    // setup the gamestate
    std::cout << "Setting up game:" << std::endl;

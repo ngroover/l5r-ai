@@ -21,7 +21,7 @@ namespace l5r
          void chooseStronghold(int provinceChoice);
 
          void breakProvince(playerstate &pState, int cardIndex);
-         int getStartingHonor(int playerNum);
+         int getStartingHonor(playerstate &pState);
 
          std::list<choice> getStrongholdChoices();
 

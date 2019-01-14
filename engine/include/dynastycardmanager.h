@@ -52,6 +52,8 @@ namespace l5r
          // play pending character
          void playCharacter(playerstate &pState, std::string playerName, int extraFate);
 
+         int getPendingCharCost(playerstate &pState);
+
          // get characters that can attack
          std::list<choice> getAttackerChoices(playerstate &pState);
 

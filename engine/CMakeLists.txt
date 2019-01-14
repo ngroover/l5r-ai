@@ -14,7 +14,8 @@ add_library( engine SHARED src/engine.cpp
                         src/tokenmanager.cpp
                         src/agentmanager.cpp
                         src/turnmanager.cpp
-                        src/conflictmanager.cpp)
+                        src/conflictmanager.cpp
+                        src/gamestateintfc.cpp)
 
 add_executable( simulator sim/main.cpp )
 

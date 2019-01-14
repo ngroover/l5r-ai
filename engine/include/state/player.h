@@ -5,6 +5,7 @@
 #include "state/province.h"
 #include "state/character.h"
 #include "state/conflict.h"
+#include "state/tokens.h"
 
 namespace l5r
 {
@@ -40,10 +41,8 @@ namespace l5r
 
             ar & conflict_state;
 
-            ar & honorTokens;
-            ar & fate;
+            ar & tokens;
             ar & passed;
-            ar & honorDial;
          }
 
          // all these integers are referencing cardIds (below)
@@ -60,10 +59,8 @@ namespace l5r
 
          conflictPlayerState conflict_state;
 
-         int honorTokens;
-         int fate;
+         tokenstate tokens;
          bool passed;
-         int honorDial;
    };
 };
 

@@ -1,11 +1,11 @@
 #include "tokenmanager.h"
+#include "state/tokens.h"
 #include <iostream>
 #include <sstream>
 
 using namespace l5r;
 
-tokenManager::tokenManager(std::shared_ptr<gamestate> state,
-                           std::shared_ptr<cardDataManager> cardMgr) : state(state), cardMgr(cardMgr)
+tokenManager::tokenManager(tokenstate *tokens, std::string name) : tokens(tokens), name(name)
 {
 }
 
@@ -13,79 +13,53 @@ tokenManager::~tokenManager()
 {
 }
 
-void tokenManager::setHonor(int honor, int playerNum, std::string playerName)
+void tokenManager::setHonor(int honor)
 {
-   playerstate &pState = state->getPlayerState(playerNum);
-   pState.honorTokens = honor;
-   std::cout << "Setting " << playerName << " honor to " << honor << std::endl;
+   tokens->honorTokens = honor;
+   std::cout << "Setting " << name << " honor to " << honor << std::endl;
 }
 
-void tokenManager::gainFate(int fate, playerstate &pState, std::string playerName)
+void tokenManager::gainFate(int fate)
 {
-   pState.fate += fate;
-   std::cout << playerName << " gains " << fate << " fate" << std::endl;
+   tokens->fate += fate;
+   std::cout << name << " gains " << fate << " fate" << std::endl;
 }
 
-int tokenManager::getFate(playerstate &pState)
+void tokenManager::loseFate(int fate)
 {
-   return pState.fate;
+   tokens->fate -= fate;
+   std::cout << name << " loses " << fate << " fate" << std::endl;
 }
 
-void tokenManager::addFateToCard(playerstate &pState, int cardIndex, int extraFate)
+int tokenManager::getFate()
 {
-   // TODO: actually store fate to card
-   int cardfate = cardMgr->getFateCost(cardIndex);
-   pState.fate -= (extraFate + cardfate);
-   std::cout << "Paying " << cardfate << " for " << cardMgr->getCardName(cardIndex) << " and adding " << extraFate << " fate. (" << pState.fate
-      << " fate left)" << std::endl;
+   return tokens->fate;
 }
 
-std::list<choice> tokenManager::getAdditionalFateChoices(playerstate &pState, int cardIndex)
+void tokenManager::setHonorDial(int honor)
 {
-   int fateAvailable = pState.fate - cardMgr->getFateCost(cardIndex);
-   std::list<choice> list;
-   if(fateAvailable < 0)
-   {
-      throw std::runtime_error("Not enough fate to play card");
-   }
-   for(int f=0;f<=fateAvailable;f++)
-   {
-      std::stringstream ss;
-      ss << f;
-      std::string fateStr;
-      ss >> fateStr;
-      choice c(fateStr+" fate", choicetype::fate);
-      c.setNumber(f);
-      list.push_back(c);
-   }
-   return list;
+   tokens->honorDial = honor;
+   std::cout << "Setting " << name << " honor dial to " << honor << std::endl;
 }
 
-void tokenManager::setHonorDial(int honor, playerstate &pState, std::string playerName)
+int tokenManager::getHonorDial()
 {
-   pState.honorDial = honor;
-   std::cout << "Setting " << playerName << " honor dial to " << honor << std::endl;
+   return tokens->honorDial;
 }
 
-int tokenManager::getHonorDial(playerstate &pState)
+void tokenManager::gainHonor(int honor)
 {
-   return pState.honorDial;
+   tokens->honorTokens += honor;
+   std::cout << name << " gains " << honor << " honor (" << tokens->honorTokens << " total)" << std::endl;
 }
 
-void tokenManager::gainHonor(int honor, playerstate &pState, std::string playerName)
+void tokenManager::loseHonor(int honor)
 {
-   pState.honorTokens += honor;
-   if(honor > 0)
-   {
-      std::cout << playerName << " gains " << honor << " honor (" << pState.honorTokens << " total)" << std::endl;
-   }
-   else
-   {
-      std::cout << playerName << " losses " << -honor << " honor (" << pState.honorTokens << " total)" << std::endl;
-   }
+   tokens->honorTokens -= honor;
+   std::cout << name << " loses " << honor << " honor (" << tokens->honorTokens << " total)" << std::endl;
 }
 
-int tokenManager::getHonor(playerstate &pState)
+int tokenManager::getHonor()
 {
-   return pState.honorTokens;
+   return tokens->honorTokens;
 }

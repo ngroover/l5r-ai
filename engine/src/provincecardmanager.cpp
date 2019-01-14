@@ -59,9 +59,8 @@ void provinceCardManager::chooseStronghold(int provinceChoice)
    }
 }
 
-int provinceCardManager::getStartingHonor(int playerNum)
+int provinceCardManager::getStartingHonor(playerstate &pState)
 {
-   playerstate &pState = state->getPlayerState(playerNum);
    return cardMgr->getStrongholdHonor(pState.stronghold);
 }
 

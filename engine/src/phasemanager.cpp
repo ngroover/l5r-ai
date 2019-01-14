@@ -1,22 +1,24 @@
 #include "phasemanager.h"
 #include <iostream>
 #include <sstream>
+#include "gamestateintfc.h"
+#include "tokenmanager.h"
 
 using namespace l5r;
-
 
 phaseManager::phaseManager(std::shared_ptr<gamestate> state,
             std::shared_ptr<dynastyCardManager> dynastyMgr,
             std::shared_ptr<conflictCardManager> conflictMgr,
             std::shared_ptr<provinceCardManager> provinceMgr,
             std::shared_ptr<turnManager> turnMgr,
-            std::shared_ptr<tokenManager> tokenMgr,
             std::shared_ptr<agentManager> agentMgr,
-            std::shared_ptr<cardDataManager> cardMgr):
+            std::shared_ptr<cardDataManager> cardMgr,
+            std::shared_ptr<GameStateIntfc> stateIntfc):
             state(state),dynastyMgr(dynastyMgr),
             conflictMgr(conflictMgr), provinceMgr(provinceMgr),
-            turnMgr(turnMgr), tokenMgr(tokenMgr),
-            agentMgr(agentMgr), cardMgr(cardMgr), conflictDataMgr(&state->conflict_state, cardMgr)
+            turnMgr(turnMgr), agentMgr(agentMgr),
+            cardMgr(cardMgr), conflictDataMgr(&state->conflict_state, cardMgr),
+            stateIntfc(stateIntfc)
 {
 }
 
@@ -313,56 +315,59 @@ void phaseManager::doChooseAttackers(choice c)
 
 void phaseManager::doBid(choice c)
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+   tokenManager opponentTokens(stateIntfc->getOpponentTokens(), stateIntfc->getOpponentName());
+
    if(c.getType() == choicetype::bid)
    {
-      playerstate &pState = state->getPlayerState(relativePlayer::myself);
-      std::string name = agentMgr->getPlayerName(relativePlayer::myself);
-      tokenMgr->setHonorDial(c.getNumber(), pState, name);
+      tokens.setHonorDial(c.getNumber());
 
       if(turnMgr->ActionAndTurnDiffer())
       {
-         playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
-         std::string oppname = agentMgr->getPlayerName(relativePlayer::opponent);
-         int myhonor = tokenMgr->getHonorDial(pState);
-         int hishonor = tokenMgr->getHonorDial(oppState); 
-         if( myhonor > hishonor)
+         int mydial = tokens.getHonorDial();
+         int hisdial = opponentTokens.getHonorDial(); 
+         if( mydial > hisdial)
          {
-            tokenMgr->gainHonor(myhonor-hishonor, oppState, oppname);
-            tokenMgr->gainHonor(hishonor-myhonor, pState, name);
+            opponentTokens.gainHonor(mydial-hisdial);
+            tokens.loseHonor(mydial-hisdial);
          }
-         else if(hishonor > myhonor)
+         else if(hisdial > mydial)
          {
-            tokenMgr->gainHonor(hishonor-myhonor, pState, name);
-            tokenMgr->gainHonor(myhonor-hishonor, oppState, oppname);
+            opponentTokens.loseHonor(hisdial-mydial);
+            tokens.gainHonor(hisdial-mydial);
          }
-         if(tokenMgr->getHonor(pState) == 0)
+         if(tokens.getHonor() <= 0)
          {
-            std::cout << name << " loses due to honor " << std::endl;
+         //   std::cout << name << " loses due to honor " << std::endl;
             turnMgr->declareLoser();
             state->currentPhase = phase::gameover;
          }
-         if(tokenMgr->getHonor(pState) == 25)
+         if(opponentTokens.getHonor() >= 25)
          {
-            std::cout << name << " wins by to honor" << std::endl;
+          //  std::cout << name << " wins by to honor" << std::endl;
             turnMgr->declareWinner();
             state->currentPhase = phase::gameover;
          }
-         if(tokenMgr->getHonor(oppState) == 0)
+         if(opponentTokens.getHonor() <= 0)
          {
-            std::cout << oppname << " loses due to honor " << std::endl;
+         //   std::cout << oppname << " loses due to honor " << std::endl;
             turnMgr->declareWinner();
             state->currentPhase = phase::gameover;
          }
-         if(tokenMgr->getHonor(oppState) == 25)
+         if(tokens.getHonor() >= 25)
          {
-            std::cout << oppname << " wins due to honor " << std::endl;
+          //  std::cout << oppname << " wins due to honor " << std::endl;
             turnMgr->declareLoser();
             state->currentPhase = phase::gameover;
          }
          if(state->currentPhase != phase::gameover)
          {
-            conflictMgr->drawCards(myhonor, pState, name);
-            conflictMgr->drawCards(hishonor, oppState, oppname);
+            playerstate &pState = state->getPlayerState(relativePlayer::myself);
+            std::string name = agentMgr->getPlayerName(relativePlayer::myself);
+            playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
+            std::string oppname = agentMgr->getPlayerName(relativePlayer::opponent);
+            conflictMgr->drawCards(mydial, pState, name);
+            conflictMgr->drawCards(hisdial, oppState, oppname);
             //TODO: draw phase action
 
             goToConflictPhase();
@@ -413,6 +418,9 @@ void phaseManager::doDynastyMulligan(choice c)
 
 void phaseManager::doConflictMulligan(choice c)
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+   tokenManager opponentTokens(stateIntfc->getOpponentTokens(), stateIntfc->getOpponentName());
+
    if(c.getType() == choicetype::card)
    {
       conflictMgr->chooseMulliganCard(c.getNumber());
@@ -426,13 +434,12 @@ void phaseManager::doConflictMulligan(choice c)
       
       if(turnMgr->ActionAndTurnDiffer())
       {
+         playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
          // set starting honor
-         for(int i=1;i<=2;i++)
-         {
-            std::string name = agentMgr->getPlayerName(i);
-            int startingHonor = provinceMgr->getStartingHonor(i);
-            tokenMgr->setHonor(startingHonor, i, name);
-         }
+         int startingHonor = provinceMgr->getStartingHonor(pState);
+         tokens.setHonor(startingHonor);
+         startingHonor = provinceMgr->getStartingHonor(oppState);
+         opponentTokens.setHonor(startingHonor);
 
          // set rings unclaimed
          conflictDataMgr.initializeRings();
@@ -456,20 +463,26 @@ void phaseManager::doConflictMulligan(choice c)
 
 void phaseManager::doDynastyEntry()
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+   tokenManager opponentTokens(stateIntfc->getOpponentTokens(), stateIntfc->getOpponentName());
+
    std::cout << "Beginning Dynasty Phase" << std::endl;
    state->currentPhase = phase::dynasty;
    goToProvincePlay();
 
    // gain fate
    // TODO: read fate value from stronghold card
-   for(int i=1;i<=2;i++)
-   {
-      std::string name = agentMgr->getPlayerName(i);
-      playerstate &pState = state->getPlayerState(i);
-      dynastyMgr->flipAllDynastyFaceup(pState, name);
-      tokenMgr->gainFate(STRONGHOLD_FATE, pState, name);
-      pState.passed = false;
-   }
+   playerstate &pState = state->getPlayerState(relativePlayer::myself);
+   playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
+   std::string name = agentMgr->getPlayerName(relativePlayer::myself);
+   std::string oppname = agentMgr->getPlayerName(relativePlayer::opponent);
+   tokens.gainFate(STRONGHOLD_FATE);
+   dynastyMgr->flipAllDynastyFaceup(pState, name);
+   pState.passed = false;
+   opponentTokens.gainFate(STRONGHOLD_FATE);
+   dynastyMgr->flipAllDynastyFaceup(oppState, oppname);
+   oppState.passed = false;
+
    turnMgr->setActionToCurrentTurn();
 }
 
@@ -484,6 +497,8 @@ void phaseManager::doDrawPhaseEntry()
 
 void phaseManager::doProvincePlayAction(choice c)
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+
    if(c.getType() == choicetype::card)
    {
       playerstate &pState = state->getPlayerState(relativePlayer::myself);
@@ -499,7 +514,7 @@ void phaseManager::doProvincePlayAction(choice c)
          playerstate &pState = state->getPlayerState(relativePlayer::myself);
          std::string name = agentMgr->getPlayerName(relativePlayer::myself);
          std::cout << name << " passed first" << std::endl;
-         tokenMgr->gainFate(1, pState, name);
+         tokens.gainFate(1);
          pState.passed = true;
          turnMgr->swapAction();
       }
@@ -516,12 +531,16 @@ void phaseManager::doProvincePlayAction(choice c)
 
 void phaseManager::doAdditionalFate(choice c)
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+
    if(c.getType() == choicetype::fate)
    {
       playerstate &pState = state->getPlayerState(relativePlayer::myself);
       std::string name = agentMgr->getPlayerName(relativePlayer::myself);
-      dynastyMgr->playCharacter(pState, name, c.getNumber());
-      tokenMgr->addFateToCard(pState, dynastyMgr->getPendingFateCard(pState), c.getNumber());
+      int extraFate = c.getNumber();
+      dynastyMgr->playCharacter(pState, name, extraFate);
+      int pendingCharacterCost = dynastyMgr->getPendingCharCost(pState);
+      tokens.loseFate(pendingCharacterCost + extraFate);
       dynastyMgr->fillProvinces(pState, name);
 
       playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
@@ -694,8 +713,10 @@ decision phaseManager::getConflictMulliganDecision()
 
 decision phaseManager::getProvincePlayDecision()
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+
    playerstate &pState = state->getPlayerState(relativePlayer::myself);
-   int currentFate = tokenMgr->getFate(pState);
+   int currentFate = tokens.getFate();
    std::list<choice> list = dynastyMgr->getProvinceDynastyChoicesWithFateCost(dynastyCardStatus::faceup, currentFate); // all should be facedown
    list.push_back(choice("Pass", choicetype::pass));
    decision d("Choose a card to play", list);
@@ -704,8 +725,26 @@ decision phaseManager::getProvincePlayDecision()
 
 decision phaseManager::getAdditionalFateDecision()
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+
    playerstate &pState = state->getPlayerState(relativePlayer::myself);
-   std::list<choice> list = tokenMgr->getAdditionalFateChoices(pState, dynastyMgr->getPendingFateCard(pState));
+   std::list<choice> list;
+   int pendingCharacterCost = dynastyMgr->getPendingCharCost(pState);
+   int fateAvailable = tokens.getFate() - pendingCharacterCost;
+   if(fateAvailable < 0)
+   {
+      throw std::runtime_error("Not enough fate to play card");
+   }
+   for(int f=0;f<=fateAvailable;f++)
+   {
+      std::stringstream ss;
+      ss << f;
+      std::string fateStr;
+      ss >> fateStr;
+      choice c(fateStr+" fate", choicetype::fate);
+      c.setNumber(f);
+      list.push_back(c);
+   }
    decision d("Choose an amount of fate to add:", list);
    return d;
 }
@@ -795,6 +834,8 @@ decision phaseManager::getDefendersDecision()
 
 void phaseManager::doChooseDefenders(choice c)
 {
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+
    if(c.getType() == choicetype::card)
    {
       std::string name = agentMgr->getPlayerName(relativePlayer::myself);
@@ -827,10 +868,9 @@ void phaseManager::doChooseDefenders(choice c)
          if(conflictDataMgr.wasUnopposed())
          {
             std::cout << "Unopposed conflict!" << std::endl;
-            playerstate &oppState = state->getPlayerState(relativePlayer::myself);
             std::string oppname = agentMgr->getPlayerName(relativePlayer::myself);
-            tokenMgr->gainHonor(-1, oppState, oppname);
-            if(tokenMgr->getHonor(oppState) == 0)
+            tokens.loseHonor(1);
+            if(tokens.getHonor() <= 0)
             {
                std::cout << oppname << " loses due to honor loss" << std::endl;
                turnMgr->declareLoser();

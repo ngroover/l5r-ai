@@ -14,12 +14,12 @@
 #include "turnmanager.h"
 #include "phasemanager.h"
 #include "agentmanager.h"
-#include "tokenmanager.h"
 #include "conflictmanager.h"
 
 
 namespace l5r
 {
+   class GameStateIntfc;
    class engine
    {
       public:
@@ -38,9 +38,9 @@ namespace l5r
          void run();
 
       private:
-
          // shared state
          std::shared_ptr<gamestate> state;
+         std::shared_ptr<GameStateIntfc> stateIntfc;
 
          // state managers
          std::shared_ptr<dynastyCardManager> dynastyMgr;
@@ -50,7 +50,6 @@ namespace l5r
          std::shared_ptr<phaseManager> phaseMgr;
          std::shared_ptr<agentManager> agentMgr;
          std::shared_ptr<cardDataManager> cardDataMgr;
-         std::shared_ptr<tokenManager> tokenMgr;
    };
 };
 
