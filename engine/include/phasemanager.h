@@ -7,7 +7,6 @@
 #include "conflictcardmanager.h"
 #include "provincecardmanager.h"
 #include "turnmanager.h"
-#include "agentmanager.h"
 #include "choice.h"
 #include "decision.h"
 #include "conflictmanager.h"
@@ -19,7 +18,7 @@ namespace l5r
    class phaseManager
    {
       public:
-         phaseManager(std::shared_ptr<gamestate> state, std::shared_ptr<dynastyCardManager> dynastyMgr,std::shared_ptr<conflictCardManager> conflictMgr, std::shared_ptr<provinceCardManager> provinceMgr, std::shared_ptr<turnManager> turnMgr, std::shared_ptr<agentManager> agentMgr, std::shared_ptr<cardDataManager> cardMgr, std::shared_ptr<GameStateIntfc> stateIntfc);
+         phaseManager(std::shared_ptr<gamestate> state, std::shared_ptr<dynastyCardManager> dynastyMgr,std::shared_ptr<conflictCardManager> conflictMgr, std::shared_ptr<provinceCardManager> provinceMgr, std::shared_ptr<turnManager> turnMgr, std::shared_ptr<cardDataManager> cardMgr, std::shared_ptr<GameStateIntfc> stateIntfc);
          ~phaseManager();
 
 
@@ -97,7 +96,6 @@ namespace l5r
          std::shared_ptr<conflictCardManager> conflictMgr;
          std::shared_ptr<provinceCardManager> provinceMgr;
          std::shared_ptr<turnManager> turnMgr;
-         std::shared_ptr<agentManager> agentMgr;
          conflictManager conflictDataMgr;
          std::shared_ptr<cardDataManager> cardMgr;
 

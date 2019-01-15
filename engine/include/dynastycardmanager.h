@@ -4,7 +4,6 @@
 #include "state/gamestate.h"
 #include "decklist.h"
 #include "carddatamanager.h"
-#include "agentmanager.h"
 #include "choice.h"
 
 namespace l5r
@@ -16,70 +15,65 @@ namespace l5r
       either
    };
 
+   class cardarea;
+
    class dynastyCardManager
    {
       public:
-         dynastyCardManager(std::shared_ptr<gamestate> state,std::shared_ptr<cardDataManager> cardMgr, std::shared_ptr<agentManager> agentMgr);
+         dynastyCardManager(std::shared_ptr<gamestate> state,std::shared_ptr<cardDataManager> cardMgr);
          ~dynastyCardManager();
 
-         void createDeck(decklist deck, int playerNum);
-
          // fills in provinces for the specified player
-         void fillProvinces(playerstate &pState, std::string playerName);
+         void fillProvinces(cardarea *cards, std::string playerName);
 
          // flip all Dynasty cards faceup
-         void flipAllDynastyFaceup(playerstate &pState, std::string playerName);
+         void flipAllDynastyFaceup(cardarea *cards, std::string playerName);
 
          // sets aside a mulligan dynasty card
-         void chooseMulliganCard(int cardChoice);
          
-         void chooseCharacterToPlay(playerstate &pState, int cardChoice);
+         void chooseCharacterToPlay(cardarea *cards, int cardChoice);
 
-         inplaycharacter removeCharacterFromHome(playerstate &pState, int cardChoice);
+         inplaycharacter removeCharacterFromHome(cardarea *cards, int cardChoice);
 
          // performs the dynasty mulligan
-         void performMulligan();
-
-         // get choices
-         std::list<choice> getProvinceDynastyChoices(dynastyCardStatus dcs);
 
          // get choices with fate cost or less
-         std::list<choice> getProvinceDynastyChoicesWithFateCost(dynastyCardStatus dcs, int fateCost);
+         std::list<choice> getProvinceDynastyChoicesWithFateCost(cardarea *cards, dynastyCardStatus dcs, int fateCost);
 
          // get pending dynasty card
-         int getPendingFateCard(playerstate &pState);
+         int getPendingFateCard(cardarea *cards);
 
          // play pending character
-         void playCharacter(playerstate &pState, std::string playerName, int extraFate);
+         void playCharacter(cardarea *cards, std::string playerName, int extraFate);
 
-         int getPendingCharCost(playerstate &pState);
+         int getPendingCharCost(cardarea *cards);
 
          // get characters that can attack
-         std::list<choice> getAttackerChoices(playerstate &pState);
+         std::list<choice> getAttackerChoices(cardarea *cards);
 
          // get characters that can defend
-         std::list<choice> getDefenderChoices(playerstate &pState);
+         std::list<choice> getDefenderChoices(cardarea *cards);
 
          int conflictTotal(playerstate &pState);
 
-         void sendCharactersHome(std::list<inplaycharacter> charlist, playerstate &pState);
+         void sendCharactersHome(std::list<inplaycharacter> charlist, cardarea *cards);
 
-         int countFavorGlory(playerstate &pState);
+         int countFavorGlory(cardarea *cards);
 
-         std::list<choice> getCharactersWithNoFate();
+         std::list<choice> getCharactersWithNoFate(cardarea *cards);
 
-         void discardCharacter(int cardIndex);
+         void discardCharacter(cardarea *cards, int cardIndex);
 
-         void removeFateFromCharacters();
+         void removeFateFromCharacters(cardarea *cards);
 
-         void discardProvinceCard(int cardIndex);
+         void discardProvinceCard(cardarea *cards, int cardIndex);
          
-         void readyAllCharacters();
+         void readyAllCharacters(cardarea *cards);
 
+         std::list<choice> getProvinceDynastyChoices(cardarea *cards, dynastyCardStatus dcs);
       private:
          std::shared_ptr<gamestate> state;
          std::shared_ptr<cardDataManager> cardMgr;
-         std::shared_ptr<agentManager> agentMgr;
    };
 }
 

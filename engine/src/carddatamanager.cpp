@@ -11,7 +11,7 @@ cardDataManager::~cardDataManager()
 {
 }
 
-void cardDataManager::loadDecklist(decklist dl, int playerNum)
+void cardDataManager::loadDecklist(decklist dl)
 {
    // fill in cardMap
    std::map<cards,card> tmpList = cg.generateCards(dl);

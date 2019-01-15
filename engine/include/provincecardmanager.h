@@ -3,36 +3,33 @@
 
 #include "state/gamestate.h"
 #include "carddatamanager.h"
-#include "agentmanager.h"
 #include "choice.h"
 
 
 namespace l5r
 {
+   class cardarea;
    class provinceCardManager
    {
       public:
-         provinceCardManager(std::shared_ptr<gamestate> state, std::shared_ptr<cardDataManager> cardMgr,std::shared_ptr<agentManager> agentMgr);
+         provinceCardManager(std::shared_ptr<gamestate> state, std::shared_ptr<cardDataManager> cardMgr);
          ~provinceCardManager();
 
-         void createDeck(decklist deck, int playerNum);
-
          // chooses a stronghold for the currently active player
-         void chooseStronghold(int provinceChoice);
+         void chooseStronghold(cardarea *cards, int provinceChoice);
 
-         void breakProvince(playerstate &pState, int cardIndex);
-         int getStartingHonor(playerstate &pState);
+         void breakProvince(cardarea *cards, int cardIndex);
+         int getStartingHonor(cardarea *cards);
 
-         std::list<choice> getStrongholdChoices();
+         std::list<choice> getStrongholdChoices(cardarea *cards);
 
-         std::list<choice> getProvinceChoices(playerstate &pState);
+         std::list<choice> getProvinceChoices(cardarea *cards);
 
-         int getStrongholdProvince(playerstate &pState);
+         int getStrongholdProvince(cardarea *cards);
 
       private:
          std::shared_ptr<gamestate> state;
          std::shared_ptr<cardDataManager> cardMgr;
-         std::shared_ptr<agentManager> agentMgr;
    };
 };
 #endif // _PROVINCE_CARD_MANAGER_H_

@@ -12,10 +12,11 @@ add_library( engine SHARED src/engine.cpp
                         src/conflictcardmanager.cpp
                         src/provincecardmanager.cpp
                         src/tokenmanager.cpp
-                        src/agentmanager.cpp
                         src/turnmanager.cpp
                         src/conflictmanager.cpp
-                        src/gamestateintfc.cpp)
+                        src/gamestateintfc.cpp
+                        src/cardareamanager.cpp
+                        src/mulliganmanager.cpp)
 
 add_executable( simulator sim/main.cpp )
 

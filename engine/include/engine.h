@@ -13,7 +13,6 @@
 #include "carddatamanager.h"
 #include "turnmanager.h"
 #include "phasemanager.h"
-#include "agentmanager.h"
 #include "conflictmanager.h"
 
 
@@ -48,8 +47,9 @@ namespace l5r
          std::shared_ptr<provinceCardManager> provinceMgr;
          std::shared_ptr<turnManager> turnMgr;
          std::shared_ptr<phaseManager> phaseMgr;
-         std::shared_ptr<agentManager> agentMgr;
          std::shared_ptr<cardDataManager> cardDataMgr;
+
+         std::unique_ptr<agent> player1,player2;
    };
 };
 

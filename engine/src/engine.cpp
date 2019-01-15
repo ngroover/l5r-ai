@@ -5,38 +5,40 @@
 #include <sstream>
 #include <algorithm>
 #include "gamestateintfc.h"
+#include "cardareamanager.h"
 
 using namespace l5r;
 
 // constructor
-engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2)
+engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2): player1(std::move(player1)), player2(std::move(player2))
 {
    state = std::make_shared<gamestate>();
 
-   stateIntfc = std::make_shared<GameStateIntfc>(state, player1->getName(), player2->getName());
+   stateIntfc = std::make_shared<GameStateIntfc>(state, this->player1->getName(), this->player2->getName());
 
    // initialize managers
-   agentMgr = std::make_shared<agentManager>(std::move(player1),std::move(player2),state);
    cardDataMgr = std::make_shared<cardDataManager>(state);
-   dynastyMgr = std::make_shared<dynastyCardManager>(state, cardDataMgr, agentMgr);
+   dynastyMgr = std::make_shared<dynastyCardManager>(state, cardDataMgr);
    turnMgr = std::make_shared<turnManager>(state);
-   conflictMgr = std::make_shared<conflictCardManager>(state, cardDataMgr, agentMgr);
-   provinceMgr = std::make_shared<provinceCardManager>(state, cardDataMgr, agentMgr);
-   phaseMgr = std::make_shared<phaseManager>(state, dynastyMgr, conflictMgr, provinceMgr, turnMgr, agentMgr, cardDataMgr, stateIntfc);
+   conflictMgr = std::make_shared<conflictCardManager>(state, cardDataMgr);
+   provinceMgr = std::make_shared<provinceCardManager>(state, cardDataMgr);
+   phaseMgr = std::make_shared<phaseManager>(state, dynastyMgr, conflictMgr, provinceMgr, turnMgr, cardDataMgr, stateIntfc);
 
    // setup the gamestate
    std::cout << "Setting up game:" << std::endl;
-   for(int i=1;i<=2;i++)
-   {
-      std::cout << agentMgr->getPlayerName(i) << " (" << agentMgr->getPlayerDecklist(i).getName() << ")" <<std::endl;
-      cardDataMgr->loadDecklist(agentMgr->getPlayerDecklist(i), i);
-      dynastyMgr->createDeck(agentMgr->getPlayerDecklist(i), i);
-      conflictMgr->createDeck(agentMgr->getPlayerDecklist(i), i);
-      provinceMgr->createDeck(agentMgr->getPlayerDecklist(i), i);
-   }
+   std::cout << this->player1->getName() << " (" << this->player1->getDeckList().getName() << ")" <<std::endl;
+   std::cout << this->player2->getName() << " (" << this->player2->getDeckList().getName() << ")" <<std::endl;
 
-   std::cout << "First player is " << agentMgr->getPlayerName(1) << std::endl;
+   std::cout << "First player is " << this->player1->getName() << std::endl;
    turnMgr->setCurrentTurnAndAction(1);
+
+   cardDataMgr->loadDecklist(this->player1->getDeckList());
+   cardDataMgr->loadDecklist(this->player2->getDeckList());
+   CardAreaManager player1Cards(stateIntfc->getPlayerCards(), this->player1->getName(), cardDataMgr);
+   CardAreaManager player2Cards(stateIntfc->getOpponentCards(), this->player2->getName(), cardDataMgr);
+
+   player1Cards.setupCards(this->player1->getDeckList(), state->cardIds);
+   player2Cards.setupCards(this->player2->getDeckList(), state->cardIds);
 
    // select stronghold is the first player decision
    phaseMgr->goToStrongholdSelection();
@@ -91,7 +93,15 @@ void engine::run()
    while( state->currentPhase != phase::gameover )
    {
       decision d = getDecision();
-      choice c = agentMgr->getCurrentPlayerChoice(d);
-      doAction(c);
+      if( state->currentAction == player::player1 )
+      {
+         choice c = player1->chooseAction(d);
+         doAction(c);
+      }
+      else
+      {
+         choice c = player2->chooseAction(d);
+         doAction(c);
+      }
    }
 }

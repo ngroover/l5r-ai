@@ -8,6 +8,8 @@ namespace l5r
 {
    class gamestate;
    class tokenstate;
+   class cardarea;
+   class conflictPlayerState;
    class GameStateIntfc
    {
       public:
@@ -17,8 +19,17 @@ namespace l5r
          tokenstate *getPlayerTokens();
          tokenstate *getOpponentTokens();
 
+         cardarea *getPlayerCards();
+         cardarea *getOpponentCards();
+
          std::string getPlayerName();
          std::string getOpponentName();
+
+         std::string getAttackerName();
+         std::string getDefenderName();
+
+         conflictPlayerState *getAttackerConflictState();
+         conflictPlayerState *getDefenderConflictState();
 
       private:
          std::shared_ptr<gamestate> state;

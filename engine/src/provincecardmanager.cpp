@@ -1,10 +1,11 @@
 #include "provincecardmanager.h"
 #include <iostream>
+#include "state/cardarea.h"
 
 using namespace l5r;
 
 
-provinceCardManager::provinceCardManager(std::shared_ptr<gamestate> state, std::shared_ptr<cardDataManager> cardMgr, std::shared_ptr<agentManager> agentMgr):state(state), cardMgr(cardMgr), agentMgr(agentMgr)
+provinceCardManager::provinceCardManager(std::shared_ptr<gamestate> state, std::shared_ptr<cardDataManager> cardMgr):state(state), cardMgr(cardMgr)
 {
 }
 
@@ -12,63 +13,31 @@ provinceCardManager::~provinceCardManager()
 {
 }
 
-void provinceCardManager::createDeck(decklist deck, int playerNum)
+void provinceCardManager::chooseStronghold(cardarea *cards, int provinceChoice)
 {
-   // shouldn't be cards here but clear just in case
-   state->getPlayerState(playerNum).provinceArea.clear();
-
-   for(auto c: deck.getList())
-   {
-      if(cardMgr->getCardType(c) == cardtype::province)
-      {
-         // add to global table for unique id
-         state->cardIds.push_back(c);
-         
-         // add card to deck
-         provinceStack ps;
-         ps.provinceCard = state->cardIds.size() -1;
-         ps.dynastyCard = -1;// no dynasty card yet
-         ps.facedownDynasty = false;
-         ps.provinceStatus = provinceCardStatus::unrevealed;
-
-         state->getPlayerState(playerNum).provinceArea.push_back(ps);
-      }
-      if(cardMgr->getCardType(c) == cardtype::stronghold)
-      {
-         state->cardIds.push_back(c);
-         int id = state->cardIds.size() - 1;
-         state->getPlayerState(playerNum).stronghold = id;
-      }
-   }
-}
-
-void provinceCardManager::chooseStronghold(int provinceChoice)
-{
-   playerstate &pState = state->getPlayerState(relativePlayer::myself);
-   for(auto prov=pState.provinceArea.begin();prov!=pState.provinceArea.end();++prov)
+   for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov)
    {
       if(prov->provinceCard == provinceChoice)
       {
-         pState.provinceArea.erase(prov);
-         pState.strongholdProvince = provinceChoice;
-         prov = pState.provinceArea.end();
-         std::cout << agentMgr->getPlayerName(relativePlayer::myself)
+         cards->provinceArea.erase(prov);
+         cards->strongholdProvince = provinceChoice;
+         prov = cards->provinceArea.end();
+         std::cout << "TODO: current player"
             << " chose " << cardMgr->getCardName(provinceChoice) 
             << " for a stronghold" << std::endl;
       }
    }
 }
 
-int provinceCardManager::getStartingHonor(playerstate &pState)
+int provinceCardManager::getStartingHonor(cardarea *cards)
 {
-   return cardMgr->getStrongholdHonor(pState.stronghold);
+   return cardMgr->getStrongholdHonor(cards->stronghold);
 }
 
-std::list<choice> provinceCardManager::getStrongholdChoices()
+std::list<choice> provinceCardManager::getStrongholdChoices(cardarea *cards)
 {
-   playerstate &pState = state->getPlayerState(relativePlayer::myself);
    std::list<choice> list;
-   for(auto prov:pState.provinceArea)
+   for(auto prov:cards->provinceArea)
    {
       choice c(cardMgr->getCardName(prov.provinceCard), choicetype::card);
       c.setNumber(prov.provinceCard);
@@ -77,11 +46,11 @@ std::list<choice> provinceCardManager::getStrongholdChoices()
    return list;
 }
 
-std::list<choice> provinceCardManager::getProvinceChoices(playerstate &pState)
+std::list<choice> provinceCardManager::getProvinceChoices(cardarea *cards)
 {
    std::list<choice> list;
    int brokenCount=0;
-   for(auto pc:pState.provinceArea)
+   for(auto pc:cards->provinceArea)
    {
       if(pc.provinceStatus != provinceCardStatus::broken)
       {
@@ -96,18 +65,18 @@ std::list<choice> provinceCardManager::getProvinceChoices(playerstate &pState)
    }
    if(brokenCount >= 3)
    {
-      choice c(cardMgr->getCardName(pState.strongholdProvince), choicetype::card);
-      c.setNumber(pState.strongholdProvince);
+      choice c(cardMgr->getCardName(cards->strongholdProvince), choicetype::card);
+      c.setNumber(cards->strongholdProvince);
       list.push_back(c);
    }
    return list;
 }
 
-void provinceCardManager::breakProvince(playerstate &pState, int cardIndex)
+void provinceCardManager::breakProvince(cardarea *cards, int cardIndex)
 {
    // nothing happens for stronghold
    // handled outside this
-   for(auto &p:pState.provinceArea)
+   for(auto &p:cards->provinceArea)
    {
       if(p.provinceCard == cardIndex)
       {
@@ -117,8 +86,8 @@ void provinceCardManager::breakProvince(playerstate &pState, int cardIndex)
    }
 }
 
-int provinceCardManager::getStrongholdProvince(playerstate &pState)
+int provinceCardManager::getStrongholdProvince(cardarea *cards)
 {
-   return pState.strongholdProvince;
+   return cards->strongholdProvince;
 }
 
