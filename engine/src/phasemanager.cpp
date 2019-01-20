@@ -64,11 +64,7 @@ void phaseManager::goToConflictPhase()
 
    state->currentPhase = phase::conflict;
    state->currentSubPhase = subphase::choose_attackers;
-   for(int i=1;i<=2;i++)
-   {
-      playerstate &pState = state->getPlayerState(i);
-      rings.initializeConflicts();
-   }
+   rings.initializeConflicts();
    // first player gets to be in conflict first
    state->currentConflict = state->currentTurn;
 }

@@ -38,22 +38,6 @@ ConflictResult ConflictResolutionManager::resolveConflict()
    if(attackerStr > 0 && attackerStr >= defenderStr)
    {
       cr.winner = conflictwinner::attacker;
-      if(defenderState->inConflict.size() == 0)
-      {
-         cr.unopposed = true;
-         std::cout << "Unopposed conflict!" << std::endl;
-         tokens.loseHonor(1);
-         if(tokens.getHonor() <= 0)
-         {
-            std::cout << stateIntfc->getPlayerName() << " loses due to honor loss" << std::endl;
-            turnMgr.declareLoser();
-            state->currentPhase = phase::gameover;
-         }
-      }
-      else
-      {
-         cr.unopposed = false;
-      }
       int provinceStr = cardMgr->getProvinceStr(global->contested_province);
       if((attackerStr - defenderStr) >= provinceStr)
       {
@@ -71,6 +55,22 @@ ConflictResult ConflictResolutionManager::resolveConflict()
          cr.brokeProvince = false;
       }
 
+      if(defenderState->inConflict.size() == 0)
+      {
+         cr.unopposed = true;
+         std::cout << "Unopposed conflict!" << std::endl;
+         tokens.loseHonor(1);
+         if(tokens.getHonor() <= 0)
+         {
+            std::cout << stateIntfc->getPlayerName() << " loses due to honor loss" << std::endl;
+            turnMgr.declareLoser();
+            state->currentPhase = phase::gameover;
+         }
+      }
+      else
+      {
+         cr.unopposed = false;
+      }
       attackerState->claimed_rings.push_back(global->contested_ring);
       std::cout << stateIntfc->getAttackerName() << " claimed the " <<
          getRingName(global->contested_ring) << " ring" << std::endl;
@@ -93,16 +93,14 @@ ConflictResult ConflictResolutionManager::resolveConflict()
       cr.winner = conflictwinner::nobody;
    }
 
-   attackerState->numConflicts--;
-   for(auto c=attackerState->availableConflicts.begin();
-      c!=attackerState->availableConflicts.end();
-      c++)
+   attackerState->totalConflictsLeft--;
+   if(global->conflict_type == conflicttype::military)
    {
-      if(*c == global->conflict_type)
-      {
-         attackerState->availableConflicts.erase(c);
-         c= attackerState->availableConflicts.end();
-      }
+      attackerState->militaryConflictsLeft--;
+   }
+   else
+   {
+      attackerState->politicalConflictsLeft--;
    }
 
    return cr;

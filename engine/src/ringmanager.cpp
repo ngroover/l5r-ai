@@ -32,23 +32,19 @@ void RingManager::initialize()
    global->unclaimed_rings.push_back(ur);
    ur.type = ring::_void;
    global->unclaimed_rings.push_back(ur);
-   attacker->availableConflicts.clear();
-   defender->availableConflicts.clear();
 }
 
 void RingManager::initializeConflicts()
 {
    auto attacker = stateIntfc->getAttackerConflictState();
-   auto defender = stateIntfc->getAttackerConflictState();
+   auto defender = stateIntfc->getDefenderConflictState();
 
-   attacker->numConflicts = 2;
-   attacker->availableConflicts.clear();
-   attacker->availableConflicts.push_back(conflicttype::military);
-   attacker->availableConflicts.push_back(conflicttype::political);
-   defender->numConflicts = 2;
-   defender->availableConflicts.clear();
-   defender->availableConflicts.push_back(conflicttype::military);
-   defender->availableConflicts.push_back(conflicttype::political);
+   attacker->politicalConflictsLeft = 1;
+   attacker->militaryConflictsLeft = 1;
+   attacker->totalConflictsLeft = 2;
+   defender->politicalConflictsLeft = 1;
+   defender->militaryConflictsLeft = 1;
+   defender->totalConflictsLeft = 2;
 }
 
 void RingManager::unclaimRings()

@@ -16,8 +16,10 @@ namespace l5r
       void serialize(Archive & ar, const unsigned int version)
       {
          ar & BOOST_SERIALIZATION_NVP(inConflict);
-         ar & BOOST_SERIALIZATION_NVP(availableConflicts);
          ar & BOOST_SERIALIZATION_NVP(claimed_rings);
+         ar & politicalConflictsLeft;
+         ar & militaryConflictsLeft;
+         ar & totalConflictsLeft;
          ar & numConflicts;
          ar & hasImperialFavor;
       }
@@ -26,7 +28,9 @@ namespace l5r
       std::list<inplaycharacter> inConflict;
 
       // conflicts available
-      std::list<conflicttype> availableConflicts;
+      int politicalConflictsLeft;
+      int militaryConflictsLeft;
+      int totalConflictsLeft;
 
       // claimed rings
       std::list<ring> claimed_rings;

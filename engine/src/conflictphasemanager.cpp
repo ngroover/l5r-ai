@@ -40,17 +40,18 @@ decision ConflictPhaseManager::getAttackersDecision()
 decision ConflictPhaseManager::getConflictTypeDecision()
 {
    std::list<choice> list;
-   std::vector<conflicttype> available;
    auto attacker = stateIntfc->getAttackerConflictState();
-   for(auto ac: attacker->availableConflicts)
+   if(attacker->militaryConflictsLeft > 0)
    {
-      if(std::find(available.begin(), available.end(), ac) == available.end())
-      {
-         choice c(getConflictTypeName(ac), choicetype::conflict_type);
-         c.setConflictType(ac);
-         list.push_back(c);
-         available.push_back(ac);
-      }
+      choice c(getConflictTypeName(conflicttype::military), choicetype::conflict_type);
+      c.setConflictType(conflicttype::military);
+      list.push_back(c);
+   }
+   if(attacker->politicalConflictsLeft > 0)
+   {
+      choice c(getConflictTypeName(conflicttype::political), choicetype::conflict_type);
+      c.setConflictType(conflicttype::political);
+      list.push_back(c);
    }
    decision d("Choose conflict type", list);
    return d;
@@ -58,7 +59,6 @@ decision ConflictPhaseManager::getConflictTypeDecision()
 
 decision ConflictPhaseManager::getRingDecision()
 {
-   //std::list<choice> list = conflictDataMgr.getConflictRingChoices();
    std::list<choice> list;
    auto global = stateIntfc->getGlobalConflictState();
    for(auto r: global->unclaimed_rings)
@@ -151,8 +151,8 @@ void ConflictPhaseManager::doChooseAttackers(choice c)
       else
       {
          std::cout << "Pass conflict" << std::endl;
-         attacker->numConflicts--;
 
+         attacker->totalConflictsLeft--;
          processEndConflict();
       }
    }
@@ -173,12 +173,12 @@ void ConflictPhaseManager::processEndConflict()
    state->currentSubPhase = subphase::choose_attackers;
    auto attacker = stateIntfc->getAttackerConflictState();
    auto defender = stateIntfc->getDefenderConflictState();
-   if(defender->numConflicts > 0)
+   if(defender->totalConflictsLeft > 0)
    {
       turnMgr.giveDefenderAction();
       turnMgr.swapConflict();
    }
-   else if(attacker->numConflicts > 0)
+   else if(attacker->totalConflictsLeft > 0)
    {
       // attacker gets another conflict
       // (probably won't ever happen with current card set)
