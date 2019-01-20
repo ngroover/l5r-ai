@@ -37,7 +37,8 @@ namespace l5r
               int politicalSkill,
               int glory,
               bool miiltaryDash,
-              bool politicalDash);
+              bool politicalDash,
+              int holdingBonus);
          card(){};
          ~card();
 
@@ -53,6 +54,7 @@ namespace l5r
          bool getMilitaryDash() const;
          bool getPoliticalDash() const;
          int getProvinceStr() const;
+         int getHoldingBonus() const;
 
       private:
          std::string name;
@@ -67,6 +69,7 @@ namespace l5r
          int glory;
          bool militaryDash;
          bool politicalDash;
+         int holdingBonus;
    };
 
    class card::builder
@@ -84,6 +87,7 @@ namespace l5r
          builder& setGlory(int glory);
          builder& setMilitaryDash(bool militaryDash);
          builder& setPoliticalDash(bool politicalDash);
+         builder& setHoldingBonus(int holdingBonus);
 
          card build() const;
 
@@ -100,6 +104,7 @@ namespace l5r
          bool militaryDash = false;
          bool politicalDash = false;
          dynastycardtype dynastyType = dynastycardtype::none;
+         int holdingBonus = 0;
    };
 };
 

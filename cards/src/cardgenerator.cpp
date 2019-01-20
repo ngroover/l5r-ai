@@ -218,6 +218,7 @@ card cardgenerator::generateCard(cards c)
                .setName("Artisan Academy")
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::holding)
+               .setHoldingBonus(1)
                .build();
       case cards::otomo_courtier:
          return card::builder{}
@@ -244,12 +245,14 @@ card cardgenerator::generateCard(cards c)
                .setName("Favorable Ground")
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::holding)
+               .setHoldingBonus(1)
                .build();
       case cards::imperial_storehouse:
          return card::builder{}
                .setName("Imperial Storehouse")
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::holding)
+               .setHoldingBonus(1)
                .build();
       case cards::seppun_guardsman:
          return card::builder{}
@@ -381,6 +384,7 @@ card cardgenerator::generateCard(cards c)
                .setName("Staging Ground")
                .setType(cardtype::dynasty)
                .setDynastyType(dynastycardtype::holding)
+               .setHoldingBonus(1)
                .build();
       case cards::steadfast_samurai:
          return card::builder{}

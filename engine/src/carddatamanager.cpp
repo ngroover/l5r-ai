@@ -63,3 +63,8 @@ int cardDataManager::getGlory(int index)
 {
    return cardMap[state->cardIds[index]].getGlory();
 }
+
+int cardDataManager::getHoldingBonus(int index)
+{
+   return cardMap[state->cardIds[index]].getHoldingBonus();
+}

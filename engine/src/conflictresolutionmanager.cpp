@@ -39,7 +39,8 @@ ConflictResult ConflictResolutionManager::resolveConflict()
    if(attackerStr > 0 && attackerStr >= defenderStr)
    {
       cr.winner = conflictwinner::attacker;
-      int provinceStr = cardMgr->getProvinceStr(global->contested_province);
+      int holdingBonus = findHoldingBonus();
+      int provinceStr = cardMgr->getProvinceStr(global->contested_province) + holdingBonus;
       if((attackerStr - defenderStr) >= provinceStr)
       {
          cr.brokeProvince = true;
@@ -134,4 +135,22 @@ void ConflictResolutionManager::breakProvince(cardarea *cards, int cardIndex)
          p.provinceStatus = provinceCardStatus::broken;
       }
    }
+}
+
+int ConflictResolutionManager::findHoldingBonus()
+{
+   auto defender = stateIntfc->getDefenderCards();
+
+   for(auto prov: defender->provinceArea)
+   {
+      if(prov.provinceCard == global->contested_province)
+      {
+         if(cardMgr->getDynastyCardType(prov.dynastyCard) == dynastycardtype::holding)
+         {
+            return cardMgr->getHoldingBonus(prov.dynastyCard);
+         }
+      }
+   }
+   // no holding bonus
+   return 0;
 }

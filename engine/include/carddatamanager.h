@@ -25,6 +25,7 @@ namespace l5r
          int getStrongholdHonor(int index);
          int getFateCost(int index);
          int getProvinceStr(int index);
+         int getHoldingBonus(int index);
 
          int getMilitaryStr(int index);
          int getPoliticalStr(int index);

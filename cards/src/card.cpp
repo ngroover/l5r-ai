@@ -13,7 +13,8 @@ card::card(std::string name, cardtype type,
       int politicalSkill,
       int glory,
       bool militaryDash,
-      bool politicalDash) :
+      bool politicalDash,
+      int holdingBonus) :
       name(name), type(type),
       canBeStronghold(canBeStronghold),
       provinceStr(provinceStr),
@@ -24,7 +25,8 @@ card::card(std::string name, cardtype type,
       politicalSkill(politicalSkill),
       glory(glory),
       militaryDash(militaryDash),
-      politicalDash(politicalDash)
+      politicalDash(politicalDash),
+      holdingBonus(holdingBonus)
 {
 }
 
@@ -86,6 +88,11 @@ bool card::getPoliticalDash() const
 int card::getProvinceStr() const
 {
    return provinceStr;
+}
+
+int card::getHoldingBonus() const
+{
+   return holdingBonus;
 }
 
 card::builder& card::builder::setName(std::string name)
@@ -160,6 +167,12 @@ card::builder& card::builder::setPoliticalDash(bool politcalDash)
    return *this;
 }
 
+card::builder& card::builder::setHoldingBonus(int holdingBonus)
+{
+   this->holdingBonus = holdingBonus;
+   return *this;
+}
+
 card card::builder::build() const
 {
    if( name == "Invalid" )
@@ -178,6 +191,6 @@ card card::builder::build() const
    return card(name, type, canBeStronghold,
       provinceStr, strongholdHonor,
       fateCost,dynastyType, militarySkill, politicalSkill, glory,
-      militaryDash, politicalDash);
+      militaryDash, politicalDash,holdingBonus);
 }
 

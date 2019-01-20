@@ -34,6 +34,7 @@ namespace l5r
          ConflictResult resolveConflict();
 
       private:
+         int findHoldingBonus();
          void breakProvince(cardarea *cards, int cardIndex);
          int calculateStr(conflictPlayerState *player);
 
