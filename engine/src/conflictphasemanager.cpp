@@ -308,16 +308,13 @@ void ConflictPhaseManager::doChooseDefenders(choice c)
 
       ConflictResult result = conflictResolver.resolveConflict();
    
-      if(state->currentPhase != phase::gameover)
-      {
-         CharacterManipulator manipulator(stateIntfc, cardMgr);
-         manipulator.bowParticipants();
-         manipulator.movePartipantsHome();
+      CharacterManipulator manipulator(stateIntfc, cardMgr);
+      manipulator.bowParticipants();
+      manipulator.movePartipantsHome();
 
 
-         // process next conflict
-         processEndConflict();
-      }
+      // process next conflict
+      processEndConflict();
    }
    else
    {

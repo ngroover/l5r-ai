@@ -2,6 +2,7 @@
 #include "state/tokens.h"
 #include <iostream>
 #include <sstream>
+#include "endgame.h"
 
 using namespace l5r;
 
@@ -54,6 +55,7 @@ void tokenManager::gainHonor(int honor)
    if(tokens->honorTokens > 25)
    {
       tokens->honorTokens = 25;
+      throw EndGameException(wintype::honor);
    }
 }
 
@@ -64,6 +66,7 @@ void tokenManager::loseHonor(int honor)
    if(tokens->honorTokens < 0)
    {
       tokens->honorTokens = 0;
+      throw EndGameException(wintype::dishonor);
    }
 }
 

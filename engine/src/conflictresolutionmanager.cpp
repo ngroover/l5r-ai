@@ -7,6 +7,7 @@
 #include "carddatamanager.h"
 #include "ringmanager.h"
 #include <iostream>
+#include "endgame.h"
 
 using namespace l5r;
 
@@ -45,9 +46,8 @@ ConflictResult ConflictResolutionManager::resolveConflict()
          breakProvince(stateIntfc->getPlayerCards(), global->contested_province);
          if(defender->strongholdProvince == global->contested_province)
          {
-            std::cout << stateIntfc->getOpponentName() << " won the game!" << std::endl;
-            turnMgr.declareLoser();
-            state->currentPhase = phase::gameover;
+            throw EndGameException(wintype::conquest);
+            //std::cout << stateIntfc->getOpponentName() << " won the game!" << std::endl;
          }
       }
       else
@@ -60,12 +60,6 @@ ConflictResult ConflictResolutionManager::resolveConflict()
          cr.unopposed = true;
          std::cout << "Unopposed conflict!" << std::endl;
          tokens.loseHonor(1);
-         if(tokens.getHonor() <= 0)
-         {
-            std::cout << stateIntfc->getPlayerName() << " loses due to honor loss" << std::endl;
-            turnMgr.declareLoser();
-            state->currentPhase = phase::gameover;
-         }
       }
       else
       {

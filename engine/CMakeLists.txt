@@ -19,7 +19,8 @@ add_library( engine SHARED src/engine.cpp
                         src/conflictresolutionmanager.cpp
                         src/charactermanipulator.cpp
                         src/ringmanager.cpp
-                        src/imperialfavormanager.cpp)
+                        src/imperialfavormanager.cpp
+                        src/endgame.cpp)
 
 add_executable( simulator sim/main.cpp )
 

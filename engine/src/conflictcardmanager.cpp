@@ -34,10 +34,6 @@ void conflictCardManager::drawCards(int numCards, cardarea *cards, tokenManager 
                cards->conflictDeck = cards->conflictDiscard;
                cards->conflictDiscard.clear();
                tokens->loseHonor(5);
-               if(tokens->dishonorLoss())
-               {
-                  return;
-               }
                conflictDeckIter = cards->conflictDeck.begin();
             }
             else

@@ -28,10 +28,6 @@ void dynastyCardManager::fillProvinces(cardarea *cards, tokenManager *tokens, st
             cards->dynastyDeck = cards->dynastyDiscard;
             cards->dynastyDiscard.clear();
             tokens->loseHonor(5);
-            if(tokens->dishonorLoss())
-            {
-               return;
-            }
             dynastyDeck = cards->dynastyDeck.begin();
             std::cout << " top card is " << cardMgr->getCardName(*dynastyDeck) << std::endl;
             
