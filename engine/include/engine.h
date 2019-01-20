@@ -33,7 +33,7 @@ namespace l5r
 
          void doAction(choice c);
 
-         void run();
+         void run(bool debug);
 
       private:
          // shared state

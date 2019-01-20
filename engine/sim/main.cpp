@@ -33,6 +33,6 @@ int main(int argc, char *argv[])
 
    l5r::engine game(std::move(me), std::move(cpu)); 
 
-   game.run();
+   game.run(true);
    return 0;
 }

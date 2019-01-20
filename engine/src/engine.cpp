@@ -4,6 +4,7 @@
 #include <memory>
 #include <sstream>
 #include <algorithm>
+#include <fstream>
 #include "gamestateintfc.h"
 #include "cardareamanager.h"
 
@@ -87,19 +88,29 @@ void engine::doAction(choice c)
    } while(d.getChoiceList().size() <= 1 && state->currentPhase != phase::gameover);
 }
 
-void engine::run()
+void engine::run(bool debug)
 {
+   std::ofstream debugfile;
+   debugfile.open("debug_choices.txt");
    while( state->currentPhase != phase::gameover )
    {
       decision d = getDecision();
       if( state->currentAction == player::player1 )
       {
          choice c = player1->chooseAction(d);
+         if(debug)
+         {
+            debugfile << player1->getName() << ": " << c.getText() << std::endl;
+         }
          doAction(c);
       }
       else
       {
          choice c = player2->chooseAction(d);
+         if(debug)
+         {
+            debugfile << player2->getName() << ": " << c.getText() << std::endl;
+         }
          doAction(c);
       }
    }
