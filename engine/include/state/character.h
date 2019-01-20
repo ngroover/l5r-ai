@@ -2,6 +2,8 @@
 #define _CHARACTER_H_
 
 #include <boost/serialization/version.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 namespace l5r
 {

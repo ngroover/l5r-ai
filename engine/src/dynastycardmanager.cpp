@@ -154,50 +154,14 @@ void dynastyCardManager::playCharacter(cardarea *cards, std::string playerName, 
    }
 }
 
-inplaycharacter dynastyCardManager::removeCharacterFromHome(cardarea *cards, int cardChoice)
-{
-   for(auto ch=cards->atHome.begin();ch!=cards->atHome.end();ch++)
-   {
-      if(ch->characterCard == cardChoice)
-      {
-         cards->atHome.erase(ch);
-         return *ch;
-         ch = cards->atHome.end();
-      }
-   }
-   throw std::runtime_error("Character not found");
-}
 
 std::list<choice> dynastyCardManager::getAttackerChoices(cardarea *cards)
 {
-   std::list<choice> list;
-   for(auto ch=cards->atHome.begin();ch!=cards->atHome.end();ch++)
-   {
-      // TODO: check dashed types can't be mixed into conflict
-      if(!ch->bowed)
-      {
-         choice c(cardMgr->getCardName(ch->characterCard), choicetype::card);
-         c.setNumber(ch->characterCard);
-         list.push_back(c);
-      }
-   }
-   return list;
+//moved
 }
 
 std::list<choice> dynastyCardManager::getDefenderChoices(cardarea *cards)
 {
-   std::list<choice> list;
-   for(auto ch=cards->atHome.begin();ch!=cards->atHome.end();ch++)
-   {
-      // TODO: check dashed types can't be mixed into conflict
-      if(!ch->bowed)
-      {
-         choice c(cardMgr->getCardName(ch->characterCard), choicetype::card);
-         c.setNumber(ch->characterCard);
-         list.push_back(c);
-      }
-   }
-   return list;
 }
 
 int dynastyCardManager::conflictTotal(playerstate &pState)
@@ -215,18 +179,6 @@ void dynastyCardManager::sendCharactersHome(std::list<inplaycharacter> charlist,
    }
 }
 
-int dynastyCardManager::countFavorGlory(cardarea *cards)
-{
-   int gloryCount=0;
-   for(auto c: cards->atHome)
-   {
-      if(!c.bowed)
-      {
-         gloryCount += cardMgr->getGlory(c.characterCard);
-      }
-   }
-   return gloryCount;
-}
 
 void dynastyCardManager::discardCharacter(cardarea *cards, int cardIndex)
 {

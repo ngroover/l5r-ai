@@ -1,11 +1,13 @@
 #include "conflictcardmanager.h"
 #include <iostream>
 #include "state/cardarea.h"
+#include "gamestateintfc.h"
+#include "carddatamanager.h"
 
 using namespace l5r;
 
 
-conflictCardManager::conflictCardManager(std::shared_ptr<gamestate> state, std::shared_ptr<cardDataManager> cardMgr):state(state), cardMgr(cardMgr)
+conflictCardManager::conflictCardManager(std::shared_ptr<GameStateIntfc> stateIntfc, std::shared_ptr<cardDataManager> cardMgr):stateIntfc(stateIntfc), cardMgr(cardMgr)
 {
 }
 

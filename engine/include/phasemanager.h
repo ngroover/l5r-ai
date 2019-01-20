@@ -9,7 +9,6 @@
 #include "turnmanager.h"
 #include "choice.h"
 #include "decision.h"
-#include "conflictmanager.h"
 #include "carddatamanager.h"
 
 namespace l5r
@@ -18,7 +17,7 @@ namespace l5r
    class phaseManager
    {
       public:
-         phaseManager(std::shared_ptr<gamestate> state, std::shared_ptr<dynastyCardManager> dynastyMgr,std::shared_ptr<conflictCardManager> conflictMgr, std::shared_ptr<provinceCardManager> provinceMgr, std::shared_ptr<turnManager> turnMgr, std::shared_ptr<cardDataManager> cardMgr, std::shared_ptr<GameStateIntfc> stateIntfc);
+         phaseManager(std::shared_ptr<gamestate> state, std::shared_ptr<dynastyCardManager> dynastyMgr, std::shared_ptr<provinceCardManager> provinceMgr, std::shared_ptr<turnManager> turnMgr, std::shared_ptr<cardDataManager> cardMgr, std::shared_ptr<GameStateIntfc> stateIntfc);
          ~phaseManager();
 
 
@@ -52,12 +51,6 @@ namespace l5r
          void doDynastyMulligan(choice c);
          void doConflictMulligan(choice c);
          void doBid(choice c);
-         void doChooseAttackers(choice c);
-         void doChooseConflictType(choice c);
-         void doChooseRing(choice c);
-         void doChooseProvince(choice c);
-         void doChooseDefenders(choice c);
-         void doChooseFavor(choice c);
          void doChooseFateDiscard(choice c);
          void doRegroupDiscard(choice c);
 
@@ -93,10 +86,8 @@ namespace l5r
          std::shared_ptr<GameStateIntfc> stateIntfc;
 
          std::shared_ptr<dynastyCardManager> dynastyMgr;
-         std::shared_ptr<conflictCardManager> conflictMgr;
          std::shared_ptr<provinceCardManager> provinceMgr;
          std::shared_ptr<turnManager> turnMgr;
-         conflictManager conflictDataMgr;
          std::shared_ptr<cardDataManager> cardMgr;
 
          void processEndConflict(bool attackerActive);

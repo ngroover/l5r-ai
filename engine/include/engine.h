@@ -13,7 +13,6 @@
 #include "carddatamanager.h"
 #include "turnmanager.h"
 #include "phasemanager.h"
-#include "conflictmanager.h"
 
 
 namespace l5r
@@ -43,7 +42,6 @@ namespace l5r
 
          // state managers
          std::shared_ptr<dynastyCardManager> dynastyMgr;
-         std::shared_ptr<conflictCardManager> conflictMgr;
          std::shared_ptr<provinceCardManager> provinceMgr;
          std::shared_ptr<turnManager> turnMgr;
          std::shared_ptr<phaseManager> phaseMgr;

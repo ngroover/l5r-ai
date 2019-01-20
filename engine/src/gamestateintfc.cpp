@@ -133,3 +133,37 @@ conflictPlayerState *GameStateIntfc::getDefenderConflictState()
       return &state->player1State.conflict_state;
    }
 }
+
+conflictState *GameStateIntfc::getGlobalConflictState()
+{
+   return &state->conflict_state;
+}
+
+std::shared_ptr<gamestate> GameStateIntfc::getState()
+{
+   return state;
+}
+
+cardarea *GameStateIntfc::getAttackerCards()
+{
+   if(state->currentConflict == player::player1)
+   {
+      return &state->player1State.cards;
+   }
+   else
+   {
+      return &state->player2State.cards;
+   }
+}
+
+cardarea *GameStateIntfc::getDefenderCards()
+{
+   if(state->currentConflict == player::player1)
+   {
+      return &state->player2State.cards;
+   }
+   else
+   {
+      return &state->player1State.cards;
+   }
+}

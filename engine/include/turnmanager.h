@@ -20,6 +20,9 @@ namespace l5r
          void swapAction();
          void swapConflict();
 
+         void giveAttackerAction();
+         void giveDefenderAction();
+
          void declareWinner();
          void declareLoser();
       private:

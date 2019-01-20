@@ -22,9 +22,6 @@ void provinceCardManager::chooseStronghold(cardarea *cards, int provinceChoice)
          cards->provinceArea.erase(prov);
          cards->strongholdProvince = provinceChoice;
          prov = cards->provinceArea.end();
-         std::cout << "TODO: current player"
-            << " chose " << cardMgr->getCardName(provinceChoice) 
-            << " for a stronghold" << std::endl;
       }
    }
 }
@@ -46,48 +43,8 @@ std::list<choice> provinceCardManager::getStrongholdChoices(cardarea *cards)
    return list;
 }
 
-std::list<choice> provinceCardManager::getProvinceChoices(cardarea *cards)
-{
-   std::list<choice> list;
-   int brokenCount=0;
-   for(auto pc:cards->provinceArea)
-   {
-      if(pc.provinceStatus != provinceCardStatus::broken)
-      {
-         choice c(cardMgr->getCardName(pc.provinceCard), choicetype::card);
-         c.setNumber(pc.provinceCard);
-         list.push_back(c);
-      }
-      if(pc.provinceStatus == provinceCardStatus::broken)
-      {
-         brokenCount++;
-      }
-   }
-   if(brokenCount >= 3)
-   {
-      choice c(cardMgr->getCardName(cards->strongholdProvince), choicetype::card);
-      c.setNumber(cards->strongholdProvince);
-      list.push_back(c);
-   }
-   return list;
-}
-
-void provinceCardManager::breakProvince(cardarea *cards, int cardIndex)
-{
-   // nothing happens for stronghold
-   // handled outside this
-   for(auto &p:cards->provinceArea)
-   {
-      if(p.provinceCard == cardIndex)
-      {
-         std::cout << cardMgr->getCardName(cardIndex) << " breaks!" << std::endl;
-         p.provinceStatus = provinceCardStatus::broken;
-      }
-   }
-}
-
-int provinceCardManager::getStrongholdProvince(cardarea *cards)
-{
-   return cards->strongholdProvince;
-}
+//int provinceCardManager::getStrongholdProvince(cardarea *cards)
+//{
+   //return ;
+//}
 

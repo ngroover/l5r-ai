@@ -89,3 +89,20 @@ void turnManager::declareLoser()
       state->winner = player::player1;
    }
 }
+
+void turnManager::giveAttackerAction()
+{
+   state->currentAction = state->currentConflict;
+}
+
+void turnManager::giveDefenderAction()
+{
+   if(state->currentConflict == player::player1)
+   {
+      state->currentAction = player::player2;
+   }
+   else
+   {
+      state->currentAction = player::player1;
+   }
+}

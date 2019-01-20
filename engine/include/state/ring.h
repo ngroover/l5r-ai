@@ -47,6 +47,9 @@ namespace l5r
       ring type;
       int fate;
    };
+
+   extern std::string getConflictTypeName(conflicttype type);
+   extern std::string getRingName(ring r);
 };
 
 #endif // _RING_H_

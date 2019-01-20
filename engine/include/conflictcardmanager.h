@@ -1,18 +1,18 @@
 #ifndef _CONFLICT_CARD_MANAGER_H_
 #define _CONFLICT_CARD_MANAGER_H_
 
-#include "state/gamestate.h"
-#include "carddatamanager.h"
 #include "choice.h"
 
 namespace l5r
 {
    class cardarea;
 
+   class cardDataManager;
+   class GameStateIntfc;
    class conflictCardManager
    {
       public:
-         conflictCardManager(std::shared_ptr<gamestate> state, std::shared_ptr<cardDataManager> cardMgr);
+         conflictCardManager(std::shared_ptr<GameStateIntfc> stateIntfc, std::shared_ptr<cardDataManager> cardMgr);
          ~conflictCardManager();
 
 
@@ -21,7 +21,7 @@ namespace l5r
          int getNumCards(cardarea *cards);
 
       private:
-         std::shared_ptr<gamestate> state;
+         std::shared_ptr<GameStateIntfc> stateIntfc;
          std::shared_ptr<cardDataManager> cardMgr;
    };
 }
