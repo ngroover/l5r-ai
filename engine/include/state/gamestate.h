@@ -31,8 +31,8 @@ namespace l5r
    class gamestate
    {
       public:
-         gamestate();
-         ~gamestate();
+         gamestate(){};
+         ~gamestate(){};
 
          friend class boost::serialization::access;
          template<class Archive>
@@ -63,11 +63,6 @@ namespace l5r
          playerstate player2State;
 
          conflictState conflict_state;
-
-         // TODO remove this
-         // dynamically get playerstate
-         playerstate &getPlayerState(int playerNum);
-         playerstate &getPlayerState(relativePlayer rp);
    };
 };
 BOOST_CLASS_VERSION(l5r::gamestate, 1);

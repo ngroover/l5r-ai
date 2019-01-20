@@ -248,7 +248,6 @@ void phaseManager::doStrongholdSelection(choice c)
          << " for a stronghold" << std::endl;
       if(turnMgr->ActionAndTurnDiffer())
       {
-            //playerstate &pState = state->getPlayerState(p);
          dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
          dynastyMgr->fillProvinces(stateIntfc->getOpponentCards(), stateIntfc->getOpponentName());
          goToDynastyMulligan();
@@ -416,14 +415,11 @@ void phaseManager::doDynastyEntry()
 
    // gain fate
    // TODO: read fate value from stronghold card
-   playerstate &pState = state->getPlayerState(relativePlayer::myself);
-   playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
    tokens.gainFate(STRONGHOLD_FATE);
    dynastyMgr->flipAllDynastyFaceup(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
-   pState.passed = false;
    opponentTokens.gainFate(STRONGHOLD_FATE);
    dynastyMgr->flipAllDynastyFaceup(stateIntfc->getOpponentCards(), stateIntfc->getOpponentName());
-   oppState.passed = false;
+   turnMgr->resetPassed();
 
    turnMgr->setActionToCurrentTurn();
 }
@@ -448,15 +444,13 @@ void phaseManager::doProvincePlayAction(choice c)
    }
    else if(c.getType() == choicetype::pass)
    {
-      playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
       // opponent has not passed
-      if(!oppState.passed)
+      if(!turnMgr->opponentHasPassed())
       {
-         playerstate &pState = state->getPlayerState(relativePlayer::myself);
          std::string name = stateIntfc->getPlayerName();
          std::cout << name << " passed first" << std::endl;
          tokens.gainFate(1);
-         pState.passed = true;
+         turnMgr->passAction();
          turnMgr->swapAction();
       }
       else
@@ -476,16 +470,14 @@ void phaseManager::doAdditionalFate(choice c)
 
    if(c.getType() == choicetype::fate)
    {
-      playerstate &pState = state->getPlayerState(relativePlayer::myself);
       int extraFate = c.getNumber();
       dynastyMgr->playCharacter(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName(), extraFate);
       int pendingCharacterCost = dynastyMgr->getPendingCharCost(stateIntfc->getPlayerCards());
       tokens.loseFate(pendingCharacterCost + extraFate);
       dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
 
-      playerstate &oppState = state->getPlayerState(relativePlayer::opponent);
       goToProvincePlay();
-      if(!oppState.passed)
+      if(!turnMgr->opponentHasPassed())
       {
          turnMgr->swapAction();
       }
@@ -660,7 +652,6 @@ decision phaseManager::getAdditionalFateDecision()
 {
    tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
 
-   playerstate &pState = state->getPlayerState(relativePlayer::myself);
    std::list<choice> list;
    int pendingCharacterCost = dynastyMgr->getPendingCharCost(stateIntfc->getPlayerCards());
    int fateAvailable = tokens.getFate() - pendingCharacterCost;

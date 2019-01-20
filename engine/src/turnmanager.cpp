@@ -106,3 +106,34 @@ void turnManager::giveDefenderAction()
       state->currentAction = player::player1;
    }
 }
+
+// passing actions
+void turnManager::passAction()
+{
+   if(state->currentAction == player::player1)
+   {
+      state->player1State.passed = true;
+   }
+   else
+   {
+      state->player2State.passed = true;
+   }
+}
+
+void turnManager::resetPassed()
+{
+   state->player1State.passed = false;
+   state->player2State.passed = false;
+}
+
+bool turnManager::opponentHasPassed()
+{
+   if(state->currentAction == player::player1)
+   {
+      return state->player2State.passed;
+   }
+   else
+   {
+      return state->player1State.passed;
+   }
+}

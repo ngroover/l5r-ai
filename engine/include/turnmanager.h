@@ -25,6 +25,12 @@ namespace l5r
 
          void declareWinner();
          void declareLoser();
+
+         // passing actions
+         void passAction();
+         void resetPassed();
+         bool opponentHasPassed();
+
       private:
          std::shared_ptr<gamestate> state;
    };

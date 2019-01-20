@@ -1,7 +1,6 @@
 
 add_library( engine SHARED src/engine.cpp
                         src/agent.cpp
-                        src/gamestate.cpp
                         src/humanagent.cpp
                         src/cpuagent.cpp
                         src/choice.cpp
