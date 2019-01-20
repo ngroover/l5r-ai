@@ -9,6 +9,7 @@ namespace l5r
 
    class cardDataManager;
    class GameStateIntfc;
+   class tokenManager;
    class conflictCardManager
    {
       public:
@@ -17,7 +18,7 @@ namespace l5r
 
 
          // current player draws numCards
-         void drawCards(int numCards, cardarea *cards, std::string playerName);
+         void drawCards(int numCards, cardarea *cards, tokenManager *tokens, std::string playerName);
          int getNumCards(cardarea *cards);
 
       private:

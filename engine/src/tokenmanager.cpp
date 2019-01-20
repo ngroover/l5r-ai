@@ -51,15 +51,33 @@ void tokenManager::gainHonor(int honor)
 {
    tokens->honorTokens += honor;
    std::cout << name << " gains " << honor << " honor (" << tokens->honorTokens << " total)" << std::endl;
+   if(tokens->honorTokens > 25)
+   {
+      tokens->honorTokens = 25;
+   }
 }
 
 void tokenManager::loseHonor(int honor)
 {
    tokens->honorTokens -= honor;
    std::cout << name << " loses " << honor << " honor (" << tokens->honorTokens << " total)" << std::endl;
+   if(tokens->honorTokens < 0)
+   {
+      tokens->honorTokens = 0;
+   }
 }
 
 int tokenManager::getHonor()
 {
    return tokens->honorTokens;
+}
+
+bool tokenManager::dishonorLoss()
+{
+   return tokens->honorTokens == 0;
+}
+
+bool tokenManager::honorWin()
+{
+   return tokens->honorTokens == 25;
 }

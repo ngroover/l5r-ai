@@ -29,6 +29,9 @@ namespace l5r
          void loseFate(int fate);
          int getFate();
 
+         bool dishonorLoss();
+         bool honorWin();
+
       private:
          tokenstate *tokens;
          std::string name;

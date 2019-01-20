@@ -16,6 +16,7 @@ namespace l5r
    };
 
    class cardarea;
+   class tokenManager;
 
    class dynastyCardManager
    {
@@ -24,7 +25,7 @@ namespace l5r
          ~dynastyCardManager();
 
          // fills in provinces for the specified player
-         void fillProvinces(cardarea *cards, std::string playerName);
+         void fillProvinces(cardarea *cards, tokenManager *tokens, std::string playerName);
 
          // flip all Dynasty cards faceup
          void flipAllDynastyFaceup(cardarea *cards, std::string playerName);

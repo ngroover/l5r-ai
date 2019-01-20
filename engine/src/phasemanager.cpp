@@ -114,6 +114,7 @@ void phaseManager::regroupDoAction(choice c)
 void phaseManager::doRegroupDiscard(choice c)
 {
    RingManager rings(stateIntfc, cardMgr);
+   tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
 
    if(c.getType() == choicetype::card)
    {
@@ -123,22 +124,30 @@ void phaseManager::doRegroupDiscard(choice c)
       (c.getType() == choicetype::none))
    {
       std::string name = stateIntfc->getPlayerName();
-      dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), name);
-      std::cout << name << " ending regroup phase" << std::endl;
-      if(turnMgr->ActionAndTurnDiffer())
+      dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), &tokens, name);
+      if(tokens.dishonorLoss())
       {
-         // unclaim each ring
-         rings.unclaimRings();
-
-         // pass first player token
-         turnMgr->passFirstPlayer();
-
-         // end regroup
-         doDynastyEntry();
+         turnMgr->declareLoser();
+         state->currentPhase = phase::gameover;
       }
       else
       {
-         turnMgr->swapAction();
+         std::cout << name << " ending regroup phase" << std::endl;
+         if(turnMgr->ActionAndTurnDiffer())
+         {
+            // unclaim each ring
+            rings.unclaimRings();
+
+            // pass first player token
+            turnMgr->passFirstPlayer();
+
+            // end regroup
+            doDynastyEntry();
+         }
+         else
+         {
+            turnMgr->swapAction();
+         }
       }
    }
    else
@@ -248,8 +257,10 @@ void phaseManager::doStrongholdSelection(choice c)
          << " for a stronghold" << std::endl;
       if(turnMgr->ActionAndTurnDiffer())
       {
-         dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
-         dynastyMgr->fillProvinces(stateIntfc->getOpponentCards(), stateIntfc->getOpponentName());
+         tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+         tokenManager oppTokens(stateIntfc->getOpponentTokens(), stateIntfc->getOpponentName());
+         dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), &tokens, stateIntfc->getPlayerName());
+         dynastyMgr->fillProvinces(stateIntfc->getOpponentCards(), &oppTokens, stateIntfc->getOpponentName());
          goToDynastyMulligan();
       }
       turnMgr->swapAction();
@@ -284,39 +295,40 @@ void phaseManager::doBid(choice c)
             opponentTokens.loseHonor(hisdial-mydial);
             tokens.gainHonor(hisdial-mydial);
          }
-         if(tokens.getHonor() <= 0)
+         if(tokens.dishonorLoss() || opponentTokens.honorWin())
          {
-         //   std::cout << name << " loses due to honor " << std::endl;
+            std::cout << stateIntfc->getPlayerName() << " loses due to honor " << std::endl;
             turnMgr->declareLoser();
             state->currentPhase = phase::gameover;
          }
-         if(opponentTokens.getHonor() >= 25)
+         else if(opponentTokens.dishonorLoss() || tokens.honorWin())
          {
-          //  std::cout << name << " wins by to honor" << std::endl;
+            std::cout << stateIntfc->getPlayerName() << " wins by honor" << std::endl;
             turnMgr->declareWinner();
-            state->currentPhase = phase::gameover;
-         }
-         if(opponentTokens.getHonor() <= 0)
-         {
-         //   std::cout << oppname << " loses due to honor " << std::endl;
-            turnMgr->declareWinner();
-            state->currentPhase = phase::gameover;
-         }
-         if(tokens.getHonor() >= 25)
-         {
-          //  std::cout << oppname << " wins due to honor " << std::endl;
-            turnMgr->declareLoser();
             state->currentPhase = phase::gameover;
          }
          if(state->currentPhase != phase::gameover)
          {
-            conflictMgr.drawCards(mydial, stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
-            conflictMgr.drawCards(hisdial, stateIntfc->getOpponentCards(), stateIntfc->getOpponentName());
-            //TODO: draw phase action
+            conflictMgr.drawCards(mydial, stateIntfc->getPlayerCards(), &tokens, stateIntfc->getPlayerName());
+            conflictMgr.drawCards(hisdial, stateIntfc->getOpponentCards(), &opponentTokens, stateIntfc->getOpponentName());
+            if(tokens.dishonorLoss() || opponentTokens.honorWin())
+            {
+               std::cout << stateIntfc->getPlayerName() << " loses due to honor " << std::endl;
+               turnMgr->declareLoser();
+               state->currentPhase = phase::gameover;
+            }
+            else if(opponentTokens.dishonorLoss() || tokens.honorWin())
+            {
+               std::cout << stateIntfc->getPlayerName() << " wins by honor" << std::endl;
+               turnMgr->declareWinner();
+               state->currentPhase = phase::gameover;
+            }
+            else
+            {
+               goToConflictPhase();
 
-            goToConflictPhase();
-
-            turnMgr->setActionToCurrentTurn();
+               turnMgr->setActionToCurrentTurn();
+            }
          }
       }
       else
@@ -342,11 +354,14 @@ void phaseManager::doDynastyMulligan(choice c)
    else if(c.getType() == choicetype::pass)
    {
       mulligan.performDynastyMulligan();
-      dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
+      tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+      dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), &tokens, stateIntfc->getPlayerName());
       if(turnMgr->ActionAndTurnDiffer())
       {
-         conflictMgr.drawCards(STARTING_NUM_CONFLICT_CARDS, stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
-         conflictMgr.drawCards(STARTING_NUM_CONFLICT_CARDS, stateIntfc->getOpponentCards(), stateIntfc->getOpponentName());
+         tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+         tokenManager opponentTokens(stateIntfc->getOpponentTokens(), stateIntfc->getOpponentName());
+         conflictMgr.drawCards(STARTING_NUM_CONFLICT_CARDS, stateIntfc->getPlayerCards(), &tokens, stateIntfc->getPlayerName());
+         conflictMgr.drawCards(STARTING_NUM_CONFLICT_CARDS, stateIntfc->getOpponentCards(), &opponentTokens, stateIntfc->getOpponentName());
 
          goToConflictMulligan();
       }
@@ -372,7 +387,7 @@ void phaseManager::doConflictMulligan(choice c)
    else if(c.getType() == choicetype::pass)
    {
       mulligan.performConflictMulligan();
-      conflictMgr.drawCards(STARTING_NUM_CONFLICT_CARDS-conflictMgr.getNumCards(stateIntfc->getPlayerCards()),stateIntfc->getPlayerCards(),stateIntfc->getPlayerName());
+      conflictMgr.drawCards(STARTING_NUM_CONFLICT_CARDS-conflictMgr.getNumCards(stateIntfc->getPlayerCards()),stateIntfc->getPlayerCards(), &tokens, stateIntfc->getPlayerName());
       
       ImperialFavorManager imperialFavor(stateIntfc, cardMgr);
       RingManager rings(stateIntfc, cardMgr);
@@ -474,12 +489,20 @@ void phaseManager::doAdditionalFate(choice c)
       dynastyMgr->playCharacter(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName(), extraFate);
       int pendingCharacterCost = dynastyMgr->getPendingCharCost(stateIntfc->getPlayerCards());
       tokens.loseFate(pendingCharacterCost + extraFate);
-      dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), stateIntfc->getPlayerName());
-
-      goToProvincePlay();
-      if(!turnMgr->opponentHasPassed())
+      tokenManager tokens(stateIntfc->getPlayerTokens(), stateIntfc->getPlayerName());
+      dynastyMgr->fillProvinces(stateIntfc->getPlayerCards(), &tokens, stateIntfc->getPlayerName());
+      if(tokens.dishonorLoss())
       {
-         turnMgr->swapAction();
+         turnMgr->declareLoser();
+         state->currentPhase = phase::gameover;
+      }
+      else
+      {
+         goToProvincePlay();
+         if(!turnMgr->opponentHasPassed())
+         {
+            turnMgr->swapAction();
+         }
       }
    }
    else

@@ -1,6 +1,7 @@
 #include "dynastycardmanager.h"
 #include <iostream>
 #include "state/cardarea.h"
+#include "tokenmanager.h"
 
 using namespace l5r;
 
@@ -14,34 +15,30 @@ dynastyCardManager::~dynastyCardManager()
 }
 
 
-void dynastyCardManager::fillProvinces(cardarea *cards, std::string playerName)
+void dynastyCardManager::fillProvinces(cardarea *cards, tokenManager *tokens, std::string playerName)
 {
    auto dynastyDeck = cards->dynastyDeck.begin();
-   if(dynastyDeck == cards->dynastyDeck.end())
-   {
-      std::cout << "Deck is empty!" << std::endl;
-      cards->dynastyDeck = cards->dynastyDiscard;
-      cards->dynastyDiscard.clear();
-      dynastyDeck = cards->dynastyDeck.begin();
-      std::cout << " top card is " << cardMgr->getCardName(*dynastyDeck) << std::endl;
-      
-   }
    for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov)
    {
       if(prov->dynastyCard == -1)
       {
-         prov->dynastyCard = *dynastyDeck;
-         prov->facedownDynasty = true;
-         dynastyDeck = cards->dynastyDeck.erase(dynastyDeck);
          if(dynastyDeck == cards->dynastyDeck.end())
          {
             std::cout << "Deck is empty!" << std::endl;
             cards->dynastyDeck = cards->dynastyDiscard;
             cards->dynastyDiscard.clear();
+            tokens->loseHonor(5);
+            if(tokens->dishonorLoss())
+            {
+               return;
+            }
             dynastyDeck = cards->dynastyDeck.begin();
             std::cout << " top card is " << cardMgr->getCardName(*dynastyDeck) << std::endl;
             
          }
+         prov->dynastyCard = *dynastyDeck;
+         prov->facedownDynasty = true;
+         dynastyDeck = cards->dynastyDeck.erase(dynastyDeck);
          std::cout << playerName
             << " placed " << cardMgr->getCardName(prov->dynastyCard)
             << " on top of " << cardMgr->getCardName(prov->provinceCard)

@@ -31,6 +31,7 @@ namespace l5r
          std::list<int> dynastyDeck;
          std::list<int> dynastyDiscard;
          std::list<int> conflictDeck;
+         std::list<int> conflictDiscard;
          std::list<int> conflictHand;
          std::list<int> pendingMulligan;
          int pendingFateCard; // card awaiting fate
