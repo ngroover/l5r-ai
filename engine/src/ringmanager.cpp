@@ -50,7 +50,7 @@ void RingManager::initializeConflicts()
 void RingManager::unclaimRings()
 {
    auto attacker = stateIntfc->getAttackerConflictState();
-   auto defender = stateIntfc->getAttackerConflictState();
+   auto defender = stateIntfc->getDefenderConflictState();
    auto global = stateIntfc->getGlobalConflictState();
 
    auto r = attacker->claimed_rings.begin();

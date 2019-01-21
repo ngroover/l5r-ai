@@ -36,6 +36,8 @@ ConflictResult ConflictResolutionManager::resolveConflict()
 
    auto state = stateIntfc->getState();
 
+   std::cout << "Attacker = " << attackerStr << std::endl;
+   std::cout << "Defender = " << defenderStr << std::endl;
    if(attackerStr > 0 && attackerStr >= defenderStr)
    {
       cr.winner = conflictwinner::attacker;

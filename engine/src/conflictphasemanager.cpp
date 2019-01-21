@@ -298,7 +298,7 @@ void ConflictPhaseManager::doChooseDefenders(choice c)
 
    if(c.getType() == choicetype::card)
    {
-      manipulator.moveCharacterToConflict(stateIntfc->getAttackerConflictState(), stateIntfc->getPlayerCards(), c.getNumber());
+      manipulator.moveCharacterToConflict(stateIntfc->getDefenderConflictState(), stateIntfc->getPlayerCards(), c.getNumber());
    }
    else if(c.getType() == choicetype::pass)
    {
