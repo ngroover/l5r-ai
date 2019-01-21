@@ -118,7 +118,8 @@ int ConflictResolutionManager::calculateStr(conflictPlayerState *player)
       }
    }
    if(player->hasImperialFavor &&
-      global->favorType == global->conflict_type)
+      global->favorType == global->conflict_type &&
+      player->inConflict.size() > 0)
    {
       strength += 1;
    }
