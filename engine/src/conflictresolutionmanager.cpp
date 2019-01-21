@@ -43,6 +43,7 @@ ConflictResult ConflictResolutionManager::resolveConflict()
       cr.winner = conflictwinner::attacker;
       int holdingBonus = findHoldingBonus();
       int provinceStr = cardMgr->getProvinceStr(global->contested_province) + holdingBonus;
+      std::cout << "Province Strength: " << provinceStr << std::endl;
       if((attackerStr - defenderStr) >= provinceStr)
       {
          cr.brokeProvince = true;
@@ -50,7 +51,6 @@ ConflictResult ConflictResolutionManager::resolveConflict()
          if(defender->strongholdProvince == global->contested_province)
          {
             throw EndGameException(wintype::conquest);
-            //std::cout << stateIntfc->getOpponentName() << " won the game!" << std::endl;
          }
       }
       else
@@ -153,6 +153,10 @@ int ConflictResolutionManager::findHoldingBonus()
             return cardMgr->getHoldingBonus(prov.dynastyCard);
          }
       }
+   }
+   if(global->contested_province == defender->strongholdProvince)
+   {
+      return cardMgr->getHoldingBonus(defender->stronghold);
    }
    // no holding bonus
    return 0;

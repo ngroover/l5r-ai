@@ -18,14 +18,14 @@ card cardgenerator::generateCard(cards c)
          return card::builder{}
                .setName("Shizuka Toshi")
                .setType(cardtype::stronghold)
-               .setProvinceStr(2)
+               .setHoldingBonus(2)
                .setStrongholdHonor(11)
                .build();
       case cards::yojin_no_shiro:
          return card::builder{}
                .setName("Yojin No Shiro")
                .setType(cardtype::stronghold)
-               .setProvinceStr(2)
+               .setHoldingBonus(2)
                .setStrongholdHonor(12)
                .build();
       case cards::the_art_of_peace:

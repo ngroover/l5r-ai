@@ -52,7 +52,7 @@ void tokenManager::gainHonor(int honor)
 {
    tokens->honorTokens += honor;
    std::cout << name << " gains " << honor << " honor (" << tokens->honorTokens << " total)" << std::endl;
-   if(tokens->honorTokens > 25)
+   if(tokens->honorTokens >= 25)
    {
       tokens->honorTokens = 25;
       throw EndGameException(wintype::honor);
@@ -63,7 +63,7 @@ void tokenManager::loseHonor(int honor)
 {
    tokens->honorTokens -= honor;
    std::cout << name << " loses " << honor << " honor (" << tokens->honorTokens << " total)" << std::endl;
-   if(tokens->honorTokens < 0)
+   if(tokens->honorTokens <= 0)
    {
       tokens->honorTokens = 0;
       throw EndGameException(wintype::dishonor);
