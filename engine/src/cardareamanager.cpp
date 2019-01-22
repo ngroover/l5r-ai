@@ -28,13 +28,15 @@ void CardAreaManager::setupCards(decklist deck, std::vector<cards> &cardIds)
             cardArea->dynastyDeck.push_back(cardIds.size() - 1);
             break;
          case cardtype::province:
-            provinceStack ps;
-            ps.provinceCard = cardIds.size() -1;
-            ps.dynastyCard = -1;// no dynasty card yet
-            ps.facedownDynasty = false;
-            ps.provinceStatus = provinceCardStatus::unrevealed;
+            {
+               provinceStack ps;
+               ps.provinceCard = cardIds.size() -1;
+               ps.dynastyCard = -1;// no dynasty card yet
+               ps.facedownDynasty = false;
+               ps.provinceStatus = provinceCardStatus::unrevealed;
 
-            cardArea->provinceArea.push_back(ps);
+               cardArea->provinceArea.push_back(ps);
+            }
             break;
          case cardtype::stronghold:
             cardIds.push_back(c);

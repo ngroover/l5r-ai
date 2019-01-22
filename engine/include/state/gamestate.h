@@ -31,9 +31,10 @@ namespace l5r
    class gamestate
    {
       public:
-         gamestate(){};
-         ~gamestate(){};
+         gamestate();
+         ~gamestate();
 
+         bool operator==(const gamestate &gs);
          friend class boost::serialization::access;
          template<class Archive>
          void serialize(Archive & ar, const unsigned int version)

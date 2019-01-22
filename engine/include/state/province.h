@@ -2,6 +2,8 @@
 #define _PROVINCE_H_
 
 #include <boost/serialization/version.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 namespace l5r
 {
@@ -24,6 +26,11 @@ namespace l5r
             ar & facedownDynasty;
             ar & provinceStatus;
          }
+
+         provinceStack();
+         ~provinceStack();
+
+         friend bool l5r::operator==(const provinceStack &ps, const provinceStack &ps2);
 
          int provinceCard;
          int dynastyCard;

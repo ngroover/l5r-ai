@@ -2,6 +2,7 @@
 #define _RING_H_
 
 #include <boost/serialization/version.hpp>
+#include <string>
 
 namespace l5r
 {
@@ -44,9 +45,18 @@ namespace l5r
          ar & fate;
       }
 
+      unclaimedring();
+      ~unclaimedring();
+
+      friend bool operator<(const unclaimedring &uc, const unclaimedring &uc2);
+      friend bool operator==(const unclaimedring &uc, const unclaimedring &uc2);
+
       ring type;
       int fate;
    };
+
+   bool operator<(const unclaimedring &uc, const unclaimedring &uc2);
+   bool operator==(const unclaimedring &uc, const unclaimedring &uc2);
 
    extern std::string getConflictTypeName(conflicttype type);
    extern std::string getRingName(ring r);

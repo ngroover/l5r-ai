@@ -35,6 +35,11 @@ namespace l5r
             ar & passed;
          }
 
+         playerstate();
+         ~playerstate();
+
+         bool operator==(const playerstate &ps);
+
          cardarea cards;
          conflictPlayerState conflict_state;
 

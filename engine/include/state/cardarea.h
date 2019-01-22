@@ -27,6 +27,11 @@ namespace l5r
             ar & atHome;
          }
 
+         cardarea();
+         ~cardarea();
+
+         bool operator==(const cardarea &ca);
+
          // all these integers are referencing cardIds (below)
          std::list<int> dynastyDeck;
          std::list<int> dynastyDiscard;

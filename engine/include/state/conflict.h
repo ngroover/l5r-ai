@@ -24,6 +24,12 @@ namespace l5r
          ar & hasImperialFavor;
       }
 
+      conflictPlayerState();
+      ~conflictPlayerState();
+
+      bool operator==(const conflictPlayerState &cps);
+
+
       // list of cards in conflict
       std::list<inplaycharacter> inConflict;
 
@@ -55,6 +61,12 @@ namespace l5r
          ar & BOOST_SERIALIZATION_NVP(unclaimed_rings);
          ar & favorType;
       }
+
+      conflictState();
+      ~conflictState();
+
+      bool operator==(const conflictState &cs);
+
       // currently contested ring
       ring contested_ring;
 

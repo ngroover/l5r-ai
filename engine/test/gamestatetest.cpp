@@ -37,4 +37,6 @@ void GamestateTest::testSerialize()
    gamestate gs2;
    boost::archive::text_iarchive ia(ss);
    ia >> gs2;
+
+   CPPUNIT_ASSERT(gs == gs2); 
 }

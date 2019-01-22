@@ -3,6 +3,14 @@ add_library( engine SHARED src/engine.cpp
                         src/agent.cpp
                         src/humanagent.cpp
                         src/cpuagent.cpp
+                        src/state/gamestate.cpp
+                        src/state/player.cpp
+                        src/state/cardarea.cpp
+                        src/state/character.cpp
+                        src/state/province.cpp
+                        src/state/conflict.cpp
+                        src/state/ring.cpp
+                        src/state/tokens.cpp
                         src/choice.cpp
                         src/decision.cpp
                         src/phasemanager.cpp
