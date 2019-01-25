@@ -2,8 +2,10 @@
 CMakeCache.txt
 *.so
 *.a
+*.swp
 Makefile
 cmake_install.cmake
 engine/simulator
 engine/unittest
+mcts/selfplay
 .gdb_history

@@ -30,12 +30,13 @@ namespace l5r
          provinceStack();
          ~provinceStack();
 
-         friend bool l5r::operator==(const provinceStack &ps, const provinceStack &ps2);
+         friend bool operator==(const provinceStack &ps, const provinceStack &ps2);
 
          int provinceCard;
          int dynastyCard;
          bool facedownDynasty;
          provinceCardStatus provinceStatus;
    };
+   bool operator==(const provinceStack &ps, const provinceStack &ps2);
 };
 #endif // _PROVINCE_H_
