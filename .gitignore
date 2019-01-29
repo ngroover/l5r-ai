@@ -9,3 +9,4 @@ engine/simulator
 engine/unittest
 mcts/selfplay
 .gdb_history
+tf/tf_app
