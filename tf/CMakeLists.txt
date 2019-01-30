@@ -10,7 +10,12 @@ add_executable( tf_app src/main.cpp
                      src/doubletensor.cpp
                      src/tfoperation.cpp
                      src/constop.cpp
-                     src/addop.cpp)
+                     src/addop.cpp
+                     src/matmulop.cpp
+                     src/floattensor.cpp
+                     src/tensor.cpp
+                     src/truncatednormalop.cpp
+                     src/int32tensor.cpp)
 
 target_link_libraries( tf_app tensorflow )
 

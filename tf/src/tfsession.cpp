@@ -1,6 +1,6 @@
 #include "tfsession.h"
 #include "tfgraph.h"
-#include "doubletensor.h"
+#include "tensor.h"
 #include "tfoperation.h"
 #include <tensorflow/c/c_api.h>
 #include <stdio.h>
@@ -22,8 +22,8 @@ TfSession::~TfSession()
 }
 
 
-void TfSession::run(TfOperation *inputop, DoubleTensor *input,
-         TfOperation *outputop, DoubleTensor *output)
+void TfSession::run(TfOperation *inputop, Tensor *input,
+         TfOperation *outputop, Tensor *output)
 {
    TF_Output tfout,tfin;
    TF_Output *out=NULL, *in=NULL;
@@ -34,7 +34,7 @@ void TfSession::run(TfOperation *inputop, DoubleTensor *input,
       tfin.oper=(TF_Operation*)inputop->getOp();
       tfin.index=0;
       in = &tfin;
-      intensor = &input->tensor;
+      intensor = input->getTensor();
       inputNum=1;
    }
    if( outputop != NULL )
@@ -42,7 +42,7 @@ void TfSession::run(TfOperation *inputop, DoubleTensor *input,
       tfout.oper=(TF_Operation*)outputop->getOp();
       tfout.index=0;
       out = &tfout;
-      outtensor = &output->tensor;
+      outtensor = output->getTensor();
       outputNum=1;
    }
 

@@ -1,35 +1,35 @@
-#include "doubletensor.h"
+#include "int32tensor.h"
 #include <tensorflow/c/c_api.h>
 #include <string.h>
 #include <stdio.h>
 
-DoubleTensor::DoubleTensor(const int64_t *dims,
+Int32Tensor::Int32Tensor(const int64_t *dims,
    const int64_t num_dims,
-   const double* data)
+   const int32_t* data)
 {
   int64_t num_values = 1;
   for (int i = 0; i < num_dims; ++i) {
     num_values *= dims[i];
   }
-  tensor = TF_AllocateTensor(TF_DOUBLE, dims, num_dims, sizeof(double) * num_values);
-  memcpy(TF_TensorData(tensor), data, sizeof(double) * num_values);
+  tensor = TF_AllocateTensor(TF_INT32, dims, num_dims, sizeof(int32_t) * num_values);
+  memcpy(TF_TensorData(tensor), data, sizeof(int32_t) * num_values);
 }
 
-DoubleTensor::DoubleTensor(const int64_t *dims, const int64_t num_dims)
+Int32Tensor::Int32Tensor(const int64_t *dims, const int64_t num_dims)
 {
   int64_t num_values = 1;
   for (int i = 0; i < num_dims; ++i) {
     num_values *= dims[i];
   }
-  tensor = TF_AllocateTensor(TF_DOUBLE, dims, num_dims, sizeof(double) * num_values);
+  tensor = TF_AllocateTensor(TF_INT32, dims, num_dims, sizeof(int32_t) * num_values);
 }
 
-DoubleTensor::DoubleTensor()
+Int32Tensor::Int32Tensor()
 {
    tensor = NULL;
 }
 
-DoubleTensor::~DoubleTensor()
+Int32Tensor::~Int32Tensor()
 {
    if(tensor != NULL)
    {
@@ -37,9 +37,9 @@ DoubleTensor::~DoubleTensor()
    }
 }
 
-void DoubleTensor::print()
+void Int32Tensor::print()
 {
-   double *data = (double *)TF_TensorData(tensor);
+   int32_t *data = (int32_t *)TF_TensorData(tensor);
    int totalDims=TF_NumDims(tensor);
    int totalSize=1;
    int dimBoundaries[totalDims];
@@ -73,11 +73,11 @@ void DoubleTensor::print()
       }
       if(endLine)
       {
-         printf("%f", *data);
+         printf("%d", *data);
       }
       else
       {
-         printf("%f, ", *data);
+         printf("%d, ", *data);
       }
       data++;
    }

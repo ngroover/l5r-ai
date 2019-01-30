@@ -4,15 +4,15 @@
 struct TF_Session;
 class TfGraph;
 class TfOperation;
-class DoubleTensor;
+class Tensor;
 class TfSession
 {
    public:
       TfSession(TfGraph *graph);
       ~TfSession();
 
-      void run(TfOperation *inputop, DoubleTensor *input,
-         TfOperation *outputop, DoubleTensor *output);
+      void run(TfOperation *inputop, Tensor *input,
+         TfOperation *outputop, Tensor *output);
    private:
       TF_Session *session;
 };

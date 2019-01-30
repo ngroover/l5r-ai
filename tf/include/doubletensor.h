@@ -2,9 +2,10 @@
 #define _DOUBLE_TENSOR_H_
 
 #include <tensorflow/c/c_api.h>
+#include "tensor.h"
 
 struct TF_Tensor;
-class DoubleTensor
+class DoubleTensor : public Tensor
 {
    public:
       DoubleTensor(const int64_t *dims,
@@ -15,10 +16,6 @@ class DoubleTensor
       ~DoubleTensor();
 
       void print();
-   protected:
-      friend class ConstOp;
-      friend class TfSession;
-      TF_Tensor *tensor;
 };
 
 #endif // _DOUBLE_TENSOR_H_

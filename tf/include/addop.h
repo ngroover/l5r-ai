@@ -9,7 +9,7 @@ class DoubleTensor;
 class AddOp : public TfOperation
 {
    public:
-      AddOp(TfGraph *g, TfOperation *x, TfOperation *y, std::string name);
+      AddOp(TfGraph *g, TfOperation *x, TfOperation *y, const char* name);
       ~AddOp();
 };
 

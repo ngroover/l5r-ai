@@ -5,11 +5,11 @@
 #include <string>
 
 class TfGraph;
-class DoubleTensor;
+class Tensor;
 class ConstOp : public TfOperation
 {
    public:
-      ConstOp(TfGraph *g, DoubleTensor *t, std::string name);
+      ConstOp(TfGraph *g, Tensor *t, const char* name);
       ~ConstOp();
 };
 
