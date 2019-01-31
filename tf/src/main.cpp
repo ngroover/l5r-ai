@@ -9,6 +9,7 @@
 #include "floattensor.h"
 #include "int32tensor.h"
 #include "truncatednormalop.h"
+#include "variable.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -62,6 +63,7 @@ int main() {
    // Truncated Normal Distribution
 
    const int32_t data4[] = {5,5};
+   const int64_t data5[] = {5,5};
    const int64_t dim4[] = {2};
    //DoubleTensor t7(dim3, 2, data3);
    Int32Tensor t7(dim4, 1, data4);
@@ -72,12 +74,18 @@ int main() {
 
    TfSession sess3(&g);
 
-   printf("Before session\n");
    sess3.run(NULL, NULL, &tnp, &t8);
-   printf("after session\n");
 
    t8.print();
 
+   Variable v(&g, TF_DOUBLE, data5, *dim4, "var1");
+   DoubleTensor t9;
+   
+   TfSession sess4(&g);
+   sess4.run(NULL, NULL, &v, &t9);
+
+   printf("Variable\n");
+   t9.print();
 
    return 0;
 }
