@@ -23,7 +23,7 @@ TfSession::~TfSession()
 
 
 void TfSession::run(TfOperation *inputop, Tensor *input,
-         TfOperation *outputop, Tensor *output)
+         TfOperation *outputop, Tensor *output, TfOperation *targetop)
 {
    TF_Output tfout,tfin;
    TF_Output *out=NULL, *in=NULL;
@@ -47,12 +47,15 @@ void TfSession::run(TfOperation *inputop, Tensor *input,
    }
 
    TF_Status *status = TF_NewStatus();
+   const TF_Operation *firstop = (targetop ? targetop->getOp() : NULL);
+   const TF_Operation* const *target = (targetop ? &firstop : NULL);
+   int numTargets = (targetop ? 1 : 0);
 
    TF_SessionRun(session,
       NULL, // options
       in, intensor, inputNum, // inputs
       out, outtensor, outputNum, // outputs
-      NULL, 0, NULL, status);
+      target, numTargets, NULL, status);
 
    TF_DeleteStatus(status);
 }

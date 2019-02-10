@@ -16,7 +16,9 @@ add_executable( tf_app src/main.cpp
                      src/tensor.cpp
                      src/truncatednormalop.cpp
                      src/int32tensor.cpp
-                     src/variable.cpp)
+                     src/variable.cpp
+                     src/assignop.cpp
+                     src/variableread.cpp)
 
 target_link_libraries( tf_app tensorflow )
 

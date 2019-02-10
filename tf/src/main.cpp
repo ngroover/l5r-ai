@@ -10,13 +10,15 @@
 #include "int32tensor.h"
 #include "truncatednormalop.h"
 #include "variable.h"
+#include "assignop.h"
+#include "variableread.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
    printf("TensorFlow C library version %s\n", TF_Version());
 
    TfGraph g;
-   
+
    // Addition
    double data[] = {1.0, 2.0, 7.0, 4.0, 5.0};
    const int64_t dim[] = {5};
@@ -31,7 +33,7 @@ int main() {
 
    TfSession sess(&g);
 
-   sess.run(NULL, NULL, &a, &t3);
+   sess.run(NULL, NULL, &a, &t3, NULL);
 
    t3.print();
 
@@ -56,7 +58,7 @@ int main() {
 
    TfSession sess2(&g);
 
-   sess2.run(NULL, NULL, &m, &t6);
+   sess2.run(NULL, NULL, &m, &t6, NULL);
 
    t6.print();
 
@@ -74,15 +76,21 @@ int main() {
 
    TfSession sess3(&g);
 
-   sess3.run(NULL, NULL, &tnp, &t8);
+   sess3.run(NULL, NULL, &tnp, &t8, NULL);
 
    t8.print();
 
-   Variable v(&g, TF_DOUBLE, data5, *dim4, "var1");
+   Variable v(&g, TF_DOUBLE, dim2, 2, "var1");
+   AssignOp ass(&g, &c3, &v, "assigny");
+   VariableRead vr(&g, &v, "varread");
    DoubleTensor t9;
-   
+
    TfSession sess4(&g);
-   sess4.run(NULL, NULL, &v, &t9);
+   sess4.run(NULL, NULL, NULL, NULL, &ass);
+   printf("Made assignment\n");
+
+   TfSession sess5(&g);
+   sess5.run(NULL, NULL, &vr, &t9, NULL);
 
    printf("Variable\n");
    t9.print();

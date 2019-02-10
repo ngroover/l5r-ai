@@ -43,47 +43,50 @@ void DoubleTensor::print()
    int totalDims=TF_NumDims(tensor);
    int totalSize=1;
    int dimBoundaries[totalDims];
-   for(int i=totalDims-1;i>=0;i--)
+   if(totalDims > 0)
    {
-      totalSize *= TF_Dim(tensor, i);
-      dimBoundaries[i] = totalSize;
-   }
+      for(int i=totalDims-1;i>=0;i--)
+      {
+         totalSize *= TF_Dim(tensor, i);
+         dimBoundaries[i] = totalSize;
+      }
 
-   bool endLine=false;
-   for(int n=0;n < totalSize;n++)
-   {
+      bool endLine=false;
+      for(int n=0;n < totalSize;n++)
+      {
+         for(int j=0;j<totalDims;j++)
+         {
+            if(n % dimBoundaries[j] == 0)
+            {
+               if(n == 0)
+               {
+                  printf("[");
+               }
+               else
+               {
+                  endLine=false;
+                  printf("],\n[");
+               }
+            }
+            if(((n+1) % dimBoundaries[j]) == 0)
+            {
+               endLine=true;
+            }
+         }
+         if(endLine)
+         {
+            printf("%f", *data);
+         }
+         else
+         {
+            printf("%f, ", *data);
+         }
+         data++;
+      }
       for(int j=0;j<totalDims;j++)
       {
-         if(n % dimBoundaries[j] == 0)
-         {
-            if(n == 0)
-            {
-               printf("[");
-            }
-            else
-            {
-               endLine=false;
-               printf("],\n[");
-            }
-         }
-         if(((n+1) % dimBoundaries[j]) == 0)
-         {
-            endLine=true;
-         }
+         printf("]");
       }
-      if(endLine)
-      {
-         printf("%f", *data);
-      }
-      else
-      {
-         printf("%f, ", *data);
-      }
-      data++;
+      printf("\n");
    }
-   for(int j=0;j<totalDims;j++)
-   {
-      printf("]");
-   }
-   printf("\n");
 }

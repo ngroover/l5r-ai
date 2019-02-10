@@ -12,7 +12,7 @@ class TfSession
       ~TfSession();
 
       void run(TfOperation *inputop, Tensor *input,
-         TfOperation *outputop, Tensor *output);
+         TfOperation *outputop, Tensor *output, TfOperation *targetop);
    private:
       TF_Session *session;
 };

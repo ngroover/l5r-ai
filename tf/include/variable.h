@@ -7,6 +7,7 @@
 
 class TfGraph;
 class Tensor;
+class Variable;
 class Variable : public TfOperation
 {
    public:
