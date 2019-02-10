@@ -5,7 +5,7 @@
 
 Variable::Variable(TfGraph *g, TF_DataType dtype, const int64_t* dims, int dims_size, const char* name) : TfOperation(g->getGraph())
 {
-  TF_OperationDescription* desc = TF_NewOperation(g->getGraph(), "Variable", name);
+  TF_OperationDescription* desc = TF_NewOperation(g->getGraph(), "VariableV2", name);
   TF_Status *status = TF_NewStatus();
   if(dims_size != 0)
   {

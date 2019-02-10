@@ -77,23 +77,35 @@ int main() {
    TfSession sess3(&g);
 
    sess3.run(NULL, NULL, &tnp, &t8, NULL);
+   TF_Status *status = TF_NewStatus();
+   TF_GetCode(status);
+   printf("session3 error=%s\n", TF_Message(status));
 
    t8.print();
 
    Variable v(&g, TF_DOUBLE, dim2, 2, "var1");
    AssignOp ass(&g, &c3, &v, "assigny");
-   VariableRead vr(&g, &v, "varread");
+//   VariableRead vr(&g, &v, "varread");
    DoubleTensor t9;
+   printf("Made varstuff\n");
 
    TfSession sess4(&g);
    sess4.run(NULL, NULL, NULL, NULL, &ass);
+   TF_GetCode(status);
+//   printf("session4 error=%s\n", TF_Message(status));
    printf("Made assignment\n");
 
-   TfSession sess5(&g);
-   sess5.run(NULL, NULL, &vr, &t9, NULL);
+   sess4.run(NULL, NULL, &v, &t9, NULL);
+   TF_GetCode(status);
+   printf("session5 error=%s\n", TF_Message(status));
 
    printf("Variable\n");
    t9.print();
+
+   TF_GetCode(status);
+   printf("print error=%s\n", TF_Message(status));
+
+   TF_DeleteStatus(status);
 
    return 0;
 }

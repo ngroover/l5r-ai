@@ -13,7 +13,6 @@ AssignOp::AssignOp(TfGraph *g, TfOperation *dest, TfOperation *src, const char* 
   inputs[1].index=0;
   TF_AddInput(desc, inputs[0]);
   TF_AddInput(desc, inputs[1]);
-  //TF_SetAttrType(desc, "dtype", TF_TensorType(*t->getTensor()));
   this->op = TF_FinishOperation(desc, status);
   TF_DeleteStatus(status);
 }
