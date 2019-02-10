@@ -18,7 +18,8 @@ add_executable( tf_app src/main.cpp
                      src/int32tensor.cpp
                      src/variable.cpp
                      src/assignop.cpp
-                     src/variableread.cpp)
+                     src/booltensor.cpp
+                     src/placeholder.cpp)
 
 target_link_libraries( tf_app tensorflow )
 

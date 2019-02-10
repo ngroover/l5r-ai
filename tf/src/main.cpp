@@ -11,7 +11,8 @@
 #include "truncatednormalop.h"
 #include "variable.h"
 #include "assignop.h"
-#include "variableread.h"
+#include "booltensor.h"
+#include "placeholder.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -67,7 +68,6 @@ int main() {
    const int32_t data4[] = {5,5};
    const int64_t data5[] = {5,5};
    const int64_t dim4[] = {2};
-   //DoubleTensor t7(dim3, 2, data3);
    Int32Tensor t7(dim4, 1, data4);
    DoubleTensor t8;
    ConstOp c5(&g, &t7, "test7");
@@ -85,7 +85,6 @@ int main() {
 
    Variable v(&g, TF_DOUBLE, dim2, 2, "var1");
    AssignOp ass(&g, &c3, &v, "assigny");
-//   VariableRead vr(&g, &v, "varread");
    DoubleTensor t9;
    printf("Made varstuff\n");
 
@@ -96,16 +95,34 @@ int main() {
    printf("Made assignment\n");
 
    sess4.run(NULL, NULL, &v, &t9, NULL);
-   TF_GetCode(status);
-   printf("session5 error=%s\n", TF_Message(status));
 
    printf("Variable\n");
    t9.print();
 
-   TF_GetCode(status);
-   printf("print error=%s\n", TF_Message(status));
+   printf("Variable2\n");
+   double data6[] = {69.0, 70.0, 71.0, 72.0};
+   const int64_t dim5[] = {2,2};
+   double data7[] = {1.0, 0.0, 0.0, 1.0};
+   double data8[] = {70.0, 71.0, 72.0, 73.0};
+   Placeholder ph(&g, TF_DOUBLE, dim5, 2, "ph1");
+   DoubleTensor t10;
+   DoubleTensor t11(dim5, 2, data6);
+   DoubleTensor t12(dim5, 2, data7);
+   ConstOp c6(&g, &t12, "test5");
 
-   TF_DeleteStatus(status);
+   MatMulOp m2(&g, &ph, &c6, "stuff69");
 
+   TfSession sess5(&g);
+   sess5.run(&ph, &t11, &m2, &t10, NULL);
+
+   printf("Placeholder\n");
+   t10.print();
+
+   DoubleTensor t13(dim5, 2, data8);
+   DoubleTensor t14;
+   sess5.run(&ph, &t13, &m2, &t14, NULL);
+
+   printf("Placeholder again\n");
+   t14.print();
    return 0;
 }
