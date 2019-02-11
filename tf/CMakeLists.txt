@@ -19,7 +19,9 @@ add_executable( tf_app src/main.cpp
                      src/variable.cpp
                      src/assignop.cpp
                      src/booltensor.cpp
-                     src/placeholder.cpp)
+                     src/placeholder.cpp
+                     src/squareddifference.cpp
+                     src/mean.cpp)
 
 target_link_libraries( tf_app tensorflow )
 

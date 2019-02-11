@@ -1,11 +1,11 @@
-#include "matmulop.h"
+#include "mean.h"
 #include "doubletensor.h"
 #include "tfgraph.h"
 #include <tensorflow/c/c_api.h>
 
-MatMulOp::MatMulOp(TfGraph *g, TfOperation *x, TfOperation *y, const char* name) : TfOperation(g->getGraph())
+Mean::Mean(TfGraph *g, TfOperation *x, TfOperation *y, const char* name) : TfOperation(g->getGraph())
 {
-  TF_OperationDescription* desc = TF_NewOperation(g->getGraph(), "MatMul", name);
+  TF_OperationDescription* desc = TF_NewOperation(g->getGraph(), "Mean", name);
   TF_Status *status = TF_NewStatus();
   TF_Output inputs[2];
   inputs[0].oper=(TF_Operation*)x->getOp();
@@ -18,6 +18,6 @@ MatMulOp::MatMulOp(TfGraph *g, TfOperation *x, TfOperation *y, const char* name)
   TF_DeleteStatus(status);
 }
 
-MatMulOp::~MatMulOp()
+Mean::~Mean()
 {
 }

@@ -89,4 +89,8 @@ void DoubleTensor::print()
       }
       printf("\n");
    }
+   else if(totalDims == 0)
+   {
+      printf("%f\n", *data);
+   }
 }
