@@ -21,7 +21,8 @@ add_executable( tf_app src/main.cpp
                      src/booltensor.cpp
                      src/placeholder.cpp
                      src/squareddifference.cpp
-                     src/mean.cpp)
+                     src/mean.cpp
+                     src/biasadd.cpp)
 
 target_link_libraries( tf_app tensorflow )
 

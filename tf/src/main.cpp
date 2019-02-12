@@ -14,6 +14,7 @@
 #include "booltensor.h"
 #include "placeholder.h"
 #include "mean.h"
+#include "biasadd.h"
 #include "squareddifference.h"
 #include <tensorflow/c/c_api.h>
 
@@ -49,5 +50,23 @@ int main() {
    t5.print();
    t3.print();
 
+   double data4[] = {10.0, 20.0, 30.0, 40.0, 50.0, 60.0};
+   const int64_t dim3[] = {2, 3};
+   const int64_t dim4[] = {3};
+   double data5[] = {5.0, 6.0, 7.0};
+
+   DoubleTensor t6(dim3, 2, data4);
+   DoubleTensor t7(dim4, 1, data5);
+   DoubleTensor t8;
+
+   ConstOp c4(&g, &t6, "const4");
+   ConstOp c5(&g, &t7, "const5");
+
+   BiasAdd ba(&g, &c4, &c5, "badd");
+
+   TfSession sess2(&g);
+   sess2.run(NULL, NULL, &ba, &t8, NULL);
+
+   t8.print();
    return 0;
 }
