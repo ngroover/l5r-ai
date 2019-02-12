@@ -9,7 +9,7 @@ class TfGraph;
 class AssignOp : public TfOperation
 {
    public:
-      AssignOp(TfGraph *g, TfOperation *dest, TfOperation *src, const char* name);
+      AssignOp(TfGraph *g, TfOperation *val, TfOperation *var, const char* name);
       ~AssignOp();
 };
 

@@ -19,6 +19,8 @@
 #include "gradients.h"
 #include "relu.h"
 #include "sigmoid.h"
+#include "inputlayer.h"
+#include "denselayer.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -100,6 +102,36 @@ int main() {
 
    printf("MatMul grad=\n");
    t12.print();
+
+   // start nnet graphs
+
+   InputLayer il(&g, 5, 1, "input");
+
+   DenseLayer dl(&g, 4, &il, "hidden1");
+
+   DenseLayer dl2(&g, 3, &dl, "hidden2");
+
+   double inputdata[] = {1.0, 1.0, 0.0, 0.0, 0.0};
+   const int64_t inputdims[] = {1, 5};
+
+   DoubleTensor inputtensor(inputdims, 2, inputdata);
+   DoubleTensor weights1, weights2;
+   DoubleTensor output2;
+
+   TfSession sess4(&g);
+   sess4.run(NULL, NULL, NULL, NULL, dl.getInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl2.getInitializer());
+   sess4.run(NULL, NULL, dl.getWeights(), &weights1, NULL);
+   sess4.run(NULL, NULL, dl2.getWeights(), &weights2, NULL);
+
+   printf("weights1=\n");
+   weights1.print();
+   printf("weights2=\n");
+   weights2.print();
+   sess4.run(&il, &inputtensor, &dl2, &output2, NULL);
+   printf("result=\n");
+   output2.print();
+   //sess4.run(&il, &inputtensor, &sig, &t11, NULL);
 
    return 0;
 }

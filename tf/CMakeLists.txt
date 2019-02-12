@@ -25,7 +25,10 @@ add_executable( tf_app src/main.cpp
                      src/biasadd.cpp
                      src/gradients.cpp
                      src/relu.cpp
-                     src/sigmoid.cpp)
+                     src/sigmoid.cpp
+                     src/layer.cpp
+                     src/inputlayer.cpp
+                     src/denselayer.cpp)
 
 target_link_libraries( tf_app tensorflow )
 
