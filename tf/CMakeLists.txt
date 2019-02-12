@@ -22,7 +22,8 @@ add_executable( tf_app src/main.cpp
                      src/placeholder.cpp
                      src/squareddifference.cpp
                      src/mean.cpp
-                     src/biasadd.cpp)
+                     src/biasadd.cpp
+                     src/gradients.cpp)
 
 target_link_libraries( tf_app tensorflow )
 

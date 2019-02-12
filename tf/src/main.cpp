@@ -16,6 +16,7 @@
 #include "mean.h"
 #include "biasadd.h"
 #include "squareddifference.h"
+#include "gradients.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -53,6 +54,7 @@ int main() {
    double data4[] = {10.0, 20.0, 30.0, 40.0, 50.0, 60.0};
    const int64_t dim3[] = {2, 3};
    const int64_t dim4[] = {3};
+   const int64_t dim5[] = {3, 1};
    double data5[] = {5.0, 6.0, 7.0};
 
    DoubleTensor t6(dim3, 2, data4);
@@ -68,5 +70,30 @@ int main() {
    sess2.run(NULL, NULL, &ba, &t8, NULL);
 
    t8.print();
+
+   // MatMul
+   DoubleTensor t9(dim3, 2, data4);
+   DoubleTensor t10(dim5, 2, data5);
+   DoubleTensor t11;
+   DoubleTensor t12;
+
+   ConstOp c6(&g, &t9, "const6");
+   ConstOp c7(&g, &t10, "const7");
+
+   MatMulOp mm(&g, &c6, &c7, "mm");
+
+   TfSession sess3(&g);
+   sess3.run(NULL, NULL, &mm, &t11, NULL);
+
+   printf("MatMul=\n");
+   t11.print();
+
+   Gradients grad(&g, &mm, &c6, "matmulgrad");
+
+   sess3.run(NULL, NULL, &grad, &t12, NULL);
+
+   printf("MatMul grad=\n");
+   t12.print();
+
    return 0;
 }
