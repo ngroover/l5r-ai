@@ -18,6 +18,7 @@
 #include "squareddifference.h"
 #include "gradients.h"
 #include "relu.h"
+#include "sigmoid.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -85,8 +86,10 @@ int main() {
 
    Relu ru(&g, &mm, "ru");
 
+   Sigmoid sig(&g, &ru, "sig");
+
    TfSession sess3(&g);
-   sess3.run(NULL, NULL, &ru, &t11, NULL);
+   sess3.run(NULL, NULL, &sig, &t11, NULL);
 
    printf("MatMul=\n");
    t11.print();
