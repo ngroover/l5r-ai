@@ -107,16 +107,20 @@ int main() {
 
    InputLayer il(&g, 5, 1, "input");
 
-   DenseLayer dl(&g, 4, &il, "hidden1");
+   DenseLayer dl(&g, 4, &il, ActivationType::RELU, "hidden1");
 
-   DenseLayer dl2(&g, 3, &dl, "hidden2");
+   DenseLayer dl2(&g, 3, &dl, ActivationType::RELU, "hidden2");
+
+   DenseLayer dl3(&g, 2, &dl, ActivationType::RELU, "hidden3");
+
+   DenseLayer dl4(&g, 1, &dl, ActivationType::SIGMOID, "hidden4");
 
    double inputdata[] = {1.0, 1.0, 0.0, 0.0, 0.0};
    const int64_t inputdims[] = {1, 5};
 
    DoubleTensor inputtensor(inputdims, 2, inputdata);
-   DoubleTensor weights1, weights2;
-   DoubleTensor biases1, biases2;
+   DoubleTensor weights1, weights2,weights3, weights4;
+   DoubleTensor biases1, biases2, biases3, biases4;
    DoubleTensor output2;
 
    TfSession sess4(&g);
@@ -124,20 +128,36 @@ int main() {
    sess4.run(NULL, NULL, NULL, NULL, dl.getBiasInitializer());
    sess4.run(NULL, NULL, NULL, NULL, dl2.getWeightInitializer());
    sess4.run(NULL, NULL, NULL, NULL, dl2.getBiasInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl3.getWeightInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl3.getBiasInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl4.getWeightInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl4.getBiasInitializer());
    sess4.run(NULL, NULL, dl.getWeights(), &weights1, NULL);
    sess4.run(NULL, NULL, dl2.getWeights(), &weights2, NULL);
+   sess4.run(NULL, NULL, dl3.getWeights(), &weights3, NULL);
+   sess4.run(NULL, NULL, dl4.getWeights(), &weights4, NULL);
    sess4.run(NULL, NULL, dl.getBiases(), &biases1, NULL);
    sess4.run(NULL, NULL, dl2.getBiases(), &biases2, NULL);
+   sess4.run(NULL, NULL, dl3.getBiases(), &biases3, NULL);
+   sess4.run(NULL, NULL, dl4.getBiases(), &biases4, NULL);
 
    printf("weights1=\n");
    weights1.print();
    printf("weights2=\n");
    weights2.print();
+   printf("weights3=\n");
+   weights3.print();
+   printf("weights4=\n");
+   weights4.print();
    printf("biases1=\n");
    biases1.print();
    printf("biases2=\n");
    biases2.print();
-   sess4.run(&il, &inputtensor, &dl2, &output2, NULL);
+   printf("biases3=\n");
+   biases3.print();
+   printf("biases4=\n");
+   biases4.print();
+   sess4.run(&il, &inputtensor, &dl4, &output2, NULL);
    printf("result=\n");
    output2.print();
    //sess4.run(&il, &inputtensor, &sig, &t11, NULL);

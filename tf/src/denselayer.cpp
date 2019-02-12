@@ -11,9 +11,10 @@
 #include "constop.h"
 #include "assignop.h"
 #include "biasadd.h"
+#include "sigmoid.h"
 #include <tensorflow/c/c_api.h>
 
-DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, const char* name) : Layer(g, layerSize)
+DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, ActivationType activation, const char* name) : Layer(g, layerSize)
 {
    const int64_t dims[] = {previousLayer->getSize(), layerSize};
    const int64_t biasdims[] = {layerSize};
@@ -38,11 +39,24 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, const ch
    strcat(this->name, "_addbias");
    BiasAdd ba(g, &mm, bias, this->name);
 
-   // activation (relu) TODO: sigmoid
-   strcpy(this->name, name);
-   strcat(this->name, "_relu");
-   Relu relu(g, &ba, this->name);
-   this->op = relu.getOp();
+   // activation (relu or sigmoid)
+   if( activation == ActivationType::RELU )
+   {
+      strcpy(this->name, name);
+      strcat(this->name, "_relu");
+      Relu relu(g, &ba, this->name);
+      this->op = relu.getOp();
+   }else if( activation == ActivationType::SIGMOID )
+   {
+      strcpy(this->name, name);
+      strcat(this->name, "_sigmoid");
+      Sigmoid sigmoid(g, &ba, this->name);
+      this->op = sigmoid.getOp();
+   }
+   else
+   {
+      this->op = ba.getOp();
+   }
 
    // truncated normal size
    const int32_t dims32[] = {previousLayer->getSize(), layerSize};

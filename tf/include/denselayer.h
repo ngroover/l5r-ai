@@ -7,10 +7,17 @@
 
 class TfGraph;
 class DoubleTensor;
+
+enum class ActivationType
+{
+   RELU,
+   SIGMOID
+};
+
 class DenseLayer : public Layer
 {
    public:
-      DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, const char* name);
+      DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, ActivationType activation, const char* name);
       ~DenseLayer();
 
       TfOperation *getWeightInitializer();
