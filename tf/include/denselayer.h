@@ -13,12 +13,16 @@ class DenseLayer : public Layer
       DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, const char* name);
       ~DenseLayer();
 
-      TfOperation *getInitializer();
+      TfOperation *getWeightInitializer();
+      TfOperation *getBiasInitializer();
       TfOperation *getWeights();
+      TfOperation *getBiases();
    private:
       char name[64];
       TfOperation *weights;
-      TfOperation *assignment;
+      TfOperation *bias;
+      TfOperation *weightAssignment;
+      TfOperation *biasAssignment;
 };
 
 #endif // _DENSE_LAYER_H_

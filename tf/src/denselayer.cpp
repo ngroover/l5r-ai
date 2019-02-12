@@ -10,59 +10,105 @@
 #include "int32tensor.h"
 #include "constop.h"
 #include "assignop.h"
+#include "biasadd.h"
 #include <tensorflow/c/c_api.h>
 
 DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, const char* name) : Layer(g, layerSize)
 {
    const int64_t dims[] = {previousLayer->getSize(), layerSize};
-   printf("layer size is %d\n", layerSize);
+   const int64_t biasdims[] = {layerSize};
 
    // create weights
    strcpy(this->name, name);
    strcat(this->name, "_weights");
    weights = new Variable(g, TF_DOUBLE, dims, 2, this->name);
 
+   // create bias
+   strcpy(this->name, name);
+   strcat(this->name, "_biases");
+   bias = new Variable(g, TF_DOUBLE, biasdims, 1, this->name);
+
    // matrix multiply
    strcpy(this->name, name);
    strcat(this->name, "_matmul");
    MatMulOp mm(g, previousLayer, weights, this->name);
+
+   // add bias
+   strcpy(this->name, name);
+   strcat(this->name, "_addbias");
+   BiasAdd ba(g, &mm, bias, this->name);
+
    // activation (relu) TODO: sigmoid
    strcpy(this->name, name);
    strcat(this->name, "_relu");
-   Relu relu(g, &mm, this->name);
+   Relu relu(g, &ba, this->name);
    this->op = relu.getOp();
 
-   // weights initializer (truncated normal)
+   // truncated normal size
    const int32_t dims32[] = {previousLayer->getSize(), layerSize};
+   const int32_t biasdims32[] = {layerSize};
    const int64_t sizeDim[] = {2};
-   Int32Tensor normalSize(sizeDim, 1, dims32);
-   strcpy(this->name, name);
-   strcat(this->name, "_normalconst");
-   ConstOp normalSizeConst(g, &normalSize, this->name);
+   const int64_t biasSizeDim[] = {1};
 
+   // weights size
+   Int32Tensor weightSize(sizeDim, 1, dims32);
    strcpy(this->name, name);
-   strcat(this->name, "_normaldist");
-   TruncatedNormalOp tn(g, &normalSizeConst, TF_DOUBLE, this->name);
+   strcat(this->name, "_weightsconst");
+   ConstOp weightSizeConst(g, &weightSize, this->name);
 
-   // assignment
+   // bias size
+   Int32Tensor biasSize(biasSizeDim, 1, biasdims32);
    strcpy(this->name, name);
-   strcat(this->name, "_assign");
-   assignment = new AssignOp(g, &tn,weights, this->name);
+   strcat(this->name, "_biasconst");
+   ConstOp biasSizeConst(g, &biasSize, this->name);
+
+   // weights distribution
+   strcpy(this->name, name);
+   strcat(this->name, "_weightdist");
+   TruncatedNormalOp weightsNormal(g, &weightSizeConst, TF_DOUBLE, this->name);
+
+   // bias distribution
+   strcpy(this->name, name);
+   strcat(this->name, "_biasdist");
+   TruncatedNormalOp biasNormal(g, &biasSizeConst, TF_DOUBLE, this->name);
+
+   // weight assignment
+   strcpy(this->name, name);
+   strcat(this->name, "_assignweights");
+   weightAssignment = new AssignOp(g, &weightsNormal,weights, this->name);
+
+   // bias assignment
+   strcpy(this->name, name);
+   strcat(this->name, "_assignbias");
+   biasAssignment = new AssignOp(g, &biasNormal,bias, this->name);
 }
 
 DenseLayer::~DenseLayer()
 {
    delete weights;
-   delete assignment;
+   delete bias;
+   delete weightAssignment;
+   delete biasAssignment;
 }
 
-TfOperation *DenseLayer::getInitializer()
+TfOperation *DenseLayer::getWeightInitializer()
 {
-   return assignment;
+   return weightAssignment;
+}
+
+TfOperation *DenseLayer::getBiasInitializer()
+{
+   return biasAssignment;
 }
 
 TfOperation *DenseLayer::getWeights()
 {
    return weights;
 }
+
+TfOperation *DenseLayer::getBiases()
+{
+   return bias;
+}
+
 

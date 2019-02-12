@@ -116,18 +116,27 @@ int main() {
 
    DoubleTensor inputtensor(inputdims, 2, inputdata);
    DoubleTensor weights1, weights2;
+   DoubleTensor biases1, biases2;
    DoubleTensor output2;
 
    TfSession sess4(&g);
-   sess4.run(NULL, NULL, NULL, NULL, dl.getInitializer());
-   sess4.run(NULL, NULL, NULL, NULL, dl2.getInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl.getWeightInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl.getBiasInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl2.getWeightInitializer());
+   sess4.run(NULL, NULL, NULL, NULL, dl2.getBiasInitializer());
    sess4.run(NULL, NULL, dl.getWeights(), &weights1, NULL);
    sess4.run(NULL, NULL, dl2.getWeights(), &weights2, NULL);
+   sess4.run(NULL, NULL, dl.getBiases(), &biases1, NULL);
+   sess4.run(NULL, NULL, dl2.getBiases(), &biases2, NULL);
 
    printf("weights1=\n");
    weights1.print();
    printf("weights2=\n");
    weights2.print();
+   printf("biases1=\n");
+   biases1.print();
+   printf("biases2=\n");
+   biases2.print();
    sess4.run(&il, &inputtensor, &dl2, &output2, NULL);
    printf("result=\n");
    output2.print();
