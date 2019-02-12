@@ -17,6 +17,7 @@
 #include "biasadd.h"
 #include "squareddifference.h"
 #include "gradients.h"
+#include "relu.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -82,8 +83,10 @@ int main() {
 
    MatMulOp mm(&g, &c6, &c7, "mm");
 
+   Relu ru(&g, &mm, "ru");
+
    TfSession sess3(&g);
-   sess3.run(NULL, NULL, &mm, &t11, NULL);
+   sess3.run(NULL, NULL, &ru, &t11, NULL);
 
    printf("MatMul=\n");
    t11.print();
