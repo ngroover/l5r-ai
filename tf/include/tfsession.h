@@ -1,6 +1,8 @@
 #ifndef _TF_SESSION_H_
 #define _TF_SESSION_H_
 
+#include <list>
+
 struct TF_Session;
 class TfGraph;
 class TfOperation;
@@ -12,7 +14,7 @@ class TfSession
       ~TfSession();
 
       void run(TfOperation *inputop, Tensor *input,
-         TfOperation *outputop, Tensor *output, TfOperation *targetop);
+         TfOperation *outputop, Tensor *output, std::list<TfOperation*> targetop);
    private:
       TF_Session *session;
 };

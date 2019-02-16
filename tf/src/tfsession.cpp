@@ -23,12 +23,15 @@ TfSession::~TfSession()
 
 
 void TfSession::run(TfOperation *inputop, Tensor *input,
-         TfOperation *outputop, Tensor *output, TfOperation *targetop)
+         TfOperation *outputop, Tensor *output, std::list<TfOperation*> targetops)
 {
    TF_Output tfout,tfin;
    TF_Output *out=NULL, *in=NULL;
    TF_Tensor **outtensor=NULL, **intensor=NULL;
    int inputNum=0, outputNum=0;
+   TF_Operation *tfops[targetops.size()];
+   TF_Operation **target=NULL;
+
    if( inputop != NULL )
    {
       tfin.oper=(TF_Operation*)inputop->getOp();
@@ -47,15 +50,22 @@ void TfSession::run(TfOperation *inputop, Tensor *input,
    }
 
    TF_Status *status = TF_NewStatus();
-   const TF_Operation *firstop = (targetop ? targetop->getOp() : NULL);
-   const TF_Operation* const *target = (targetop ? &firstop : NULL);
-   int numTargets = (targetop ? 1 : 0);
+   if( targetops.size() > 0 )
+   {
+      target = tfops;
+      for(auto targetop : targetops)
+      {
+         *target = targetop->getOp();
+         target++;
+      }
+      target = tfops;
+   }
 
    TF_SessionRun(session,
       NULL, // options
       in, intensor, inputNum, // inputs
       out, outtensor, outputNum, // outputs
-      target, numTargets, NULL, status);
+      target, targetops.size(), NULL, status);
 
    TF_DeleteStatus(status);
 }
