@@ -21,6 +21,7 @@
 #include "sigmoid.h"
 #include "inputlayer.h"
 #include "denselayer.h"
+#include "mean.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -30,7 +31,7 @@ int main() {
 
    // start nnet graphs
 
-   InputLayer il(&g, 5, 1, "input");
+   InputLayer il(&g, 5, 5, "input");
 
    DenseLayer dl(&g, 4, &il, ActivationType::RELU, "hidden1");
 
@@ -40,13 +41,40 @@ int main() {
 
    DenseLayer dl4(&g, 1, &dl, ActivationType::SIGMOID, "hidden4");
 
-   double inputdata[] = {1.0, 1.0, 0.0, 0.0, 0.0};
-   const int64_t inputdims[] = {1, 5};
+   const int64_t outputdims[] = {5};
+   Placeholder expected(&g, TF_DOUBLE, outputdims, 1, "expected");
+
+   SquaredDifference sqdiff(&g, &dl4, &expected, "sqdiff");
+
+   const int32_t meanAxisData[] = {0};
+   const int64_t meanAxisDims[] = {1};
+   Int32Tensor meanAxisTensor(meanAxisDims,1,meanAxisData);
+
+   ConstOp meanAxis(&g, &meanAxisTensor, "meanAxis");
+
+   Mean mean(&g, &sqdiff, &meanAxis, "mean");
+
+   double inputdata[] = {1.0, 0.0, 1.0, 0.0, 0.0, // 20
+                         1.0, 0.0, 0.0, 0.0, 0.0, // 16
+                         1.0, 1.0, 0.0, 0.0, 0.0, // 30
+                         1.0, 1.0, 1.0, 1.0, 0.0, // 23
+                         1.0, 1.0, 1.0, 0.0, 1.0}; // 29
+   const int64_t inputdims[] = {5, 5};
+
+   double expecteddata[] = { 0.625, // 20
+                             0.5, // 16
+                             0.9375, // 30
+                             0.71875, // 23
+                             0.90625}; // 29
+   const int64_t expecteddims[] = {1,1};
 
    DoubleTensor inputtensor(inputdims, 2, inputdata);
+   DoubleTensor expectedtensor(expecteddims, 2, expecteddata);
    DoubleTensor weights1, weights2,weights3, weights4;
    DoubleTensor biases1, biases2, biases3, biases4;
    DoubleTensor output2;
+   DoubleTensor lossoutput;
+   DoubleTensor meanoutput;
 
    TfSession sess4(&g);
    std::list<TfOperation*> wlist = {dl.getWeightInitializer(),
@@ -101,14 +129,33 @@ int main() {
    printf("biases4=\n");
    biases4.print();
 
-   std::list<TfOperation*> inputOps={ &il };
-   std::list<Tensor*> inputTensor = { &inputtensor };
+   std::list<TfOperation*> inputOps={ &il , &expected};
+   std::list<Tensor*> inputTensor = { &inputtensor, &expectedtensor};
    
    std::list<TfOperation*> outputOps= {&dl4};
    std::list<Tensor*> outputTensor = {&output2};
    sess4.run(inputOps, inputTensor, outputOps, outputTensor, empty);
    printf("result=\n");
    output2.print();
-   //sess4.run(&il, &inputtensor, &sig, &t11, NULL);
+
+   std::list<TfOperation*> lossOutputOps= {&sqdiff};
+   std::list<Tensor*> lossOutputTensor = {&lossoutput};
+   sess4.run(inputOps, inputTensor, lossOutputOps, lossOutputTensor, empty);
+   printf("loss=\n");
+   lossoutput.print();
+   std::list<TfOperation*> meanOutputOps= {&mean};
+   std::list<Tensor*> meanOutputTensor = {&meanoutput};
+   sess4.run(inputOps, inputTensor, meanOutputOps, meanOutputTensor, empty);
+   printf("mean=\n");
+   meanoutput.print();
+
+   // compute gradients
+   DoubleTensor dlgradstensor;
+   Gradients dlgrad(&g, &mean, dl.getWeights(), "d1grads");
+   std::list<TfOperation*> gradsOutputOps= {&dlgrad};
+   std::list<Tensor*> gradsOutputTensor = {&dlgradstensor};
+   sess4.run(inputOps, inputTensor, gradsOutputOps, gradsOutputTensor, empty);
+   printf("grads=\n");
+   dlgradstensor.print();
    return 0;
 }
