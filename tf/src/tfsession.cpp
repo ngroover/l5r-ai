@@ -23,11 +23,13 @@ TfSession::~TfSession()
 
 
 void TfSession::run(TfOperation *inputop, Tensor *input,
-         TfOperation *outputop, Tensor *output, std::list<TfOperation*> targetops)
+         std::list<TfOperation*> outputs, std::list<Tensor*> outputTensors, std::list<TfOperation*> targetops)
 {
-   TF_Output tfout,tfin;
+   TF_Output tfout[outputs.size()];
+   TF_Output tfin;
    TF_Output *out=NULL, *in=NULL;
    TF_Tensor **outtensor=NULL, **intensor=NULL;
+   TF_Tensor *outtensors[outputs.size()];
    int inputNum=0, outputNum=0;
    TF_Operation *tfops[targetops.size()];
    TF_Operation **target=NULL;
@@ -40,13 +42,24 @@ void TfSession::run(TfOperation *inputop, Tensor *input,
       intensor = input->getTensor();
       inputNum=1;
    }
-   if( outputop != NULL )
+
+   // process outputs
+   if( outputs.size() > 0 && outputs.size() == outputTensors.size())
    {
-      tfout.oper=(TF_Operation*)outputop->getOp();
-      tfout.index=0;
-      out = &tfout;
-      outtensor = output->getTensor();
-      outputNum=1;
+      out = tfout;
+      outtensor = outtensors;
+      auto outTensorIter = outputTensors.begin();
+      for(auto output : outputs)
+      {
+         out->oper =(TF_Operation*)output->getOp();
+         out->index=0;
+         *outtensor = *((*outTensorIter)->getTensor());
+         outTensorIter++;
+         out++;
+         outtensor++;
+      }
+      out = tfout;
+      outtensor = outtensors;
    }
 
    TF_Status *status = TF_NewStatus();
@@ -64,8 +77,21 @@ void TfSession::run(TfOperation *inputop, Tensor *input,
    TF_SessionRun(session,
       NULL, // options
       in, intensor, inputNum, // inputs
-      out, outtensor, outputNum, // outputs
+      out, outtensor, outputs.size(), // outputs
       target, targetops.size(), NULL, status);
+
+   printf("%s\n", TF_Message(status));
+
+   // copy tensor pointers back
+   if( outputTensors.size() == outputs.size() )
+   {
+      outtensor = outtensors;
+      for(auto outputTensor : outputTensors)
+      {
+         outputTensor->setTensor(*outtensor);
+         outtensor++;
+      }
+   }
 
    TF_DeleteStatus(status);
 }

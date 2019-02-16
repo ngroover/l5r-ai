@@ -58,19 +58,31 @@ int main() {
                                  dl3.getBiasInitializer(),
                                  dl4.getBiasInitializer()};
    std::list<TfOperation*> empty;
+   std::list<Tensor*> emptytensor;
    // initial weights
-   sess4.run(NULL, NULL, NULL, NULL, wlist);
+   sess4.run(NULL, NULL, empty, emptytensor, wlist);
    // initialize biases
-   sess4.run(NULL, NULL, NULL, NULL, blist);
+   sess4.run(NULL, NULL, empty, emptytensor, blist);
 
-   sess4.run(NULL, NULL, dl.getWeights(), &weights1, empty);
-   sess4.run(NULL, NULL, dl2.getWeights(), &weights2, empty);
-   sess4.run(NULL, NULL, dl3.getWeights(), &weights3, empty);
-   sess4.run(NULL, NULL, dl4.getWeights(), &weights4, empty);
-   sess4.run(NULL, NULL, dl.getBiases(), &biases1, empty);
-   sess4.run(NULL, NULL, dl2.getBiases(), &biases2, empty);
-   sess4.run(NULL, NULL, dl3.getBiases(), &biases3, empty);
-   sess4.run(NULL, NULL, dl4.getBiases(), &biases4, empty);
+   std::list<TfOperation*> varlist = {dl.getWeights(),
+                                       dl2.getWeights(),
+                                       dl3.getWeights(),
+                                       dl4.getWeights(),
+                                       dl.getBiases(),
+                                       dl2.getBiases(),
+                                       dl3.getBiases(),
+                                       dl4.getBiases()};
+   std::list<Tensor*> outlist = {&weights1,
+                                 &weights2,
+                                 &weights3,
+                                 &weights4,
+                                 &biases1,
+                                 &biases2,
+                                 &biases3,
+                                 &biases4};
+
+   // get weights and biases
+   sess4.run(NULL, NULL, varlist, outlist, empty);
 
    printf("weights1=\n");
    weights1.print();

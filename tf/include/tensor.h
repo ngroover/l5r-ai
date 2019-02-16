@@ -11,6 +11,8 @@ class Tensor
       ~Tensor();
 
       TF_Tensor **getTensor(){ return &tensor; };
+
+      void setTensor(TF_Tensor *ptr){ tensor = ptr; };
    protected:
       TF_Tensor *tensor;
 };

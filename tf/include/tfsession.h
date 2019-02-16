@@ -14,7 +14,7 @@ class TfSession
       ~TfSession();
 
       void run(TfOperation *inputop, Tensor *input,
-         TfOperation *outputop, Tensor *output, std::list<TfOperation*> targetop);
+         std::list<TfOperation*> outputs, std::list<Tensor*> outputTensors, std::list<TfOperation*> targetop);
    private:
       TF_Session *session;
 };
