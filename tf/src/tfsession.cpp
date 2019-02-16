@@ -22,25 +22,35 @@ TfSession::~TfSession()
 }
 
 
-void TfSession::run(TfOperation *inputop, Tensor *input,
+void TfSession::run(std::list<TfOperation*> inputs, std::list<Tensor*> inputTensors,
          std::list<TfOperation*> outputs, std::list<Tensor*> outputTensors, std::list<TfOperation*> targetops)
 {
    TF_Output tfout[outputs.size()];
-   TF_Output tfin;
+   TF_Output tfin[inputs.size()];
    TF_Output *out=NULL, *in=NULL;
    TF_Tensor **outtensor=NULL, **intensor=NULL;
    TF_Tensor *outtensors[outputs.size()];
-   int inputNum=0, outputNum=0;
+   TF_Tensor *intensors[inputs.size()];
    TF_Operation *tfops[targetops.size()];
    TF_Operation **target=NULL;
 
-   if( inputop != NULL )
+   // process inputs
+   if( inputs.size() > 0 && inputs.size() == inputTensors.size())
    {
-      tfin.oper=(TF_Operation*)inputop->getOp();
-      tfin.index=0;
-      in = &tfin;
-      intensor = input->getTensor();
-      inputNum=1;
+      in = tfin;
+      intensor = intensors;
+      auto inTensorIter = inputTensors.begin();
+      for(auto input : inputs)
+      {
+         in->oper =(TF_Operation*)input->getOp();
+         in->index=0;
+         *intensor = *((*inTensorIter)->getTensor());
+         inTensorIter++;
+         in++;
+         intensor++;
+      }
+      in = tfin;
+      intensor = intensors;
    }
 
    // process outputs
@@ -62,7 +72,7 @@ void TfSession::run(TfOperation *inputop, Tensor *input,
       outtensor = outtensors;
    }
 
-   TF_Status *status = TF_NewStatus();
+   // process target ops
    if( targetops.size() > 0 )
    {
       target = tfops;
@@ -74,9 +84,11 @@ void TfSession::run(TfOperation *inputop, Tensor *input,
       target = tfops;
    }
 
+   TF_Status *status = TF_NewStatus();
+
    TF_SessionRun(session,
       NULL, // options
-      in, intensor, inputNum, // inputs
+      in, intensor, inputs.size(), // inputs
       out, outtensor, outputs.size(), // outputs
       target, targetops.size(), NULL, status);
 

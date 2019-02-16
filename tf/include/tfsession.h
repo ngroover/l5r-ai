@@ -13,8 +13,7 @@ class TfSession
       TfSession(TfGraph *graph);
       ~TfSession();
 
-      void run(TfOperation *inputop, Tensor *input,
-         std::list<TfOperation*> outputs, std::list<Tensor*> outputTensors, std::list<TfOperation*> targetop);
+      void run(std::list<TfOperation*> inputs, std::list<Tensor*> inputTensors,         std::list<TfOperation*> outputs, std::list<Tensor*> outputTensors, std::list<TfOperation*> targetop);
    private:
       TF_Session *session;
 };

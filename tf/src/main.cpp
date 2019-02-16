@@ -60,9 +60,9 @@ int main() {
    std::list<TfOperation*> empty;
    std::list<Tensor*> emptytensor;
    // initial weights
-   sess4.run(NULL, NULL, empty, emptytensor, wlist);
+   sess4.run(empty, emptytensor, empty, emptytensor, wlist);
    // initialize biases
-   sess4.run(NULL, NULL, empty, emptytensor, blist);
+   sess4.run(empty, emptytensor, empty, emptytensor, blist);
 
    std::list<TfOperation*> varlist = {dl.getWeights(),
                                        dl2.getWeights(),
@@ -82,7 +82,7 @@ int main() {
                                  &biases4};
 
    // get weights and biases
-   sess4.run(NULL, NULL, varlist, outlist, empty);
+   sess4.run(empty, emptytensor, varlist, outlist, empty);
 
    printf("weights1=\n");
    weights1.print();
@@ -100,11 +100,15 @@ int main() {
    biases3.print();
    printf("biases4=\n");
    biases4.print();
-   /*
-   sess4.run(&il, &inputtensor, &dl4, &output2, NULL);
+
+   std::list<TfOperation*> inputOps={ &il };
+   std::list<Tensor*> inputTensor = { &inputtensor };
+   
+   std::list<TfOperation*> outputOps= {&dl4};
+   std::list<Tensor*> outputTensor = {&output2};
+   sess4.run(inputOps, inputTensor, outputOps, outputTensor, empty);
    printf("result=\n");
    output2.print();
    //sess4.run(&il, &inputtensor, &sig, &t11, NULL);
-*/
    return 0;
 }
