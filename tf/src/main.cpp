@@ -22,6 +22,7 @@
 #include "inputlayer.h"
 #include "denselayer.h"
 #include "mean.h"
+#include "layerinitializer.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -31,15 +32,21 @@ int main() {
 
    // start nnet graphs
 
+   LayerInitializer layerinit;
+
    InputLayer il(&g, 5, 5, "input");
 
    DenseLayer dl(&g, 4, &il, ActivationType::RELU, "hidden1");
+   layerinit.addLayer(&dl);
 
    DenseLayer dl2(&g, 3, &dl, ActivationType::RELU, "hidden2");
+   layerinit.addLayer(&dl2);
 
    DenseLayer dl3(&g, 2, &dl, ActivationType::RELU, "hidden3");
+   layerinit.addLayer(&dl3);
 
    DenseLayer dl4(&g, 1, &dl, ActivationType::SIGMOID, "hidden4");
+   layerinit.addLayer(&dl4);
 
    const int64_t outputdims[] = {5};
    Placeholder expected(&g, TF_DOUBLE, outputdims, 1, "expected");
@@ -77,20 +84,7 @@ int main() {
    DoubleTensor meanoutput;
 
    TfSession sess4(&g);
-   std::list<TfOperation*> wlist = {dl.getWeightInitializer(),
-                                 dl2.getWeightInitializer(),
-                                 dl3.getWeightInitializer(),
-                                 dl4.getWeightInitializer()};
-   std::list<TfOperation*> blist = {dl.getBiasInitializer(),
-                                 dl2.getBiasInitializer(),
-                                 dl3.getBiasInitializer(),
-                                 dl4.getBiasInitializer()};
-   std::list<TfOperation*> empty;
-   std::list<Tensor*> emptytensor;
-   // initial weights
-   sess4.run(empty, emptytensor, empty, emptytensor, wlist);
-   // initialize biases
-   sess4.run(empty, emptytensor, empty, emptytensor, blist);
+   layerinit.init(&sess4);
 
    std::list<TfOperation*> varlist = {dl.getWeights(),
                                        dl2.getWeights(),
@@ -108,6 +102,9 @@ int main() {
                                  &biases2,
                                  &biases3,
                                  &biases4};
+
+   std::list<TfOperation*> empty;
+   std::list<Tensor*> emptytensor;
 
    // get weights and biases
    sess4.run(empty, emptytensor, varlist, outlist, empty);

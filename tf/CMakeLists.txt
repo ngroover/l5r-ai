@@ -28,7 +28,8 @@ add_executable( tf_app src/main.cpp
                      src/sigmoid.cpp
                      src/layer.cpp
                      src/inputlayer.cpp
-                     src/denselayer.cpp)
+                     src/denselayer.cpp
+                     src/layerinitializer.cpp)
 
 target_link_libraries( tf_app tensorflow )
 
