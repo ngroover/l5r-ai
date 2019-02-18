@@ -29,7 +29,8 @@ add_executable( tf_app src/main.cpp
                      src/layer.cpp
                      src/inputlayer.cpp
                      src/denselayer.cpp
-                     src/layerinitializer.cpp)
+                     src/layerinitializer.cpp
+                     src/applygradientdescent.cpp)
 
 target_link_libraries( tf_app tensorflow )
 
