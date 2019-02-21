@@ -23,6 +23,7 @@
 #include "denselayer.h"
 #include "mean.h"
 #include "layerinitializer.h"
+#include "applygradientdescent.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -86,7 +87,8 @@ int main() {
    TfSession sess4(&g);
    layerinit.init(&sess4);
 
-   std::list<TfOperation*> varlist = {dl.getWeights(),
+   std::list<TfOperation*> varlist = {dl.getWeights()};
+   /*
                                        dl2.getWeights(),
                                        dl3.getWeights(),
                                        dl4.getWeights(),
@@ -94,7 +96,9 @@ int main() {
                                        dl2.getBiases(),
                                        dl3.getBiases(),
                                        dl4.getBiases()};
-   std::list<Tensor*> outlist = {&weights1,
+                                       */
+   std::list<Tensor*> outlist = {&weights1};
+   /*
                                  &weights2,
                                  &weights3,
                                  &weights4,
@@ -102,7 +106,7 @@ int main() {
                                  &biases2,
                                  &biases3,
                                  &biases4};
-
+*/
    std::list<TfOperation*> empty;
    std::list<Tensor*> emptytensor;
 
@@ -111,6 +115,7 @@ int main() {
 
    printf("weights1=\n");
    weights1.print();
+   /*
    printf("weights2=\n");
    weights2.print();
    printf("weights3=\n");
@@ -125,6 +130,7 @@ int main() {
    biases3.print();
    printf("biases4=\n");
    biases4.print();
+   */
 
    std::list<TfOperation*> inputOps={ &il , &expected};
    std::list<Tensor*> inputTensor = { &inputtensor, &expectedtensor};
@@ -154,5 +160,31 @@ int main() {
    sess4.run(inputOps, inputTensor, gradsOutputOps, gradsOutputTensor, empty);
    printf("grads=\n");
    dlgradstensor.print();
+
+   double learningratedata[] = {0.1};
+   const int64_t learningratedims[] = {5, 4};
+   DoubleTensor lrtensor(NULL, 0, learningratedata);
+
+   ConstOp lrconst(&g, &lrtensor, "lr_rate");
+   
+   // apply gradient descent
+   ApplyGradientDescent agd(&g, dl.getWeights(), &lrconst, &dlgrad, "apply_gd");
+
+   std::list<TfOperation*> gd_list = {&agd};
+   DoubleTensor weights_again;
+   DoubleTensor mean_again;
+   std::list<Tensor*> outlist_again = {&weights_again};
+   std::list<Tensor*> outlist_again2 = {&mean_again};
+
+   sess4.run(inputOps, inputTensor, varlist, outlist_again, gd_list);
+
+   printf("weights_again=\n");
+   weights_again.print();
+
+   sess4.run(inputOps, inputTensor, meanOutputOps, outlist_again2, empty);
+
+   printf("mean_again=\n");
+   mean_again.print();
+
    return 0;
 }

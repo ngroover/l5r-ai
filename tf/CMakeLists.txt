@@ -30,7 +30,8 @@ add_executable( tf_app src/main.cpp
                      src/inputlayer.cpp
                      src/denselayer.cpp
                      src/layerinitializer.cpp
-                     src/applygradientdescent.cpp)
+                     src/applygradientdescent.cpp
+                     src/sgdoptimizer.cpp)
 
 target_link_libraries( tf_app tensorflow )
 
