@@ -24,6 +24,7 @@
 #include "mean.h"
 #include "layerinitializer.h"
 #include "applygradientdescent.h"
+#include "sgdoptimizer.h"
 #include <tensorflow/c/c_api.h>
 
 int main() {
@@ -43,10 +44,10 @@ int main() {
    DenseLayer dl2(&g, 3, &dl, ActivationType::RELU, "hidden2");
    layerinit.addLayer(&dl2);
 
-   DenseLayer dl3(&g, 2, &dl, ActivationType::RELU, "hidden3");
+   DenseLayer dl3(&g, 2, &dl2, ActivationType::RELU, "hidden3");
    layerinit.addLayer(&dl3);
 
-   DenseLayer dl4(&g, 1, &dl, ActivationType::SIGMOID, "hidden4");
+   DenseLayer dl4(&g, 1, &dl3, ActivationType::SIGMOID, "hidden4");
    layerinit.addLayer(&dl4);
 
    const int64_t outputdims[] = {5};
@@ -61,6 +62,12 @@ int main() {
    ConstOp meanAxis(&g, &meanAxisTensor, "meanAxis");
 
    Mean mean(&g, &sqdiff, &meanAxis, "mean");
+
+   SGDOptimizer sgd(&g, 0.10, &mean);
+   sgd.addLayer(&dl);
+   sgd.addLayer(&dl2);
+   sgd.addLayer(&dl3);
+   sgd.addLayer(&dl4);
 
    double inputdata[] = {1.0, 0.0, 1.0, 0.0, 0.0, // 20
                          1.0, 0.0, 0.0, 0.0, 0.0, // 16
@@ -152,6 +159,7 @@ int main() {
    printf("mean=\n");
    meanoutput.print();
 
+/*
    // compute gradients
    DoubleTensor dlgradstensor;
    Gradients dlgrad(&g, &mean, dl.getWeights(), "d1grads");
@@ -171,20 +179,24 @@ int main() {
    ApplyGradientDescent agd(&g, dl.getWeights(), &lrconst, &dlgrad, "apply_gd");
 
    std::list<TfOperation*> gd_list = {&agd};
-   DoubleTensor weights_again;
-   DoubleTensor mean_again;
-   std::list<Tensor*> outlist_again = {&weights_again};
-   std::list<Tensor*> outlist_again2 = {&mean_again};
 
    sess4.run(inputOps, inputTensor, varlist, outlist_again, gd_list);
 
    printf("weights_again=\n");
    weights_again.print();
+   */
+   for(int i=0;i < 100;i++)
+   {
+      sgd.optimize(&sess4, inputOps, inputTensor);
 
-   sess4.run(inputOps, inputTensor, meanOutputOps, outlist_again2, empty);
+      DoubleTensor mean_again;
+      std::list<Tensor*> outlist_again2 = {&mean_again};
 
-   printf("mean_again=\n");
-   mean_again.print();
+      sess4.run(inputOps, inputTensor, meanOutputOps, outlist_again2, empty);
+
+      printf("mean_again=\n");
+      mean_again.print();
+   }
 
    return 0;
 }
