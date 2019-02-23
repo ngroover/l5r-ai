@@ -4,6 +4,7 @@
 #include "tfoperation.h"
 #include <tensorflow/c/c_api.h>
 #include <stdio.h>
+#include <string.h>
 
 TfSession::TfSession(TfGraph *graph)
 {
@@ -92,7 +93,10 @@ void TfSession::run(std::list<TfOperation*> inputs, std::list<Tensor*> inputTens
       out, outtensor, outputs.size(), // outputs
       target, targetops.size(), NULL, status);
 
-   printf("%s\n", TF_Message(status));
+   if(strcmp(TF_Message(status), "") != 0)
+   {
+      printf("%s\n", TF_Message(status));
+   }
 
    // copy tensor pointers back
    if( outputTensors.size() == outputs.size() )
