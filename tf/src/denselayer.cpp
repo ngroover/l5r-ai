@@ -12,6 +12,7 @@
 #include "assignop.h"
 #include "biasadd.h"
 #include "sigmoid.h"
+#include "zeroslike.h"
 #include <tensorflow/c/c_api.h>
 
 DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, ActivationType activation, const char* name) : Layer(g, layerSize)
@@ -60,9 +61,9 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
 
    // truncated normal size
    const int32_t dims32[] = {previousLayer->getSize(), layerSize};
-   const int32_t biasdims32[] = {layerSize};
+   const double biasdims32[layerSize] = {0};
    const int64_t sizeDim[] = {2};
-   const int64_t biasSizeDim[] = {1};
+   const int64_t biasSizeDim[] = {layerSize};
 
    // weights size
    Int32Tensor weightSize(sizeDim, 1, dims32);
@@ -71,7 +72,7 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    ConstOp weightSizeConst(g, &weightSize, this->name);
 
    // bias size
-   Int32Tensor biasSize(biasSizeDim, 1, biasdims32);
+   DoubleTensor biasSize(biasSizeDim, 1, biasdims32);
    strcpy(this->name, name);
    strcat(this->name, "_biasconst");
    ConstOp biasSizeConst(g, &biasSize, this->name);
@@ -84,7 +85,7 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    // bias distribution
    strcpy(this->name, name);
    strcat(this->name, "_biasdist");
-   TruncatedNormalOp biasNormal(g, &biasSizeConst, TF_DOUBLE, this->name);
+   ZerosLike biasNormal(g, &biasSizeConst, TF_DOUBLE, this->name);
 
    // weight assignment
    strcpy(this->name, name);
