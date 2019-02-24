@@ -18,18 +18,27 @@ class DenseLayer : public Layer
 {
    public:
       DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, ActivationType activation, const char* name);
+
+      // Create a layer in which it shares weights and biases from parametersLayer but has it's own previousLayer
+      DenseLayer(TfGraph *g, Layer *previousLayer, DenseLayer *parametersLayer, ActivationType activation, const char *name);
+
       ~DenseLayer();
 
       TfOperation *getWeightInitializer();
       TfOperation *getBiasInitializer();
       TfOperation *getWeights();
       TfOperation *getBiases();
+
    private:
       char name[64];
+      int previousLayerSize;
+      bool ownVars;
       TfOperation *weights;
       TfOperation *bias;
       TfOperation *weightAssignment;
       TfOperation *biasAssignment;
+
+      void initialize(TfGraph *g, Layer *previousLayer, ActivationType activation, const char *name);
 };
 
 #endif // _DENSE_LAYER_H_

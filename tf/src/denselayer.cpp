@@ -17,8 +17,12 @@
 
 DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, ActivationType activation, const char* name) : Layer(g, layerSize)
 {
-   const int64_t dims[] = {previousLayer->getSize(), layerSize};
+   previousLayerSize = previousLayer->getSize();
+   const int64_t dims[] = {previousLayerSize, layerSize};
    const int64_t biasdims[] = {layerSize};
+
+   // this dense layer owns the variables so deallocate them upon destructor
+   ownVars = true;
 
    // create weights
    strcpy(this->name, name);
@@ -30,37 +34,8 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    strcat(this->name, "_biases");
    bias = new Variable(g, TF_DOUBLE, biasdims, 1, this->name);
 
-   // matrix multiply
-   strcpy(this->name, name);
-   strcat(this->name, "_matmul");
-   MatMulOp mm(g, previousLayer, weights, this->name);
-
-   // add bias
-   strcpy(this->name, name);
-   strcat(this->name, "_addbias");
-   BiasAdd ba(g, &mm, bias, this->name);
-
-   // activation (relu or sigmoid)
-   if( activation == ActivationType::RELU )
-   {
-      strcpy(this->name, name);
-      strcat(this->name, "_relu");
-      Relu relu(g, &ba, this->name);
-      this->op = relu.getOp();
-   }else if( activation == ActivationType::SIGMOID )
-   {
-      strcpy(this->name, name);
-      strcat(this->name, "_sigmoid");
-      Sigmoid sigmoid(g, &ba, this->name);
-      this->op = sigmoid.getOp();
-   }
-   else
-   {
-      this->op = ba.getOp();
-   }
-
    // truncated normal size
-   const int32_t dims32[] = {previousLayer->getSize(), layerSize};
+   const int32_t dims32[] = {previousLayerSize, layerSize};
    const double biasdims32[layerSize] = {0};
    const int64_t sizeDim[] = {2};
    const int64_t biasSizeDim[] = {layerSize};
@@ -96,14 +71,60 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    strcpy(this->name, name);
    strcat(this->name, "_assignbias");
    biasAssignment = new AssignOp(g, &biasNormal,bias, this->name);
+
+   initialize(g, previousLayer, activation, name);
+}
+
+DenseLayer::DenseLayer(TfGraph *g, Layer *previousLayer, DenseLayer *parametersLayer, ActivationType activation, const char *name): Layer(g, parametersLayer->getSize())
+{
+   ownVars = false;
+   weights = parametersLayer->getWeights();
+   bias = parametersLayer->getBiases();
+
+   initialize(g, previousLayer, activation, name);
+}
+
+void DenseLayer::initialize(TfGraph *g, Layer *previousLayer, ActivationType activation, const char *name)
+{
+   // matrix multiply
+   strcpy(this->name, name);
+   strcat(this->name, "_matmul");
+   MatMulOp mm(g, previousLayer, weights, this->name);
+
+   // add bias
+   strcpy(this->name, name);
+   strcat(this->name, "_addbias");
+   BiasAdd ba(g, &mm, bias, this->name);
+
+   // activation (relu or sigmoid)
+   if( activation == ActivationType::RELU )
+   {
+      strcpy(this->name, name);
+      strcat(this->name, "_relu");
+      Relu relu(g, &ba, this->name);
+      this->op = relu.getOp();
+   }else if( activation == ActivationType::SIGMOID )
+   {
+      strcpy(this->name, name);
+      strcat(this->name, "_sigmoid");
+      Sigmoid sigmoid(g, &ba, this->name);
+      this->op = sigmoid.getOp();
+   }
+   else
+   {
+      this->op = ba.getOp();
+   }
 }
 
 DenseLayer::~DenseLayer()
 {
-   delete weights;
-   delete bias;
-   delete weightAssignment;
-   delete biasAssignment;
+   if(ownVars)
+   {
+      delete weights;
+      delete bias;
+      delete weightAssignment;
+      delete biasAssignment;
+   }
 }
 
 TfOperation *DenseLayer::getWeightInitializer()
