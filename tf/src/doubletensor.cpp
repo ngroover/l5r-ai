@@ -94,3 +94,5 @@ void DoubleTensor::print()
       printf("%f\n", *data);
    }
 }
+
+void print
