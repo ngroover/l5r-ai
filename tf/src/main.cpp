@@ -61,7 +61,7 @@ int main() {
    DenseLayer dl4(&g, 1, &dl3, ActivationType::SIGMOID, "hidden4");
    layerinit.addLayer(&dl4);
    // inference layer
-   DenseLayer dl4_inf(&g, &dl3_inf, &dl4, ActivationType::RELU, "inf_hidden4");
+   DenseLayer dl4_inf(&g, &dl3_inf, &dl4, ActivationType::SIGMOID, "inf_hidden4");
 
    const int64_t outputdims[] = {5};
    Placeholder expected(&g, TF_DOUBLE, outputdims, 1, "expected");
@@ -207,10 +207,12 @@ int main() {
    printf("weights_again=\n");
    weights_again.print();
    */
+   /*
    for(int i=0;i < 100000;i++)
    {
       sgd.optimize(&sess4, inputOps, inputTensor);
    }
+   */
 
    DoubleTensor mean_again;
    std::list<Tensor*> outlist_again2 = {&mean_again};
