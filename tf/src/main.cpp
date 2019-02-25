@@ -40,19 +40,28 @@ int main() {
 
    LayerInitializer layerinit;
 
-   InputLayer il(&g, 638, 5, "input");
+   InputLayer il(&g, 5, 5, "input");
+   InputLayer il2(&g, 5, 1, "inf_input");
 
-   DenseLayer dl(&g, 200, &il, ActivationType::SIGMOID, "hidden1");
+   DenseLayer dl(&g, 4, &il, ActivationType::RELU, "hidden1");
    layerinit.addLayer(&dl);
+   // inference layer
+   DenseLayer dl_inf(&g, &il2, &dl, ActivationType::RELU, "inf_hidden1");
 
-   //DenseLayer dl2(&g, 200, &dl, ActivationType::RELU, "hidden2");
-   //layerinit.addLayer(&dl2);
+   DenseLayer dl2(&g, 3, &dl, ActivationType::RELU, "hidden2");
+   layerinit.addLayer(&dl2);
+   // inference layer
+   DenseLayer dl2_inf(&g, &dl_inf, &dl2, ActivationType::RELU, "inf_hidden2");
 
-   //DenseLayer dl3(&g, 50, &dl2, ActivationType::RELU, "hidden3");
-   //layerinit.addLayer(&dl3);
+   DenseLayer dl3(&g, 2, &dl2, ActivationType::RELU, "hidden3");
+   layerinit.addLayer(&dl3);
+   // inference layer
+   DenseLayer dl3_inf(&g, &dl2_inf, &dl3, ActivationType::RELU, "inf_hidden3");
 
-   DenseLayer dl4(&g, 1, &dl, ActivationType::SIGMOID, "hidden4");
+   DenseLayer dl4(&g, 1, &dl3, ActivationType::SIGMOID, "hidden4");
    layerinit.addLayer(&dl4);
+   // inference layer
+   DenseLayer dl4_inf(&g, &dl3_inf, &dl4, ActivationType::RELU, "inf_hidden4");
 
    const int64_t outputdims[] = {5};
    Placeholder expected(&g, TF_DOUBLE, outputdims, 1, "expected");
@@ -69,23 +78,23 @@ int main() {
 
    SGDOptimizer sgd(&g, 0.01, &mean);
    sgd.addLayer(&dl);
-   //sgd.addLayer(&dl2);
-   //sgd.addLayer(&dl3);
+   sgd.addLayer(&dl2);
+   sgd.addLayer(&dl3);
    sgd.addLayer(&dl4);
 
+/*
    double inputdata[3190];
    for(int i=0;i<3190;i++)
    {
       inputdata[i] = (double)(rand() % 3);
    }
-   /*
+                         */
    double inputdata[] = {1.0, 0.0, 1.0, 0.0, 0.0, // 20
                          1.0, 0.0, 0.0, 0.0, 0.0, // 16
                          1.0, 1.0, 0.0, 0.0, 0.0, // 30
                          1.0, 1.0, 1.0, 1.0, 0.0, // 23
                          1.0, 1.0, 1.0, 0.0, 1.0}; // 29
-                         */
-   const int64_t inputdims[] = {5, 638};
+   const int64_t inputdims[] = {5, 5};
 
    double expecteddata[] = { 0.625, // 20
                              0.5, // 16
@@ -198,7 +207,7 @@ int main() {
    printf("weights_again=\n");
    weights_again.print();
    */
-   for(int i=0;i < 10000;i++)
+   for(int i=0;i < 100000;i++)
    {
       sgd.optimize(&sess4, inputOps, inputTensor);
    }
@@ -211,13 +220,21 @@ int main() {
    printf("mean_again=\n");
    mean_again.print();
 
-   // get weights and biases
-   sess4.run(empty, emptytensor, varlist, outlist, empty);
+   DoubleTensor final_result;;
+   std::list<TfOperation*> outlist_op = {&dl4_inf};
+   std::list<Tensor*> outlist_result = {&final_result};
 
-/*
-   printf("weights4=\n");
-   weights4.print();
-   */
+   double inputdata_final[] = {1.0, 0.0, 1.0, 0.0, 0.0}; // 20
+   const int64_t inputdims_final[] = {1, 5};
+   DoubleTensor inputtensor_final(inputdims_final, 2, inputdata_final);
+   std::list<TfOperation*> inputOps_final={ &il2 };
+   std::list<Tensor*> inputTensor_final = { &inputtensor_final };
+
+   // get an inference result
+   sess4.run(inputOps_final, inputTensor_final, outlist_op, outlist_result, empty);
+
+   printf("result_again=\n");
+   final_result.print();
 
    return 0;
 }
