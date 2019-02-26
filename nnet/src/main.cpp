@@ -42,7 +42,12 @@ int main(int argc, char *argv[])
    // recompute network
    fiverings.compute(&sampleSession, input, 638, &nextresult);
 
-   std::cout << "The result now is " << nextresult << std::endl;
+   std::cout << "The result1 now is " << nextresult << std::endl;
+
+   // recompute network
+   fiverings.compute(&sampleSession, &input[638], 638, &nextresult);
+
+   std::cout << "The result2 now is " << nextresult << std::endl;
 
    return 0;
 }

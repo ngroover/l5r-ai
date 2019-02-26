@@ -6,6 +6,7 @@
 #include "relu.h"
 #include "sigmoid.h"
 #include "truncatednormalop.h"
+#include "parameterizedtruncatednormal.h"
 #include "string.h"
 #include "int32tensor.h"
 #include "constop.h"
@@ -39,6 +40,35 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    const double biasdims32[layerSize] = {0};
    const int64_t sizeDim[] = {2};
    const int64_t biasSizeDim[] = {layerSize};
+   const int64_t singleSize[] = {1};
+   const double mean = 0.0;
+   const double stdev = 0.5;
+   const double maxval = 1.0;
+   const double minval = -1.0;
+
+   // mean of normal distribution
+   DoubleTensor meanTensor(singleSize, 1, &mean);
+   strcpy(this->name, name);
+   strcat(this->name, "_normalmean");
+   ConstOp normalmean(g, &meanTensor, this->name);
+
+   // stdev of normal distribution
+   DoubleTensor stdevTensor(singleSize, 1, &stdev);
+   strcpy(this->name, name);
+   strcat(this->name, "_normalstdev");
+   ConstOp normalstdev(g, &stdevTensor, this->name);
+
+   // minval of normal distribution
+   DoubleTensor minvalTensor(singleSize, 1, &minval);
+   strcpy(this->name, name);
+   strcat(this->name, "_normalminval");
+   ConstOp normalminval(g, &minvalTensor, this->name);
+
+   // maxval of normal distribution
+   DoubleTensor maxvalTensor(singleSize, 1, &maxval);
+   strcpy(this->name, name);
+   strcat(this->name, "_normalmaxval");
+   ConstOp normalmaxval(g, &maxvalTensor, this->name);
 
    // weights size
    Int32Tensor weightSize(sizeDim, 1, dims32);
@@ -55,7 +85,9 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    // weights distribution
    strcpy(this->name, name);
    strcat(this->name, "_weightdist");
-   TruncatedNormalOp weightsNormal(g, &weightSizeConst, TF_DOUBLE, this->name);
+   ParameterizedTruncatedNormal weightsNormal(g, &weightSizeConst, &normalmean, &normalstdev, &normalminval, &normalmaxval, TF_DOUBLE, this->name);
+   // non-parameterized normal distribution
+   //TruncatedNormalOp weightsNormal(g, &weightSizeConst, TF_DOUBLE, this->name);
 
    // bias distribution
    strcpy(this->name, name);

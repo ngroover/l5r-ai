@@ -27,7 +27,8 @@ add_library( tfwrapper SHARED
                      src/layerinitializer.cpp
                      src/applygradientdescent.cpp
                      src/sgdoptimizer.cpp
-                     src/zeroslike.cpp)
+                     src/zeroslike.cpp
+                     src/parameterizedtruncatednormal.cpp)
 
 add_executable( tf_app src/main.cpp )
 
