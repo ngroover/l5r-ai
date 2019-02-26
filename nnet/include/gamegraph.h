@@ -5,23 +5,38 @@
 #include "layerinitializer.h"
 #include "tfsession.h"
 
+class InputLayer;
+class DenseLayer;
+class SGDOptimizer;
+class Placeholder;
 namespace l5r
 {
+   class GameSession;
    class GameGraph
    {
       public:
-         GameGraph();
+         GameGraph(int batchSize, int learningRate);
          ~GameGraph();
+
+         TfGraph *getGraph();
 
          void init(GameSession *session);
 
-         void compute(double *input, int size);
+         void compute(GameSession *session, double *input, int size, double *valueOutput);
 
-         void train(double *input, int totalSize);
+         void train(GameSession *session, double *input, int inputSize, double *valueOutput, int outputSize);
       private:
-         const int input_size;
+         static const int input_size;
+         int batchSize;
          TfGraph g;
          LayerInitializer layerinit;
+
+         InputLayer *inference_input, *training_input;
+         DenseLayer *inference_output;
+         DenseLayer *hidden1;
+         DenseLayer *output;
+         SGDOptimizer *optimizer;
+         Placeholder *expected;
    };
 };
 

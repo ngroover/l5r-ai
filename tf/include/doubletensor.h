@@ -16,6 +16,8 @@ class DoubleTensor : public Tensor
       ~DoubleTensor();
 
       void print();
+
+      void copyTo(double *array, int size);
 };
 
 #endif // _DOUBLE_TENSOR_H_

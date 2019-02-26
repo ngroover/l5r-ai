@@ -58,6 +58,7 @@ void SGDOptimizer::optimize(TfSession *session, std::list<TfOperation*> inputOps
 {
    std::list<TfOperation*> empty;
    std::list<Tensor*> emptyTensors;
+
    session->run(inputOps, inputTensors, empty, emptyTensors, gradientAppliers);
 }
 

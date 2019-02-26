@@ -6,5 +6,5 @@ add_executable( nnet_app src/main.cpp
                      src/gamegraph.cpp
                      src/gamesession.cpp)
 
-target_link_libraries( nnet_app )
+target_link_libraries( nnet_app tfwrapper tensorflow)
 
