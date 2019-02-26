@@ -18,6 +18,9 @@ class DoubleTensor : public Tensor
       void print();
 
       void copyTo(double *array, int size);
+
+      double *getData();
+      int getSize(); //total size
 };
 
 #endif // _DOUBLE_TENSOR_H_

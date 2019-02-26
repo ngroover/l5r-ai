@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
    srand(time(NULL));
 
    // graph with batch of 5 and learning rate of 0.01
-   GameGraph fiverings(2, 0.01);
+   GameGraph fiverings(2, 1.000);
 
    GameSession sampleSession(&fiverings);
 
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
    double input[theSize];
    for(int i=0;i<theSize;i++)
    {
-      input[i] = ((double)(rand() % 3)) - 1.0;
+      input[i] = (((double)(rand() % 3)) - 0.5)/100.0;
    }
 
    double result;

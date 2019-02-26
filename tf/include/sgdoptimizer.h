@@ -23,6 +23,7 @@ class SGDOptimizer
    private:
       int layerNum;
       std::list<TfOperation*> gradients;
+      std::list<TfOperation*> weightgrads;
 
       std::list<TfOperation*> gradientAppliers;
 

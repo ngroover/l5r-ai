@@ -44,6 +44,7 @@ void SGDOptimizer::addLayer(DenseLayer *layer)
    Gradients *bgrad = new Gradients(g, optimizer, layer->getBiases(), (biasName+"_grads").c_str());
 
    gradients.push_back(wgrad);
+   weightgrads.push_back(wgrad);
    gradients.push_back(bgrad);
 
    ApplyGradientDescent *wgd = new ApplyGradientDescent(g, layer->getWeights(), lrconst, wgrad, (weightName+"_apply_grad").c_str());
@@ -56,9 +57,20 @@ void SGDOptimizer::addLayer(DenseLayer *layer)
 
 void SGDOptimizer::optimize(TfSession *session, std::list<TfOperation*> inputOps, std::list<Tensor*> inputTensors)
 {
-   std::list<TfOperation*> empty;
-   std::list<Tensor*> emptyTensors;
+   DoubleTensor gradlist[weightgrads.size()];
 
-   session->run(inputOps, inputTensors, empty, emptyTensors, gradientAppliers);
+   std::list<Tensor*> tensors;
+   for(int i=0;i<weightgrads.size();i++)
+   {
+      tensors.push_back(&gradlist[i]);
+   }
+
+   session->run(inputOps, inputTensors, weightgrads, tensors, gradientAppliers);
+
+   for(int i=0;i<weightgrads.size();i++)
+   {
+//      printf("Grad %d\n", i);
+//      gradlist[i].print();
+   }
 }
 

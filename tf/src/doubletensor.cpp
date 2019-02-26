@@ -98,6 +98,19 @@ void DoubleTensor::print()
 void DoubleTensor::copyTo(double *array, int size)
 {
    double *data = (double *)TF_TensorData(tensor);
+   int totalSize=getSize();
+
+   // don't let totalSize overrun the buffer
+   if( size < totalSize)
+   {
+      printf("Total tensor size is bigger than expected");
+      totalSize = size;
+   }
+   memcpy(array, (double *)TF_TensorData(tensor), totalSize * sizeof(double));
+}
+
+int DoubleTensor::getSize()
+{
    int totalDims=TF_NumDims(tensor);
    int totalSize=1;
    if(totalDims > 0)
@@ -107,11 +120,10 @@ void DoubleTensor::copyTo(double *array, int size)
          totalSize *= TF_Dim(tensor, i);
       }
    }
-   // don't let totalSize overrun the buffer
-   if( size < totalSize)
-   {
-      printf("Total tensor size is bigger than expected");
-      totalSize = size;
-   }
-   memcpy(array, (double *)TF_TensorData(tensor), totalSize * sizeof(double));
+   return totalSize;
+}
+
+double *DoubleTensor::getData()
+{
+   return (double *)TF_TensorData(tensor);
 }
