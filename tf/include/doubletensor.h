@@ -21,6 +21,8 @@ class DoubleTensor : public Tensor
 
       double *getData();
       int getSize(); //total size
+
+      void printStats();
 };
 
 #endif // _DOUBLE_TENSOR_H_

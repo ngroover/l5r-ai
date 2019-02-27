@@ -76,7 +76,7 @@ int main() {
 
    Mean mean(&g, &sqdiff, &meanAxis, "mean");
 
-   SGDOptimizer sgd(&g, 0.01, &mean);
+   SGDOptimizer sgd(&g, 0.01, &mean, "optimizer");
    sgd.addLayer(&dl);
    sgd.addLayer(&dl2);
    sgd.addLayer(&dl3);
@@ -206,8 +206,6 @@ int main() {
 
    printf("weights_again=\n");
    weights_again.print();
-   */
-   /*
    for(int i=0;i < 100000;i++)
    {
       sgd.optimize(&sess4, inputOps, inputTensor);

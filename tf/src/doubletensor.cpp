@@ -127,3 +127,24 @@ double *DoubleTensor::getData()
 {
    return (double *)TF_TensorData(tensor);
 }
+
+void DoubleTensor::printStats()
+{
+   double *data = (double *)TF_TensorData(tensor);
+   double max=-999, min=999, total=0;
+   for(int i=0;i < getSize();i++)
+   {
+      if(data[i] > max)
+      {
+         max = data[i];
+      }
+      if(data[i] < min)
+      {
+         min = data[i];
+      }
+      total += data[i];
+   }
+   double mean = total/getSize();
+
+   printf("max = %f, min = %f, mean = %f\n", max, min, mean);
+}

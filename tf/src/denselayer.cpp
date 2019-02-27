@@ -42,9 +42,9 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    const int64_t biasSizeDim[] = {layerSize};
    const int64_t singleSize[] = {1};
    const double mean = 0.0;
-   const double stdev = 0.01;
-   const double maxval = 0.5;
-   const double minval = -0.5;
+   const double stdev = 0.10;
+   const double maxval = 0.20;
+   const double minval = -0.20;
 
    // mean of normal distribution
    DoubleTensor meanTensor(singleSize, 1, &mean);
@@ -178,5 +178,3 @@ TfOperation *DenseLayer::getBiases()
 {
    return bias;
 }
-
-

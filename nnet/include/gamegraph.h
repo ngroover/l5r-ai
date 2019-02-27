@@ -15,28 +15,32 @@ namespace l5r
    class GameGraph
    {
       public:
-         GameGraph(int batchSize, int learningRate);
+         GameGraph(int batchSize, double learningRate);
          ~GameGraph();
 
          TfGraph *getGraph();
 
          void init(GameSession *session);
 
-         void compute(GameSession *session, double *input, int size, double *valueOutput);
+         void compute(GameSession *session, double *input, int size, double *valueOutput, double *policyOutput, int policySize);
 
-         void train(GameSession *session, double *input, int inputSize, double *valueOutput, int outputSize);
+         void train(GameSession *session, double *input, int inputSize, double *valueOutput, int outputSize, double *policyOutput, int policySize);
+
       private:
          static const int input_size;
+         static const int policy_output_size;
          int batchSize;
          TfGraph g;
          LayerInitializer layerinit;
 
          InputLayer *inference_input, *training_input;
-         DenseLayer *inference_output;
+         DenseLayer *inference_output, *inference_output_policy;
          DenseLayer *hidden1;
          DenseLayer *output;
-         SGDOptimizer *optimizer;
+         DenseLayer *output_policy;
+         SGDOptimizer *optimizer, *optimizer_policy;
          Placeholder *expected;
+         Placeholder *expected_policy;
    };
 };
 

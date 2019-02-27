@@ -13,7 +13,7 @@ class TfGraph;
 class SGDOptimizer
 {
    public:
-      SGDOptimizer(TfGraph *g, double learningRate, TfOperation *optimizer);
+      SGDOptimizer(TfGraph *g, double learningRate, TfOperation *optimizer, const char *name);
       ~SGDOptimizer();
 
       void addLayer(DenseLayer *layer);
@@ -21,7 +21,9 @@ class SGDOptimizer
       void optimize(TfSession *session, std::list<TfOperation*> inputOps, std::list<Tensor*> inputTensors);
 
    private:
+      char optimizerName[64];
       int layerNum;
+      double learningrate;
       std::list<TfOperation*> gradients;
       std::list<TfOperation*> weightgrads;
 

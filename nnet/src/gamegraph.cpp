@@ -17,8 +17,9 @@
 using namespace l5r;
 
 const int GameGraph::input_size = 638;
+const int GameGraph::policy_output_size = 24;
 
-GameGraph::GameGraph(int batchSize, int learningRate)
+GameGraph::GameGraph(int batchSize, double learningRate)
 {
    this->batchSize = batchSize;
 
@@ -30,18 +31,29 @@ GameGraph::GameGraph(int batchSize, int learningRate)
    const int64_t outputdims[] = {batchSize};
    expected = new Placeholder(&g, TF_DOUBLE, outputdims, 1, "expected");
 
-   // hidden layer
+   // expected policy placeholder
+   const int64_t outputpolicydims[] = {batchSize, policy_output_size};
+   expected_policy = new Placeholder(&g, TF_DOUBLE, outputpolicydims, 2, "expected_policy");
+
+   // hidden layer (shared)
    hidden1 = new DenseLayer(&g, 200, training_input, ActivationType::RELU, "hidden1");
    layerinit.addLayer(hidden1);
    DenseLayer inf_hidden1(&g, inference_input, hidden1, ActivationType::RELU, "inf_hidden1");
 
-   // output layer
+   // output layer (value)
    output = new DenseLayer(&g, 1, hidden1, ActivationType::SIGMOID, "output");
    layerinit.addLayer(output);
    inference_output = new DenseLayer(&g, &inf_hidden1, output, ActivationType::SIGMOID, "inference_output");
 
+   // output layer (policy)
+   output_policy = new DenseLayer(&g, policy_output_size, hidden1, ActivationType::SIGMOID, "output_policy");
+   layerinit.addLayer(output_policy);
+   inference_output_policy = new DenseLayer(&g, &inf_hidden1, output_policy, ActivationType::SIGMOID, "inference_output_policy");
+
    // square difference
    SquaredDifference sqdiff(&g, output, expected, "sqdiff");
+
+   SquaredDifference sqdiff_policy(&g, output_policy, expected_policy, "sqdiff_policy");
 
    // mean
    const int32_t meanAxisData[] = {0};
@@ -52,18 +64,27 @@ GameGraph::GameGraph(int batchSize, int learningRate)
 
    Mean mean(&g, &sqdiff, &meanAxis, "mean");
 
-   // gradient descent optimizer
-   optimizer = new SGDOptimizer(&g, learningRate, &mean);
+   Mean mean_policy(&g, &sqdiff_policy, &meanAxis, "mean_policy");
+
+   // gradient descent optimizers
+   optimizer = new SGDOptimizer(&g, learningRate, &mean, "value_optimizer");
    optimizer->addLayer(hidden1);
    optimizer->addLayer(output);
+   optimizer_policy = new SGDOptimizer(&g, learningRate, &mean_policy, "policy_optimizer");
+   optimizer_policy->addLayer(hidden1);
+   optimizer_policy->addLayer(output_policy);
 }
 
 GameGraph::~GameGraph()
 {
    delete inference_input;
+   delete training_input;
    delete expected;
+   delete expected_policy;
+   delete inference_output_policy;
    delete inference_output;
    delete optimizer;
+   delete optimizer_policy;
    delete hidden1;
    delete output;
 }
@@ -73,16 +94,17 @@ void GameGraph::init(GameSession *session)
    layerinit.init(session->getSession());
 }
 
-void GameGraph::compute(GameSession *session, double *input, int size, double *valueOutput)
+void GameGraph::compute(GameSession *session, double *input, int size, double *valueOutput, double *policyOutput, int policySize)
 {
-   if( size != input_size )
+   if( size != input_size || policySize != policy_output_size )
    {
       printf("Invalid input size of %d\n", size);
       return;
    }
 
    // output tensor
-   DoubleTensor outputtensor;
+   DoubleTensor outputvalue;
+   DoubleTensor outputpolicy;
 
    // input tensor
    const int64_t input_dims[] = {1, input_size};
@@ -93,8 +115,8 @@ void GameGraph::compute(GameSession *session, double *input, int size, double *v
    std::list<Tensor*> inputtensor_list = { &inputtensor };
 
    // output lists
-   std::list<TfOperation*> outputOps = {inference_output};
-   std::list<Tensor*> outtensor_list = {&outputtensor};
+   std::list<TfOperation*> outputOps = {inference_output, inference_output_policy};
+   std::list<Tensor*> outtensor_list = {&outputvalue, &outputpolicy};
 
    // empty op list
    std::list<TfOperation*> empty;
@@ -103,30 +125,43 @@ void GameGraph::compute(GameSession *session, double *input, int size, double *v
    session->getSession()->run(inputOps, inputtensor_list, outputOps, outtensor_list, empty);
 
    // copy value to output
-   outputtensor.copyTo(valueOutput, 1);
+   outputvalue.copyTo(valueOutput, 1);
+
+   // copy policy to output
+   outputpolicy.copyTo(policyOutput, policySize);
 }
 
-void GameGraph::train(GameSession *session, double *input, int inputSize, double *valueOutput, int outputSize)
+void GameGraph::train(GameSession *session, double *input, int inputSize, double *valueOutput, int outputSize, double *policyOutput, int policySize)
 {
    if( inputSize != (input_size*batchSize) || 
-      outputSize != (batchSize))
+      outputSize != (batchSize) ||
+      policySize != (policy_output_size*batchSize))
    {
-      printf("Invalid input size or output size (%d %d)\n", inputSize, outputSize);
+      printf("Invalid input size, output size  or policy size (%d %d %d)\n", inputSize, outputSize, policySize);
       return;
    }
 
    // input tensors
    const int64_t input_dims[] = {batchSize, input_size};
    const int64_t expected_input_dims[] = {batchSize, 1};
+   const int64_t expected_policy_input_dims[] = {batchSize, policy_output_size};
    DoubleTensor inputtensor(input_dims, 2, input);
    DoubleTensor expectedtensor(expected_input_dims, 2, valueOutput);
+   DoubleTensor expectedpolicytensor(expected_policy_input_dims, 2, policyOutput);
 
-   // input lists
+   // input lists (value)
    std::list<TfOperation*> inputOps={ training_input, expected};
    std::list<Tensor*> inputtensor_list = { &inputtensor, &expectedtensor };
 
-   // train
+   // input lists (policy)
+   std::list<TfOperation*> inputOps_policy={ training_input, expected_policy};
+   std::list<Tensor*> inputtensor_list_policy = { &inputtensor, &expectedpolicytensor };
+
+   // train value
    optimizer->optimize(session->getSession(), inputOps, inputtensor_list);
+
+   // train policy
+   optimizer_policy->optimize(session->getSession(), inputOps_policy, inputtensor_list_policy);
 }
 
 TfGraph *GameGraph::getGraph()
