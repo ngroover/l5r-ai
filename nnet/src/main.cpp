@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
    std::cout << "Neural Network Test" << std::endl;
    srand(time(NULL));
 
-   // graph with batch of 5 and learning rate of 1.00
+   // graph with batch of 5 and learning rate of 0.01
    GameGraph fiverings(2, 0.01);
 
    GameSession sampleSession(&fiverings);
@@ -108,7 +108,6 @@ int main(int argc, char *argv[])
    for(int i=0;i < 100; i++)
    {
       fiverings.train(&sampleSession, input, theSize, desired, 2, policy, 48);
-      std::cout <<  std::endl;
       //sleep(5);
    }
 

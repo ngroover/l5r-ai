@@ -78,6 +78,7 @@ void SGDOptimizer::optimize(TfSession *session, std::list<TfOperation*> inputOps
    session->run(inputOps, inputTensors, weightgrads, tensors, gradientAppliers);
 
    // print debug information
+   /*
    for(int i=0;i<weightgrads.size();i++)
    {
       printf("size = %d ", gradlist[i].getSize());
@@ -91,5 +92,6 @@ void SGDOptimizer::optimize(TfSession *session, std::list<TfOperation*> inputOps
       }
       gradlist[i].printStats();
    }
+   */
 }
 
