@@ -29,6 +29,9 @@ class DenseLayer : public Layer
       TfOperation *getWeights();
       TfOperation *getBiases();
 
+      std::string getWeightsName();
+      std::string getBiasesName();
+
    private:
       char name[64];
       int previousLayerSize;

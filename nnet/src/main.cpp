@@ -15,9 +15,16 @@ int main(int argc, char *argv[])
 
    GameSession sampleSession(&fiverings);
 
-   fiverings.init(&sampleSession);
+   if(fiverings.load(&sampleSession, "./sample"))
+   {
+      std::cout << "Loading weights from file..." << std::endl;
+   }
+   else
+   {
+      fiverings.init(&sampleSession);
+   }
    
-   // make some random data
+   // make some random data (TODO: make not random to test reproducibility)
    const int theSize = 638*2;
    double input[theSize];
    for(int i=0;i<theSize;i++)
@@ -104,6 +111,7 @@ int main(int argc, char *argv[])
 
    double desired[] = {0.75, 0.50};
 
+   std::cout << "Beginning training..." << std::endl;
    // train network
    for(int i=0;i < 100; i++)
    {
@@ -132,6 +140,9 @@ int main(int argc, char *argv[])
       std::cout << resultpolicy[i] << " ";
    }
    std::cout << std::endl;
+
+   std::cout << "Saving to file..." << std::endl;
+   fiverings.save(&sampleSession, "./sample");
 
    return 0;
 }

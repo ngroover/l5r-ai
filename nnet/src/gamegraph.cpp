@@ -13,6 +13,7 @@
 #include "constop.h"
 #include "placeholder.h"
 #include <list>
+#include <fstream>
 
 using namespace l5r;
 
@@ -92,6 +93,23 @@ GameGraph::~GameGraph()
 void GameGraph::init(GameSession *session)
 {
    layerinit.init(session->getSession());
+}
+
+bool GameGraph::load(GameSession *session, std::string name)
+{
+   // TODO: check data file too
+   std::ifstream infile(name+".index");
+   if(infile.good())
+   {
+      layerinit.load(&g, session->getSession(), name);
+      return true;
+   }
+   return false;
+}
+
+void GameGraph::save(GameSession *session, std::string name)
+{
+   layerinit.save(&g, session->getSession(), name);
 }
 
 void GameGraph::compute(GameSession *session, double *input, int size, double *valueOutput, double *policyOutput, int policySize)

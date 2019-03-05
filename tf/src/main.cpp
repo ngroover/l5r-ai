@@ -25,10 +25,14 @@
 #include "layerinitializer.h"
 #include "applygradientdescent.h"
 #include "sgdoptimizer.h"
+#include "stringtensor.h"
+#include "saveop.h"
+#include "restoreop.h"
 #include <tensorflow/c/c_api.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <iostream>
 
 int main() {
    printf("TensorFlow C library version %s\n", TF_Version());
@@ -114,6 +118,72 @@ int main() {
    TfSession sess4(&g);
    layerinit.init(&sess4);
 
+   // prefix
+   std::list<std::string> restorestrList = {"./example"};
+   const int64_t dims[] = {1};
+   StringTensor restoreprefix(NULL, 0, restorestrList);
+   ConstOp restoreprefixConst(&g, &restoreprefix, "restoreprefix");
+
+   // tensor names
+   std::list<std::string> restorestrList2 = {"hidden1_weights", "hidden1_biases",
+                                       "hidden2_weights", "hidden2_biases",
+                                       "hidden3_weights", "hidden3_biases",
+                                       "hidden4_weights", "hidden4_biases"};
+   const int64_t dims2[] = {8};
+   StringTensor restoresomestr(dims2, 1, restorestrList2);
+   ConstOp restoresomeStrConst(&g, &restoresomestr, "restoresomeStr");
+
+   // shapes and slices
+   std::list<std::string> restorestrList3 = {"", "", "", "", "", "", "", ""};
+   StringTensor restoresomeshape(dims2, 1, restorestrList3);
+   ConstOp restoresomeShapeConst(&g, &restoresomeshape, "restoresomeShape");
+
+   std::list<TF_DataType> tlist = {TF_DOUBLE, TF_DOUBLE, TF_DOUBLE, TF_DOUBLE, TF_DOUBLE, TF_DOUBLE, TF_DOUBLE, TF_DOUBLE};
+   
+   std::cout << "Creating restore..." << std::endl;
+   RestoreOp restoreop(&g, &restoreprefixConst, &restoresomeStrConst, &restoresomeShapeConst, tlist, "restoreop");
+
+   // assign restore values
+   AssignOp assweight1(&g, &restoreop, dl.getWeights(), "restoreassign1");
+
+   AssignOp assweight2(&g, &restoreop, dl.getBiases(), 1, "restoreassign2");
+
+   AssignOp assweight3(&g, &restoreop, dl2.getWeights(), 2, "restoreassign3");
+
+   AssignOp assweight4(&g, &restoreop, dl2.getBiases(), 3, "restoreassign4");
+
+   AssignOp assweight5(&g, &restoreop, dl3.getWeights(), 4, "restoreassign5");
+
+   AssignOp assweight6(&g, &restoreop, dl3.getBiases(), 5, "restoreassign6");
+
+   AssignOp assweight7(&g, &restoreop, dl4.getWeights(), 6, "restoreassign7");
+
+   AssignOp assweight8(&g, &restoreop, dl4.getBiases(), 7, "restoreassign8");
+
+   std::list<TfOperation*> empty;
+   std::list<Tensor*> emptytensor;
+   std::list<TfOperation*> restoreopList= {&restoreop, &assweight1, &assweight2, &assweight3, &assweight4, &assweight5, &assweight6, &assweight7, &assweight8};
+   std::cout << "Restoring..." << std::endl;
+
+   std::list<Tensor*> outlisttest = {&weights4};
+   /*
+                                 &weights2,
+                                 &weights3,
+                                 &weights4,
+                                 &biases1,
+                                 &biases2,
+                                 &biases3,
+                                 &biases4};
+                                 */
+
+   //sess4.run(empty, emptytensor, empty, emptytensor, restoreopList);
+   std::cout << "Done restoring" << std::endl;
+   /*
+   printf("weights4=\n");
+   weights4.print();
+   */
+
+
    std::list<TfOperation*> varlist = {dl4.getWeights()};
    /*
                                        dl2.getWeights(),
@@ -134,11 +204,9 @@ int main() {
                                  &biases3,
                                  &biases4};
 */
-   std::list<TfOperation*> empty;
-   std::list<Tensor*> emptytensor;
 
    // get weights and biases
-   sess4.run(empty, emptytensor, varlist, outlist, empty);
+   //sess4.run(empty, emptytensor, varlist, outlist, empty);
 
 /*
    printf("weights4=\n");
@@ -206,11 +274,11 @@ int main() {
 
    printf("weights_again=\n");
    weights_again.print();
-   for(int i=0;i < 100000;i++)
+   */
+   for(int i=0;i < 1000;i++)
    {
       sgd.optimize(&sess4, inputOps, inputTensor);
    }
-   */
 
    DoubleTensor mean_again;
    std::list<Tensor*> outlist_again2 = {&mean_again};
@@ -235,6 +303,41 @@ int main() {
 
    printf("result_again=\n");
    final_result.print();
+
+   // prefix
+   std::list<std::string> strList = {"./example"};
+   StringTensor prefix(NULL, 0, strList);
+   ConstOp prefixConst(&g, &prefix, "prefix");
+
+   // tensor names
+   std::list<std::string> strList2 = {"hidden1_weights", "hidden1_biases",
+                                       "hidden2_weights", "hidden2_biases",
+                                       "hidden3_weights", "hidden3_biases",
+                                       "hidden4_weights", "hidden4_biases"};
+   StringTensor somestr(dims2, 1, strList2);
+   ConstOp someStrConst(&g, &somestr, "someStr");
+
+   // shapes and slices
+   std::list<std::string> strList3 = {"", "", "", "", "", "", "", ""};
+   StringTensor someshape(dims2, 1, strList3);
+   ConstOp someShapeConst(&g, &someshape, "someShape");
+
+   // tensors
+   /*
+   std::list<std::string> strList4 = {"tensor_double"};
+   StringTensor sometensor(NULL, 0, strList4);
+   ConstOp someTensorConst(&g, &sometensor, "someTensor");
+   */
+   std::list<TfOperation*> tops = {dl.getWeights(), dl.getBiases(),
+                                    dl2.getWeights(), dl2.getBiases(),
+                                    dl3.getWeights(), dl3.getBiases(),
+                                    dl4.getWeights(), dl4.getBiases()};
+
+   SaveOp save(&g, &prefixConst, &someStrConst, &someShapeConst, tops, "saveop");
+
+   std::list<TfOperation*> saveopList= {&save};
+   std::cout << "Saving..." << std::endl;
+   sess4.run(empty, emptytensor, empty, emptytensor, saveopList);
 
    return 0;
 }

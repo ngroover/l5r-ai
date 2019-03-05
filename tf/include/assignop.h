@@ -10,7 +10,11 @@ class AssignOp : public TfOperation
 {
    public:
       AssignOp(TfGraph *g, TfOperation *val, TfOperation *var, const char* name);
+      AssignOp(TfGraph *g, TfOperation *val, TfOperation *var, int index, const char* name);
       ~AssignOp();
+
+   private:
+      void initialize(TfGraph *g, TfOperation *val, TfOperation *var, int index, const char* name);
 };
 
 #endif // _ASSIGN_OP_H_

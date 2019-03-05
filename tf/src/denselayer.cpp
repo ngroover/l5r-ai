@@ -42,7 +42,7 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    const int64_t biasSizeDim[] = {layerSize};
    const int64_t singleSize[] = {1};
    const double mean = 0.0;
-   const double stdev = 0.10;
+   const double stdev = 0.20;
    const double maxval = 0.20;
    const double minval = -0.20;
 
@@ -105,6 +105,8 @@ DenseLayer::DenseLayer(TfGraph *g, int layerSize, Layer *previousLayer, Activati
    biasAssignment = new AssignOp(g, &biasNormal,bias, this->name);
 
    initialize(g, previousLayer, activation, name);
+
+   strcpy(this->name, name);
 }
 
 DenseLayer::DenseLayer(TfGraph *g, Layer *previousLayer, DenseLayer *parametersLayer, ActivationType activation, const char *name): Layer(g, parametersLayer->getSize())
@@ -114,6 +116,7 @@ DenseLayer::DenseLayer(TfGraph *g, Layer *previousLayer, DenseLayer *parametersL
    bias = parametersLayer->getBiases();
 
    initialize(g, previousLayer, activation, name);
+   strcpy(this->name, name);
 }
 
 void DenseLayer::initialize(TfGraph *g, Layer *previousLayer, ActivationType activation, const char *name)
@@ -177,4 +180,16 @@ TfOperation *DenseLayer::getWeights()
 TfOperation *DenseLayer::getBiases()
 {
    return bias;
+}
+
+std::string DenseLayer::getWeightsName()
+{
+   std::string weightname = std::string(this->name) + "_weights";
+   return weightname;
+}
+
+std::string DenseLayer::getBiasesName()
+{
+   std::string biasesname = std::string(this->name) + "_biases";
+   return biasesname;
 }

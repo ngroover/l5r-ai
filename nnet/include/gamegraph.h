@@ -4,6 +4,7 @@
 #include "tfgraph.h"
 #include "layerinitializer.h"
 #include "tfsession.h"
+#include <string>
 
 class InputLayer;
 class DenseLayer;
@@ -20,7 +21,14 @@ namespace l5r
 
          TfGraph *getGraph();
 
+         // init weights randomly
          void init(GameSession *session);
+
+         // restore from file
+         bool load(GameSession *session, std::string name);
+
+         // save network to file
+         void save(GameSession *session, std::string name);
 
          void compute(GameSession *session, double *input, int size, double *valueOutput, double *policyOutput, int policySize);
 
