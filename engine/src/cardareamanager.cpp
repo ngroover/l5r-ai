@@ -39,7 +39,6 @@ void CardAreaManager::setupCards(decklist deck, std::vector<cards> &cardIds)
             }
             break;
          case cardtype::stronghold:
-            cardIds.push_back(c);
             cardArea->stronghold = cardIds.size() - 1;
             break;
          case cardtype::conflict:
