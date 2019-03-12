@@ -23,6 +23,7 @@ void GamestateEncoder::setupMap(gamestate *state)
    for(auto c : state->cardIds)
    {
       // characters....this is really bad hack but temporary
+         // crane
       if(c == cards::asahina_artisan
          || c == cards::asahina_storyteller
          || c == cards::brash_samurai
@@ -36,10 +37,12 @@ void GamestateEncoder::setupMap(gamestate *state)
          || c == cards::kakita_asami
          || c == cards::kakita_kaezin
          || c == cards::savvy_politician
+         // neutral
          || c == cards::otomo_courtier
          || c == cards::miya_mystic
          || c == cards::seppun_guardsman
          || c == cards::wandering_ronin
+         || c == cards::obstinate_recruit
          // lion
          || c == cards::akodo_gunso
          || c == cards::akodo_toturi
@@ -51,7 +54,6 @@ void GamestateEncoder::setupMap(gamestate *state)
          || c == cards::lions_pride_brawler
          || c == cards::matsu_beiona
          || c == cards::matsu_berserker
-         || c == cards::obstinate_recruit
          || c == cards::steadfast_samurai
          || c == cards::venerable_historian)
       {
@@ -69,23 +71,26 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
       return;
    }
 
-   //encodeCardState(state, networkInput);
+   int characterSize = encodeCardStates(state, networkInput);
+   std::cout << "Character size=" << characterSize << std::endl;
 }
 
 int GamestateEncoder::encodeCardStates(gamestate *state, double *networkInput)
 {
-/*
-   int totalSize = state->cardIds.size();
+   CharacterCardSlot converter;
+   const int totalSize = characterMap.size() * converter.getSize();
 
-   double *currentPosition = networkInput;
-   
-   // TODO: take into account duplicate cards
+   // characters are in deck
+   converter.setState(CharacterSlotStatus::in_deck);
+
+   // set all the character slots
    for(auto c : state->player1State.cards.dynastyDeck)
    {
-      currentPosition[in_deck] = 1;
+      int networkOffset = characterMap[c]*converter.getSize();
+      converter.setOutput(&networkInput[networkOffset]);
    }
-   */
-   return 0;
+
+   return totalSize;
 }
 
 
