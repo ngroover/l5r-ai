@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
 
    gamestate gs = game.getGameState();
    double arr[500];
-   encoder.encode(&gs, arr, 500);
+   encoder.setupMap(&gs);
+//   encoder.encode(&gs, arr, 500);
 //   encoder.validateCards(&gs);
 
    return 0;

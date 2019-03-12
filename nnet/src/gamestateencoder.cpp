@@ -15,6 +15,52 @@ GamestateEncoder::~GamestateEncoder()
 {
 }
 
+void GamestateEncoder::setupMap(gamestate *state)
+{
+   // TODO: integrate with carddatamanager to figure out which cards are characters
+   int i=0;
+   int charIndex=0; // character index
+   for(auto c : state->cardIds)
+   {
+      // characters....this is really bad hack but temporary
+      if(c == cards::asahina_artisan
+         || c == cards::asahina_storyteller
+         || c == cards::brash_samurai
+         || c == cards::cautious_scout
+         || c == cards::daidoji_nerishma
+         || c == cards::doji_challenger
+         || c == cards::doji_gift_giver
+         || c == cards::doji_hotaru
+         || c == cards::doji_whisperer
+         || c == cards::guest_of_honor
+         || c == cards::kakita_asami
+         || c == cards::kakita_kaezin
+         || c == cards::savvy_politician
+         || c == cards::otomo_courtier
+         || c == cards::miya_mystic
+         || c == cards::seppun_guardsman
+         || c == cards::wandering_ronin
+         // lion
+         || c == cards::akodo_gunso
+         || c == cards::akodo_toturi
+         || c == cards::deathseeker
+         || c == cards::honored_general
+         || c == cards::ikoma_eiji
+         || c == cards::ikoma_prodigy
+         || c == cards::kitsu_spiritcaller
+         || c == cards::lions_pride_brawler
+         || c == cards::matsu_beiona
+         || c == cards::matsu_berserker
+         || c == cards::obstinate_recruit
+         || c == cards::steadfast_samurai
+         || c == cards::venerable_historian)
+      {
+         characterMap.insert(std::pair<int,int>(i, charIndex++));
+      }
+      i++;
+   }
+}
+
 void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
 {
    if(size != state_input_size)
