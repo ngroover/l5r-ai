@@ -42,9 +42,9 @@ int main(int argc, char *argv[])
    l5r::engine game(std::move(me), std::move(cpu)); 
 
    gamestate gs = game.getGameState();
-   double arr[500];
+   double arr[798];
    encoder.setupMap(&gs);
-//   encoder.encode(&gs, arr, 500);
+   encoder.encode(&gs, arr, 798);
 //   encoder.validateCards(&gs);
 
    return 0;

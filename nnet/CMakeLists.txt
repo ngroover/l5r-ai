@@ -7,9 +7,10 @@ add_executable( nnet_app src/main.cpp
                      src/gamegraph.cpp
                      src/gamesession.cpp
                      src/gamestateencoder.cpp
-                     src/charactercardslot.cpp)
+                     src/charactercardslot.cpp
+                     src/gamestatebuilder.cpp)
 
-add_executable( nnet_unittest test/main.cpp test/characterslottest.cpp src/charactercardslot.cpp )
+add_executable( nnet_unittest test/main.cpp test/characterslottest.cpp src/charactercardslot.cpp src/gamestatebuilder.cpp test/gamestatebuildertest.cpp)
 
 target_link_libraries( nnet_app tfwrapper tensorflow decks engine cards)
 
