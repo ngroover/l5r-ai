@@ -7,25 +7,36 @@
 namespace l5r
 {
    class gamestate;
+   class GamestateBuilder;
    class GamestateEncoder
    {
       public:
          GamestateEncoder();
          ~GamestateEncoder();
 
-         void setupMap(gamestate *state );
+         void setupMap(gamestate *state);
+
+         int getTotalSize();
 
          void encode(gamestate *state, double *networkInput, int size);
 
       private:
+         GamestateBuilder *builder;
+
          static const int state_input_size;
 
          std::map<int, int> characterMap;
+         std::map<int, int> holdingMap;
+         std::map<int, int> provinceMap;
 
          // major hack for now.  need to interact with carddata to detect character
          bool checkIfCharacter(cards c);
 
-         int encodeCardStates(gamestate *state, double *networkInput);
+         bool checkIfHolding(cards c);
+
+         bool checkIfProvince(cards c);
+
+         void encodeCardStates(gamestate *state, double *networkInput);
    };
 };
 

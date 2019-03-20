@@ -1,19 +1,22 @@
 #include "gamestateencoder.h"
 #include "charactercardslot.h"
+#include "gamestatebuilder.h"
 #include "state/gamestate.h"
 #include <iostream>
 
 using namespace l5r;
 
-// TODO: dynamically generate
-const int GamestateEncoder::state_input_size = 638;
-
 GamestateEncoder::GamestateEncoder()
 {
+   builder = NULL;
 }
 
 GamestateEncoder::~GamestateEncoder()
 {
+   if(builder != NULL)
+   {
+      delete builder;
+   }
 }
 
 void GamestateEncoder::setupMap(gamestate *state)
@@ -21,6 +24,8 @@ void GamestateEncoder::setupMap(gamestate *state)
    // TODO: integrate with carddatamanager to figure out which cards are characters
    int i=0;
    int charIndex=0; // character index
+   int holdingIndex=0; // holding index
+   int provinceIndex=0; // province index
    for(auto c : state->cardIds)
    {
       // characters....this is really bad hack but temporary
@@ -29,9 +34,22 @@ void GamestateEncoder::setupMap(gamestate *state)
       {
          characterMap.insert(std::pair<int,int>(i, charIndex++));
       }
+      if(checkIfHolding(c))
+      {
+         holdingMap.insert(std::pair<int,int>(i, holdingIndex++));
+      }
+      if(checkIfProvince(c))
+      {
+         provinceMap.insert(std::pair<int,int>(i, provinceIndex++));
+      }
       i++;
    }
-   std::cout << "map is " << characterMap.size() << " big" << std::endl;
+   std::cout << "character map is " << characterMap.size() << " big" << std::endl;
+   std::cout << "holding map is " << holdingMap.size() << " big" << std::endl;
+   std::cout << "province map is " << provinceMap.size() << " big" << std::endl;
+
+   // create builder
+   builder = new GamestateBuilder(characterMap.size(), holdingMap.size(), provinceMap.size());
 }
 
 bool GamestateEncoder::checkIfCharacter(cards c)
@@ -70,140 +88,40 @@ bool GamestateEncoder::checkIfCharacter(cards c)
          || c == cards::venerable_historian);
 }
 
-void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
+bool GamestateEncoder::checkIfHolding(cards c)
 {
-/*
-   if(size != state_input_size)
-   {
-      std::cout << "size does not match expected input size" << std::endl;  
-      return;
-   }
-   */
-
-   int characterSize = encodeCardStates(state, networkInput);
-   std::cout << "Character size=" << characterSize << std::endl;
+   if(c == cards::staging_ground ||
+      c == cards::artisan_academy ||
+      c == cards::favorable_ground ||
+      c == cards::imperial_storehouse);
 }
 
-int GamestateEncoder::encodeCardStates(gamestate *state, double *networkInput)
+bool GamestateEncoder::checkIfProvince(cards c)
 {
-   CharacterCardSlot converter;
-   const int totalSize = characterMap.size() * converter.getSize();
-   bool foundCard[characterMap.size()] ={false};
+   if(c == cards::the_art_of_peace ||
+      c == cards::entrenched_position ||
+      c == cards::night_raid ||
+      c == cards::rally_to_the_cause ||
+      c == cards::shameful_display ||
+      c == cards::the_art_of_war ||
+      c == cards::ancestral_lands ||
+      c == cards::manicured_gardens ||
+      c == cards::meditations_on_the_tao ||
+      c == cards::pilgrimage);
+}
 
-   // characters are in deck
-   converter.setState(CharacterSlotStatus::in_deck);
+int GamestateEncoder::getTotalSize()
+{
+   return builder->getTotalSize();
+}
 
-   // set all the character slots
-   // player1 deck
-   for(auto c : state->player1State.cards.dynastyDeck)
-   {
-      if(checkIfCharacter(state->cardIds[c]))
-      {
-         int networkOffset = characterMap[c]*converter.getSize();
-         if(foundCard[characterMap[c]])
-         {
-            std::cout << "Error found card already above " << characterMap[c] << std::endl;
-         }
-         foundCard[characterMap[c]] = true;
-         converter.setOutput(&networkInput[networkOffset]);
-      }
-   }
+void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
+{
+   encodeCardStates(state, networkInput);
+}
 
-   // player2 deck
-   for(auto c : state->player2State.cards.dynastyDeck)
-   {
-      if(checkIfCharacter(state->cardIds[c]))
-      {
-         int networkOffset = characterMap[c]*converter.getSize();
-         if(foundCard[characterMap[c]])
-         {
-            std::cout << "Error found card already above " << characterMap[c] << std::endl;
-         }
-         foundCard[characterMap[c]] = true;
-         converter.setOutput(&networkInput[networkOffset]);
-      }
-   }
-
-   int i=0;
-   std::cout << "provinces" << std::endl;
-   // player1 provinces
-   for(auto c : state->player1State.cards.provinceArea)
-   {
-      switch(i++)
-      {
-      case 0:
-         converter.setState(CharacterSlotStatus::province1);
-         break;
-      case 1:
-         converter.setState(CharacterSlotStatus::province2);
-         break;
-      case 2:
-         converter.setState(CharacterSlotStatus::province3);
-         break;
-      case 3:
-         converter.setState(CharacterSlotStatus::province4);
-         break;
-      }
-      // check dynasty card is actually a character.  See hack above
-      if(c.dynastyCard >= 0)
-      {
-         if(checkIfCharacter(state->cardIds[c.dynastyCard]))
-         {
-            int networkOffset = characterMap[c.dynastyCard]*converter.getSize();
-            if(foundCard[characterMap[c.dynastyCard]])
-            {
-               std::cout << "Error found card already above " << characterMap[c.dynastyCard] << std::endl;
-            }
-            foundCard[characterMap[c.dynastyCard]] = true;
-            converter.setOutput(&networkInput[networkOffset]);
-         }
-      }
-   }
-
-   // player2 provinces
-   for(auto c : state->player2State.cards.provinceArea)
-   {
-      switch(i++)
-      {
-      case 0:
-         converter.setState(CharacterSlotStatus::province1);
-         break;
-      case 1:
-         converter.setState(CharacterSlotStatus::province2);
-         break;
-      case 2:
-         converter.setState(CharacterSlotStatus::province3);
-         break;
-      case 3:
-         converter.setState(CharacterSlotStatus::province4);
-         break;
-      }
-      // check dynasty card is actually a character.  See hack above
-      if(c.dynastyCard >= 0)
-      {
-         if(checkIfCharacter(state->cardIds[c.dynastyCard]))
-         {
-            int networkOffset = characterMap[c.dynastyCard]*converter.getSize();
-            if(foundCard[characterMap[c.dynastyCard]])
-            {
-               std::cout << "Error found card already above " << characterMap[c.dynastyCard] << std::endl;
-            }
-            foundCard[characterMap[c.dynastyCard]] = true;
-            converter.setOutput(&networkInput[networkOffset]);
-         }
-      }
-   }
-
-   for(int i=0;i < characterMap.size(); i++)
-   {
-      if(!foundCard[i])
-      {
-         std::cout << "Didn't find card" << i <<  std::endl;
-      }
-   }
-   std::cout << "Done" << std::endl;
-
-   return totalSize;
+void GamestateEncoder::encodeCardStates(gamestate *state, double *networkInput)
+{
 }
 
 

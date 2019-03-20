@@ -42,9 +42,33 @@ int main(int argc, char *argv[])
    l5r::engine game(std::move(me), std::move(cpu)); 
 
    gamestate gs = game.getGameState();
-   double arr[798];
+   double *arr;
    encoder.setupMap(&gs);
-   encoder.encode(&gs, arr, 798);
+   int layerSize=encoder.getTotalSize();
+   std::cout << "Total layer size is " << layerSize << std::endl;
+   arr = new double[layerSize];
+   encoder.encode(&gs, arr, layerSize);
+   GameGraph fiverings(5, 0.01);
+ 
+   GameSession sampleSession(&fiverings);
+
+   fiverings.init(&sampleSession);
+
+   double result;
+   double resultpolicy[24];
+   fiverings.compute(&sampleSession, arr, layerSize, &result, resultpolicy, 24);
+
+   std::cout << "result=" << result << std::endl;
+
+   for(int i=0;i < 24; i++)
+   {
+      std::cout << resultpolicy[i] << " ";
+   }
+   std::cout << std::endl;
+
+   delete[] arr;
+
+
 //   encoder.validateCards(&gs);
 
    return 0;
