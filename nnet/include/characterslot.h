@@ -16,6 +16,7 @@ namespace l5r
       double storedFate[11];  // supports up to 10 fate (including 0)
       double bowed;
       double revealed;  // if on a province
+      //TODO: add pending fate state
    } typedef CharacterSlot;
 }
 #endif // _CHARACTER_SLOT_H_
