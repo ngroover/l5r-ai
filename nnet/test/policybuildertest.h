@@ -15,7 +15,7 @@ class PolicyBuilderTest : public CppUnit::TestFixture
    CPPUNIT_TEST_SUITE( PolicyBuilderTest );
    CPPUNIT_TEST( checkSize );
    CPPUNIT_TEST( checkSetPolicy );
-   //CPPUNIT_TEST( checkGetPolicy );
+   CPPUNIT_TEST( checkGetPolicy );
    CPPUNIT_TEST_SUITE_END();
 
 public:

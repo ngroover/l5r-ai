@@ -129,36 +129,37 @@ void PolicyBuilder::setPolicy(std::map<int, double> &policyMap)
 std::map<int, double> PolicyBuilder::getPolicy(std::list<int> &validChoices)
 {
    std::map<int, double> policy;
-   // generate a list of ids with probabilities
-   /*
-   for ( auto vc : validChoices )
+
+   for( auto c : validChoices )
    {
-      std::cout << "Calculating " << vc << std::endl;
-      double totalPercent=1.0;
-      for(int b=0; b < totalSize; b++)
+      int pastBits=0;
+      double probability=1.0;
+      int baseArrayOffset = 0;
+      for(int b=0;b < totalBits; b++)
       {
-         int mask = (1 << b);
-         if( vc & mask )
+         int bitmask = (1 << (totalBits - b - 1));  // individual bit in question
+
+         if(c & bitmask)
          {
-            std::cout << "bit " << b << " is 1 adding " << rawData[b] << std::endl;
-            totalPercent *= rawData[b];
+            probability *= rawData[baseArrayOffset+pastBits];
+            pastBits = pastBits << 1;
+            pastBits += 1; //set bit
          }
          else
          {
-            std::cout << "bit " << b << " is 0 adding " << (1 - rawData[b]) << std::endl;
-            totalPercent *= (1.0 - rawData[b]);
+            probability *= (1.0 - rawData[baseArrayOffset+pastBits]);
+            pastBits = pastBits << 1;
          }
-      }
-      std::cout << "Inserting " << totalPercent<< " percent" << std::endl;
-      policy.insert(std::pair<int, double>(vc, totalPercent));
-   }
 
-   normalize(policy);
-   */
+         baseArrayOffset += (1 << b);
+      }
+      policy.insert(std::pair<int, double>(c, probability));
+   }
 
    return policy;
 }
 
+/*
 void PolicyBuilder::normalize(std::map<int, double> &policy)
 {
    double total=0.0;
@@ -175,6 +176,7 @@ void PolicyBuilder::normalize(std::map<int, double> &policy)
       std::cout << "new first = " << p.first << " second = " << p.second << std::endl;
    }
 }
+*/
 
 int PolicyBuilder::getPolicyChoice()
 {

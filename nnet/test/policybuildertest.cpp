@@ -94,12 +94,41 @@ void PolicyBuilderTest::checkGetPolicy()
    double *rawData = builder->getRawData();
    memset(rawData, 0, sizeof(double)*builder->getTotalSize());
 
-   rawData[0] = 0.6;
-   rawData[1] = 0.6;
-   rawData[2] = 0.6;
-   rawData[3] = 0.8;
-   rawData[4] = 0.4;
+   rawData[0] = 2.0/5.0;
+   rawData[1] = 2.0/3.0;
+   rawData[2] = 1.0;
+   rawData[3] = 1.0;
+   rawData[4] = 0.5;
+   rawData[5] = 0.0;
+   rawData[6] = 0.5;
+   rawData[7] = 0.0;
+   rawData[8] = 0.0;
+   rawData[9] = 1.0;
+   rawData[10] = 1.0;
+   rawData[11] = 0.0;
+   rawData[12] = 0.0;
+   rawData[13] = 0.0;
+   rawData[14] = 1.0;
+   rawData[15] = 0.0;
+   rawData[16] = 0.0;
+   rawData[17] = 1.0;
+   rawData[18] = 0.0;
+   rawData[19] = 0.0;
+   rawData[20] = 0.0;
+   rawData[21] = 0.0;
+   rawData[22] = 1.0;
+   rawData[23] = 0.0;
+   rawData[24] = 0.0;
+   rawData[25] = 0.0;
+   rawData[26] = 0.0;
+   rawData[27] = 1.0;
+   rawData[28] = 0.0;
+   rawData[29] = 0.0;
+   rawData[29] = 0.0;
+   rawData[30] = 0.0;
 
+   // 00101 = 5   01010 = 10   01111 = 15   11001 = 25   11110 = 30
+   // reverse of test above
    std::list<int> validChoices = {5, 10, 15, 25, 30};
 
    std::map<int, double> policyMap = builder->getPolicy(validChoices);
