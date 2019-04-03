@@ -36,7 +36,10 @@ namespace l5r
 
          bool checkIfProvince(cards c);
 
-         void encodeCardStates(gamestate *state, double *networkInput);
+         void encodeDeckCard(int card);
+         void encodeProvinceCard(int provNum, provinceStack ps);
+         void encodeCharacter(inplaycharacter ipc, bool inConflict);
+
    };
 };
 
