@@ -5,7 +5,7 @@ namespace l5r
 {
    struct HoldingSlot
    {
-      //TODO: add in_deck
+      double in_deck;
       double province1;
       double province2;
       double province3;

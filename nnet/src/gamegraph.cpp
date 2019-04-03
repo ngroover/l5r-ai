@@ -18,7 +18,7 @@
 using namespace l5r;
 
 // TODO: dyamically update these
-const int GameGraph::input_size = 2091;
+const int GameGraph::input_size = 2233;
 const int GameGraph::policy_output_size = 24;
 
 GameGraph::GameGraph(int batchSize, double learningRate)

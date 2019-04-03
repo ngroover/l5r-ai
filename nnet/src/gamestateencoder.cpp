@@ -161,7 +161,7 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
                cs->province3 = 1.0;
                break;
             case 4:
-               cs->province3 = 1.0;
+               cs->province4 = 1.0;
                break;
             default:
                std::cout << "Invalid province number" << std::endl;
@@ -196,7 +196,7 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
                cs->province3 = 1.0;
                break;
             case 4:
-               cs->province3 = 1.0;
+               cs->province4 = 1.0;
                break;
             default:
                std::cout << "Invalid province number" << std::endl;
@@ -257,7 +257,7 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
       int charOffset=characterMap[ch.characterCard];
       CharacterSlot *cs = builder->getCharacter(charOffset);
       memset(cs, 0, sizeof(CharacterSlot));
-      cs->at_home = 1.0;
+      cs->in_conflict = 1.0;
       if(ch.bowed)
       {
          cs->bowed = 1.0;
@@ -277,7 +277,7 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
       int charOffset=characterMap[ch.characterCard];
       CharacterSlot *cs = builder->getCharacter(charOffset);
       memset(cs, 0, sizeof(CharacterSlot));
-      cs->at_home = 1.0;
+      cs->in_conflict = 1.0;
       if(ch.bowed)
       {
          cs->bowed = 1.0;
@@ -300,7 +300,7 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
       int holdingOffset=holdingMap[h];
       HoldingSlot *hs = builder->getHolding(holdingOffset);
       memset(hs, 0, sizeof(HoldingSlot));
-      //hs->in_deck = 1.0;
+      hs->in_deck = 1.0;
    }
 
    for(auto h : state->player2State.cards.dynastyDeck)
@@ -308,7 +308,7 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
       int holdingOffset=holdingMap[h];
       HoldingSlot *hs = builder->getHolding(holdingOffset);
       memset(hs, 0, sizeof(HoldingSlot));
-      //hs->in_deck = 1.0;
+      hs->in_deck = 1.0;
    }
 
    // encode provinces
@@ -333,10 +333,13 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
                ps->province3 = 1.0;
                break;
             case 4:
-               ps->province3 = 1.0;
+               ps->province4 = 1.0;
                break;
             default:
-               std::cout << "Invalid province number" << std::endl;
+               //std::cout << "Invalid province number" << std::endl;
+               // Early in the game you can have 5 provinces before you pick your stronghold province
+               // for now just call it stronghold
+               ps->stronghold = 1.0;
                break;
          }
          if(p.provinceStatus == provinceCardStatus::broken)
@@ -368,10 +371,12 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
                ps->province3 = 1.0;
                break;
             case 4:
-               ps->province3 = 1.0;
+               ps->province4 = 1.0;
                break;
             default:
-               std::cout << "Invalid province number" << std::endl;
+               //std::cout << "Invalid province number" << std::endl;
+               // Early in the game you can have 5 provinces before you pick your stronghold province
+               ps->stronghold = 1.0;
                break;
          }
          if(p.provinceStatus == provinceCardStatus::broken)
