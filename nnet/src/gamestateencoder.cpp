@@ -93,7 +93,7 @@ bool GamestateEncoder::checkIfCharacter(cards c)
 
 bool GamestateEncoder::checkIfHolding(cards c)
 {
-   if(c == cards::staging_ground ||
+   return (c == cards::staging_ground ||
       c == cards::artisan_academy ||
       c == cards::favorable_ground ||
       c == cards::imperial_storehouse);
@@ -101,7 +101,7 @@ bool GamestateEncoder::checkIfHolding(cards c)
 
 bool GamestateEncoder::checkIfProvince(cards c)
 {
-   if(c == cards::the_art_of_peace ||
+   return (c == cards::the_art_of_peace ||
       c == cards::entrenched_position ||
       c == cards::night_raid ||
       c == cards::rally_to_the_cause ||
@@ -120,7 +120,6 @@ int GamestateEncoder::getTotalSize()
 
 void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
 {
-   // TODO: check size
    if(size != builder->getTotalSize())
    {
       std::cout << "Size does not match GamestateBuilder size" << std::endl;
@@ -194,9 +193,15 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
    
 
    // look at pending fate characters
-   encodeCharacter(state->player1State.cards.pendingFateCard, false, false, 0, true, false);
+   if(state->player1State.cards.pendingFateCard != -1)
+   {
+      encodeCharacter(state->player1State.cards.pendingFateCard, false, false, 0, true, false);
+   }
 
-   encodeCharacter(state->player2State.cards.pendingFateCard, false, false, 0, true, false);
+   if(state->player2State.cards.pendingFateCard != -1)
+   {
+      encodeCharacter(state->player2State.cards.pendingFateCard, false, false, 0, true, false);
+   }
 }
 
 void GamestateEncoder::encodeDeckCard(int card)
@@ -217,11 +222,11 @@ void GamestateEncoder::encodeDeckCard(int card)
       memset(hs, 0, sizeof(HoldingSlot));
       hs->in_deck = 1.0;
    }
-   if(charOffset != characterMap.end() && (holdingOffset != holdingMap.end()))
+   if((charOffset != characterMap.end()) && (holdingOffset != holdingMap.end()))
    {
       std::cout << "Card " << card << "  matched both a character and holding" << std::endl;
    }
-   else if(charOffset == characterMap.end() && (holdingOffset == holdingMap.end()))
+   else if((charOffset == characterMap.end()) && (holdingOffset == holdingMap.end()))
    {
       std::cout << "Card " << card << " didn't match either a character or holding" << std::endl;
    }
@@ -290,7 +295,8 @@ void GamestateEncoder::encodeProvinceCard(int provNum, int dynastyCard, int prov
    }
    else
    {
-      std::cout << "Province dynasty card didn't match character or holding" << std::endl;
+      // this is ok because sometimes provinces don't have a dynasty card
+      //std::cout << "Province dynasty card didn't match character or holding" << std::endl;
    }
 
    // match actual province
@@ -342,6 +348,7 @@ void GamestateEncoder::encodeProvinceCard(int provNum, int dynastyCard, int prov
 
 void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowed, int fateAttached, bool pendingFate, bool pendingMulligan)
 {
+   std::cout << "characterCard is " << characterCard << std::endl;
    auto charOffset = characterMap.find(characterCard);
    if(charOffset != characterMap.end())
    {

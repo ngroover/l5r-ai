@@ -16,6 +16,7 @@ void CardAreaManager::setupCards(decklist deck, std::vector<cards> &cardIds)
 {
    // shouldn't be cards here but clear just in case
    cardArea->dynastyDeck.clear();
+   cardArea->pendingFateCard = -1;
 
    for(auto c: deck.getList())
    {

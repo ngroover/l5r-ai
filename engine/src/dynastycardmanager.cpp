@@ -145,6 +145,7 @@ void dynastyCardManager::playCharacter(cardarea *cards, std::string playerName, 
          cards->atHome.push_back(ipc);
       }
    }
+   cards->pendingFateCard = -1; // reset pending fate card
 }
 
 
