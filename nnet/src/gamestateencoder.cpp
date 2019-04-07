@@ -142,72 +142,87 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
    int provNum=1;
    for(auto p : state->player1State.cards.provinceArea)
    {
-      encodeProvinceCard(provNum, p);
+      encodeProvinceCard(provNum, p.dynastyCard, p.provinceCard, p.facedownDynasty,
+         (p.provinceStatus == provinceCardStatus::broken), // broken
+         (p.provinceCard == state->conflict_state.contested_province), // contested
+         (p.provinceCard == state->player1State.cards.strongholdProvince || p.provinceCard == state->player2State.cards.strongholdProvince)); // stronghold
       provNum++;
    }
 
    provNum=1;
    for(auto p : state->player2State.cards.provinceArea)
    {
-      encodeProvinceCard(provNum, p);
+      encodeProvinceCard(provNum, p.dynastyCard, p.provinceCard, p.facedownDynasty,
+         (p.provinceStatus == provinceCardStatus::broken), // broken
+         (p.provinceCard == state->conflict_state.contested_province), // contested
+         (p.provinceCard == state->player1State.cards.strongholdProvince || p.provinceCard == state->player2State.cards.strongholdProvince)); // stronghold
       provNum++;
    }
 
    // look for characters in play
    for(auto ch : state->player1State.cards.atHome)
    {
-      encodeCharacter(ch, false);
+      encodeCharacter(ch.characterCard, true, ch.bowed, ch.fateAttached);
    }
 
    for(auto ch : state->player2State.cards.atHome)
    {
-      encodeCharacter(ch, false);
+      encodeCharacter(ch.characterCard, true, ch.bowed, ch.fateAttached);
    }
 
    // look for conflict characters
    for(auto ch : state->player1State.conflict_state.inConflict)
    {
-      encodeCharacter(ch, true);
+      encodeCharacter(ch.characterCard, false, ch.bowed, ch.fateAttached);
    }
 
    for(auto ch : state->player2State.conflict_state.inConflict)
    {
-      encodeCharacter(ch, true);
+      encodeCharacter(ch.characterCard, false, ch.bowed, ch.fateAttached);
    }
 
-   // TODO: look at pending fate character
+   // pending fate characters
+   encodeCharacter(state->player1State.cards.pendingFateCard, false, false, 0);
 
-//////////////////////////////////////////////////////////////
+   encodeCharacter(state->player2State.cards.pendingFateCard, false, false, 0);
 }
 
 void GamestateEncoder::encodeDeckCard(int card)
 {
    // check character
-   if((auto charOffset = characterMap.find(card)) != characterMap.end())
+   auto charOffset = characterMap.find(card);
+   if(charOffset != characterMap.end())
    {
-      CharacterSlot *cs = builder->getCharacter(*charOffset);
+      CharacterSlot *cs = builder->getCharacter(charOffset->second);
       memset(cs, 0, sizeof(CharacterSlot));
       cs->in_deck = 1.0;
    }
    // check holding
-   else if((auto holdingOffset = holdingMap.find(card)) != holdingMap.end())
+   auto holdingOffset = holdingMap.find(card);
+   if(holdingOffset != holdingMap.end())
    {
-      HoldingSlot *hs = builder->getHolding(*holdingOffset);
+      HoldingSlot *hs = builder->getHolding(holdingOffset->second);
       memset(hs, 0, sizeof(HoldingSlot));
       hs->in_deck = 1.0;
    }
-   else
+   if(charOffset != characterMap.end() && (holdingOffset != holdingMap.end()))
+   {
+      std::cout << "Card " << card << "  matched both a character and holding" << std::endl;
+   }
+   else if(charOffset == characterMap.end() && (holdingOffset == holdingMap.end()))
    {
       std::cout << "Card " << card << " didn't match either a character or holding" << std::endl;
    }
 }
 
-void GamestateEncoder::encodeProvinceCard(int provNum, provinceStack ps)
+// TODO: Add revealed bool
+void GamestateEncoder::encodeProvinceCard(int provNum, int dynastyCard, int provinceCard, bool facedownDynasty, bool broken, bool contested, bool stronghold)
 {
-   // encode the top card
-   if((auto charOffset = characterMap.find(ps.dynastyCard)) != characterMap.end())
+   // encode the dynasty card
+   auto charOffset = characterMap.find(dynastyCard);
+   if(charOffset != characterMap.end())
    {
-      CharacterSlot *cs = builder->getCharacter(*charOffset);
+      CharacterSlot *cs = builder->getCharacter(charOffset->second);
       memset(cs, 0, sizeof(CharacterSlot));
       switch(provNum)
       {
@@ -227,14 +242,16 @@ void GamestateEncoder::encodeProvinceCard(int provNum, provinceStack ps)
             std::cout << "Invalid province number" << std::endl;
             break;
       }
-      if(!p.facedownDynasty)
+      if(!facedownDynasty)
       {
          cs->revealed = 1.0;
       }
    }
-   else if((auto holdingOffset = holdingMap.find(ps.dynastyCard)) != holdingMap.end())
+
+   auto holdingOffset = holdingMap.find(dynastyCard);
+   if(holdingOffset != holdingMap.end())
    {
-      HoldingSlot *hs = builder->getHolding(*holdingOffset);
+      HoldingSlot *hs = builder->getHolding(holdingOffset->second);
       memset(hs, 0, sizeof(HoldingSlot));
       switch(provNum)
       {
@@ -254,7 +271,7 @@ void GamestateEncoder::encodeProvinceCard(int provNum, provinceStack ps)
             std::cout << "Invalid province number" << std::endl;
             break;
       }
-      if(!p.facedownDynasty)
+      if(!facedownDynasty)
       {
          hs->revealed = 1.0;
       }
@@ -265,10 +282,10 @@ void GamestateEncoder::encodeProvinceCard(int provNum, provinceStack ps)
    }
 
    // match actual province
-   auto pm = provinceMap.find(p.provinceCard);
+   auto pm = provinceMap.find(provinceCard);
    if(pm != provinceMap.end())
    {
-      ProvinceSlot *ps = builder->getProvince(*provOffset);
+      ProvinceSlot *ps = builder->getProvince(pm->second);
       memset(ps, 0, sizeof(ProvinceSlot));
       switch(provNum)
       {
@@ -290,17 +307,17 @@ void GamestateEncoder::encodeProvinceCard(int provNum, provinceStack ps)
             // for now just set nothing
             break;
       }
-      if(p.provinceStatus == provinceCardStatus::broken)
+      if(broken)
       {
          ps->broken = 1.0;
       }
       // check contested
-      if(p.provinceCard == state->conflict_state.contested_province)
+      if(contested)
       {
-         ps->contested = 1.0
+         ps->contested = 1.0;
       }
       // check stronghold
-      if(p.provinceCard == state->player1State.cards.strongholdProvince || p.provinceCard == state->player2State.cards.strongholdProvince)
+      if(stronghold)
       {
          ps->stronghold = 1.0;
       }
@@ -311,28 +328,28 @@ void GamestateEncoder::encodeProvinceCard(int provNum, provinceStack ps)
    }
 }
 
-void GamestateEncoder::encodeCharacter(inplaycharacter ipc, bool inConflict)
+void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowed, int fateAttached)
 {
-   auto charOffset = characterMap.find(ch.characterCard);
+   auto charOffset = characterMap.find(characterCard);
    if(charOffset != characterMap.end())
    {
-      CharacterSlot *cs = builder->getCharacter(*charOffset);
+      CharacterSlot *cs = builder->getCharacter(charOffset->second);
       memset(cs, 0, sizeof(CharacterSlot));
-      if(!inConflict)
+      if(atHome)
       {
          cs->at_home = 1.0;
       }
-      if(ch.bowed)
+      if(bowed)
       {
          cs->bowed = 1.0;
       }
-      if(ch.fateAttached > 10)
+      if(fateAttached > 10)
       {
          std::cout << "WARNING: More than 10 fate on a character" << std::endl;
       }
       else
       {
-         cs->storedFate[ch.fateAttached] = 1.0;
+         cs->storedFate[fateAttached] = 1.0;
       }
    }
    else

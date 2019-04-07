@@ -37,8 +37,8 @@ namespace l5r
          bool checkIfProvince(cards c);
 
          void encodeDeckCard(int card);
-         void encodeProvinceCard(int provNum, provinceStack ps);
-         void encodeCharacter(inplaycharacter ipc, bool inConflict);
+         void encodeProvinceCard(int provNum, int dynastyCard, int provinceCard, bool facedownDynasty, bool broken, bool contested, bool stronghold);
+         void encodeCharacter(int characterCard, bool inConflict, bool bowed, int fateAttached);
 
    };
 };
