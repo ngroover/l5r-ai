@@ -162,29 +162,41 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
    // look for characters in play
    for(auto ch : state->player1State.cards.atHome)
    {
-      encodeCharacter(ch.characterCard, true, ch.bowed, ch.fateAttached);
+      encodeCharacter(ch.characterCard, true, ch.bowed, ch.fateAttached, false, false);
    }
 
    for(auto ch : state->player2State.cards.atHome)
    {
-      encodeCharacter(ch.characterCard, true, ch.bowed, ch.fateAttached);
+      encodeCharacter(ch.characterCard, true, ch.bowed, ch.fateAttached, false, false);
    }
 
    // look for conflict characters
    for(auto ch : state->player1State.conflict_state.inConflict)
    {
-      encodeCharacter(ch.characterCard, false, ch.bowed, ch.fateAttached);
+      encodeCharacter(ch.characterCard, false, ch.bowed, ch.fateAttached, false, false);
    }
 
    for(auto ch : state->player2State.conflict_state.inConflict)
    {
-      encodeCharacter(ch.characterCard, false, ch.bowed, ch.fateAttached);
+      encodeCharacter(ch.characterCard, false, ch.bowed, ch.fateAttached, false, false);
    }
 
-   // pending fate characters
-   encodeCharacter(state->player1State.cards.pendingFateCard, false, false, 0);
+   // look at mulligan characters
+   for(auto ch : state->player1State.cards.pendingMulligan)
+   {
+      encodeCharacter(ch, false, false, false, false, true);
+   }
 
-   encodeCharacter(state->player2State.cards.pendingFateCard, false, false, 0);
+   for(auto ch : state->player2State.cards.pendingMulligan)
+   {
+      encodeCharacter(ch, false, false, false, false, true);
+   }
+   
+
+   // look at pending fate characters
+   encodeCharacter(state->player1State.cards.pendingFateCard, false, false, 0, true, false);
+
+   encodeCharacter(state->player2State.cards.pendingFateCard, false, false, 0, true, false);
 }
 
 void GamestateEncoder::encodeDeckCard(int card)
@@ -328,7 +340,7 @@ void GamestateEncoder::encodeProvinceCard(int provNum, int dynastyCard, int prov
    }
 }
 
-void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowed, int fateAttached)
+void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowed, int fateAttached, bool pendingFate, bool pendingMulligan)
 {
    auto charOffset = characterMap.find(characterCard);
    if(charOffset != characterMap.end())
@@ -338,6 +350,10 @@ void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowe
       if(atHome)
       {
          cs->at_home = 1.0;
+      }
+      else
+      {
+         cs->in_conflict = 1.0;
       }
       if(bowed)
       {
@@ -350,6 +366,14 @@ void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowe
       else
       {
          cs->storedFate[fateAttached] = 1.0;
+      }
+      if(pendingFate)
+      {
+         cs->pending_fate = 1.0;
+      }
+      if(pendingMulligan)
+      {
+         cs->in_mulligan = 1.0;
       }
    }
    else
