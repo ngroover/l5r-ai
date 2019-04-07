@@ -202,6 +202,83 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
    {
       encodeCharacter(state->player2State.cards.pendingFateCard, false, false, 0, true, false);
    }
+
+   // rings
+   // hopefully theres always 5 rings
+   for(int r=0;r < 5; r++)
+   {
+      ring ringType;
+      switch(r)
+      {
+         case 0:
+            ringType=ring::air;
+            break;
+         case 1:
+            ringType=ring::fire;
+            break;
+         case 2:
+            ringType=ring::earth;
+            break;
+         case 3:
+            ringType=ring::water;
+            break;
+         case 4:
+            ringType=ring::_void;
+            break;
+         default:
+            std::cout << "Unknown ring" << std::endl;
+            break;
+      }
+      bool claimed=false;
+      int player=0;
+      for(auto tmpRing : state->player1State.conflict_state.claimed_rings)
+      {
+         if(tmpRing == ringType)
+         {
+            claimed = true;
+            player=1;
+         }
+      }
+      for(auto tmpRing : state->player2State.conflict_state.claimed_rings)
+      {
+         if(tmpRing == ringType)
+         {
+            if(claimed)
+            {
+               std::cout << "Ring shouldn't be claimed by both players" << std::endl;
+            }
+            claimed = true;
+            player=2;
+         }
+      }
+      bool contested = (ringType == state->conflict_state.contested_ring);
+
+      RingSlot *rs = builder->getRing(r);
+      memset(rs, 0, sizeof(RingSlot));
+      if(claimed)
+      {
+         switch(player)
+         {
+            case 1:
+               rs->player1_claimed = 1.0;
+               break;
+            case 2:
+               rs->player2_claimed = 1.0;
+               break;
+            default:
+               std::cout << "Player not set" << std::endl;
+               break;
+         }
+      }
+      else
+      {
+         rs->unclaimed = 1.0;
+      }
+      if(contested)
+      {
+         rs->contested = 1.0;
+      }
+   }
 }
 
 void GamestateEncoder::encodeDeckCard(int card)
@@ -348,7 +425,6 @@ void GamestateEncoder::encodeProvinceCard(int provNum, int dynastyCard, int prov
 
 void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowed, int fateAttached, bool pendingFate, bool pendingMulligan)
 {
-   std::cout << "characterCard is " << characterCard << std::endl;
    auto charOffset = characterMap.find(characterCard);
    if(charOffset != characterMap.end())
    {
@@ -388,3 +464,4 @@ void GamestateEncoder::encodeCharacter(int characterCard, bool atHome, bool bowe
       std::cout << "Character card not found in character map!" << std::endl;
    }
 }
+

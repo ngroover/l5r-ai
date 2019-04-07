@@ -39,7 +39,7 @@ namespace l5r
          void encodeDeckCard(int card);
          void encodeProvinceCard(int provNum, int dynastyCard, int provinceCard, bool facedownDynasty, bool broken, bool contested, bool stronghold);
          void encodeCharacter(int characterCard, bool inConflict, bool bowed, int fateAttached, bool pendingFate, bool pendingMulligan);
-
+         void encodeRing(int ringNum, bool unclaimed, bool player1_claimed, bool contested);
    };
 };
 

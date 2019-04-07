@@ -18,7 +18,7 @@
 using namespace l5r;
 
 // TODO: dyamically update these
-const int GameGraph::input_size = 2233;
+const int GameGraph::input_size = 987;
 const int GameGraph::policy_output_size = 24;
 
 GameGraph::GameGraph(int batchSize, double learningRate)
@@ -38,7 +38,7 @@ GameGraph::GameGraph(int batchSize, double learningRate)
    expected_policy = new Placeholder(&g, TF_DOUBLE, outputpolicydims, 2, "expected_policy");
 
    // hidden layer (shared)
-   hidden1 = new DenseLayer(&g, 1000, training_input, ActivationType::RELU, "hidden1");
+   hidden1 = new DenseLayer(&g, 500, training_input, ActivationType::RELU, "hidden1");
    layerinit.addLayer(hidden1);
    DenseLayer inf_hidden1(&g, inference_input, hidden1, ActivationType::RELU, "inf_hidden1");
 
