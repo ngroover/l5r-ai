@@ -279,6 +279,74 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
          rs->contested = 1.0;
       }
    }
+
+   // encode player data
+   PlayerSlot *ps = builder->getPlayer(0);
+   memset(ps, 0, sizeof(PlayerSlot));
+   ps->honor[state->player1State.tokens.honorTokens] = 1.0;
+   if(state->player1State.tokens.fate >= 50)
+   {
+      std::cout << "Player 1 Fate >= 50.  Cannot support." << std::endl;
+      ps->fate[49] = 1.0;
+   }
+   else
+   {
+      ps->fate[state->player1State.tokens.fate] = 1.0;
+   }
+   ps->honorDial[state->player1State.tokens.honorDial-1] = 1.0;
+   if(state->player1State.conflict_state.militaryConflictsLeft < 2)
+   {
+      ps->mil_left[state->player1State.conflict_state.militaryConflictsLeft] = 1.0;
+   }
+   if(state->player1State.conflict_state.politicalConflictsLeft < 2)
+   {
+      ps->pol_left[state->player1State.conflict_state.politicalConflictsLeft] = 1.0;
+   }
+   if(state->player1State.conflict_state.totalConflictsLeft < 2)
+   {
+      ps->conflicts_left[state->player1State.conflict_state.totalConflictsLeft] = 1.0;
+   }
+
+   if(state->player1State.conflict_state.hasImperialFavor)
+   {
+      ps->hasFavor = 1.0;
+   }
+
+/*
+   ps = builder->getPlayer(1);
+   memset(ps, 0, sizeof(PlayerSlot));
+   ps->honor[state->player2State.tokens.honorTokens] = 1.0;
+   if(state->player2State.tokens.fate >= 50)
+   {
+      std::cout << "Player 2 Fate >= 50.  Cannot support." << std::endl;
+      ps->fate[49] = 1.0;
+   }
+   else
+   {
+      ps->fate[state->player2State.tokens.fate] = 1.0;
+   }
+   ps->honorDial[state->player2State.tokens.honorDial-1] = 1.0;
+   if(state->player2State.conflict_state.militaryConflictsLeft < 2)
+   {
+      ps->mil_left[state->player2State.conflict_state.militaryConflictsLeft] = 1.0;
+   }
+   if(state->player2State.conflict_state.politicalConflictsLeft < 2)
+   {
+      ps->pol_left[state->player2State.conflict_state.politicalConflictsLeft] = 1.0;
+   }
+   if(state->player2State.conflict_state.totalConflictsLeft < 2)
+   {
+      ps->conflicts_left[state->player2State.conflict_state.totalConflictsLeft] = 1.0;
+   }
+
+   if(state->player2State.conflict_state.hasImperialFavor)
+   {
+      ps->hasFavor = 1.0;
+   }
+   */
+   
+   // encode global data
+
 }
 
 void GamestateEncoder::encodeDeckCard(int card)

@@ -7,12 +7,12 @@ namespace l5r
    {
       double honor[25];
       double fate[50];
+      double honorDial[5];
 
       // remaining conflicts
-      // 0, 0.5 or 1 which is 0,1,2 respectively
-      double mil_left;
-      double pol_left;
-      double conflicts_left;
+      double mil_left[2];
+      double pol_left[2];
+      double conflicts_left[2];
 
       double hasFavor;
    } typedef PlayerSlot;

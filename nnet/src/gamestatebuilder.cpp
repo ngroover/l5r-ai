@@ -19,7 +19,7 @@ GamestateBuilder::GamestateBuilder(int numCharacter, int numHoldings,
    int playerSize = (sizeof(PlayerSlot)/sizeof(double) * numPlayers);
    int globalSize = (sizeof(GlobalSlot)/sizeof(double));
 
-   totalSize = characterSize + holdingSize + provinceSize + ringSize + globalSize;
+   totalSize = characterSize + holdingSize + provinceSize + ringSize + playerSize + globalSize;
 
    rawData = new double[totalSize];
 
