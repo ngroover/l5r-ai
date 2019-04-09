@@ -22,7 +22,7 @@ namespace l5r
       double province_play;
       double additional_fate;
       double bid;
-      double choose_attacker;
+      double choose_attackers;
       double choose_ring;
       double choose_conflicttype;
       double choose_defenders;
@@ -34,10 +34,15 @@ namespace l5r
       double player1_turn;
       double player1_conflict;
       double player1_action;
+      double player2_turn;
+      double player2_conflict;
+      double player2_action;
 
       // random state info
-      double conflictType; // probably move to ring someday
-      double favorType; // 1 mil, 0 pol
+      double conflictMil; // probably move to ring someday
+      double conflictPol; // probably move to ring someday
+      double favorMil;
+      double favorPol;
    } typedef GlobalSlot;
 }
 #endif // _GLOBAL_SLOT_H_

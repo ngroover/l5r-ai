@@ -366,7 +366,123 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
    }
    
    // encode global data
+   GlobalSlot *gs = builder->getGlobal();
+   memset(gs, 0, sizeof(GlobalSlot));
+   switch(state->currentPhase)
+   {
+      case phase::pregame:
+         gs->pregame = 1.0;
+         break;
+      case phase::dynasty:
+         gs->dynasty = 1.0;
+         break;
+      case phase::draw:
+         gs->draw = 1.0;
+         break;
+      case phase::conflict:
+         gs->conflict = 1.0;
+         break;
+      case phase::fate:
+         gs->fate = 1.0;
+         break;
+      case phase::regroup:
+         gs->regroup = 1.0;
+         break;
+      case phase::gameover:
+         std::cout << "Shouldn't be getting game over state" << std::endl;
+         break;
+      default:
+         std::cout << "Encoding unknown state" << std::endl;
+   }
+   switch(state->currentSubPhase)
+   {
+      case subphase::stronghold_selection:
+         gs->stronghold_selection = 1.0;
+         break;
+      case subphase::dynasty_mulligan:
+         gs->dynasty_mulligan = 1.0;
+         break;
+      case subphase::conflict_mulligan:
+         gs->conflict_mulligan = 1.0;
+         break;
+      case subphase::dynasty_setup:
+         gs->dynasty_setup = 1.0;
+         break;
+      case subphase::province_play:
+         gs->province_play = 1.0;
+         break;
+      case subphase::additional_fate:
+         gs->additional_fate = 1.0;
+         break;
+      case subphase::bid:
+         gs->bid = 1.0;
+         break;
+      case subphase::choose_attackers:
+         gs->choose_attackers = 1.0;
+         break;
+      case subphase::choose_ring:
+         gs->choose_ring = 1.0;
+         break;
+      case subphase::choose_conflicttype:
+         gs->choose_conflicttype = 1.0;
+         break;
+      case subphase::choose_defenders:
+         gs->choose_defenders = 1.0;
+         break;
+      case subphase::conflict_action:
+         gs->conflict_action = 1.0;
+         break;
+      case subphase::choose_favor:
+         gs->choose_favor = 1.0;
+         break;
+      case subphase::choose_discard:
+         gs->choose_discard = 1.0;
+         break;
+      default:
+         std::cout << "Encoding unknown substate" << std::endl;
+   }
 
+   if(state->currentTurn == player::player1)
+   {
+      gs->player1_turn = 1.0;
+   }
+   else
+   {
+      gs->player2_turn = 1.0;
+   }
+   if(state->currentConflict == player::player1)
+   {
+      gs->player1_conflict = 1.0;
+   }
+   else
+   {
+      gs->player2_conflict = 1.0;
+   }
+   if(state->currentAction == player::player1)
+   {
+      gs->player1_action = 1.0;
+   }
+   else
+   {
+      gs->player2_action = 1.0;
+   }
+
+   if(state->conflict_state.conflict_type == conflicttype::military)
+   {
+      gs->conflictMil = 1.0;
+   }
+   else
+   {
+      gs->conflictPol = 1.0;
+   }
+   if(state->conflict_state.favorType == conflicttype::military)
+   {
+      gs->favorMil = 1.0;
+   }
+   else
+   {
+      gs->favorPol = 1.0;
+   }
 }
 
 void GamestateEncoder::encodeDeckCard(int card)
