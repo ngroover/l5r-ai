@@ -7,7 +7,7 @@ namespace l5r
    {
       double honor[25];
       double fate[50];
-      double honorDial[5];
+      double honorDial[6];
 
       // remaining conflicts
       double mil_left[2];

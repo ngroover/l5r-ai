@@ -41,6 +41,14 @@ void phaseManager::goToStrongholdSelection()
 {
    state->currentPhase = phase::pregame;
    state->currentSubPhase = subphase::stronghold_selection;
+
+   // initial some token data
+   state->player1State.tokens.honorTokens = 0;
+   state->player2State.tokens.honorTokens = 0;
+   state->player1State.tokens.fate = 0;
+   state->player2State.tokens.fate = 0;
+   state->player1State.tokens.honorDial = 0;
+   state->player2State.tokens.honorDial = 0;
 }
 
 void phaseManager::goToDynastyMulligan()
