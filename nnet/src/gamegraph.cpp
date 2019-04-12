@@ -18,8 +18,8 @@
 using namespace l5r;
 
 // TODO: dyamically update these
-const int GameGraph::input_size = 987;
-const int GameGraph::policy_output_size = 24;
+const int GameGraph::input_size = 1168;
+const int GameGraph::policy_output_size = 255;
 
 GameGraph::GameGraph(int batchSize, double learningRate)
 {
@@ -117,7 +117,7 @@ void GameGraph::compute(GameSession *session, double *input, int size, double *v
 {
    if( size != input_size || policySize != policy_output_size )
    {
-      printf("Invalid input size of %d\n", size);
+      printf("Invalid input size (gamestate=%d, policy=%d)\n", size, policySize);
       return;
    }
 

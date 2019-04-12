@@ -5,6 +5,10 @@ using namespace l5r;
 
 conflictPlayerState::conflictPlayerState()
 {
+   politicalConflictsLeft = 0;
+   militaryConflictsLeft = 0;
+   totalConflictsLeft = 0;
+   numConflicts = 0;
 }
 
 conflictPlayerState::~conflictPlayerState()

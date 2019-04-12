@@ -4,6 +4,9 @@ using namespace l5r;
 
 tokenstate::tokenstate()
 {
+   honorTokens=0;
+   fate=0;
+   honorDial=0;
 }
 
 tokenstate::~tokenstate()
