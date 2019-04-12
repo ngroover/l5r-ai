@@ -8,7 +8,8 @@ add_executable( nnet_app src/main.cpp
                      src/gamesession.cpp
                      src/gamestateencoder.cpp
                      src/gamestatebuilder.cpp
-                     src/policybuilder.cpp)
+                     src/policybuilder.cpp
+                     src/policyencoder.cpp)
 
 add_executable( nnet_unittest test/main.cpp src/gamestatebuilder.cpp test/gamestatebuildertest.cpp src/policybuilder.cpp test/policybuildertest.cpp)
 

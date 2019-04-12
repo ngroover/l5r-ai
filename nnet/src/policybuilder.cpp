@@ -159,24 +159,6 @@ std::map<int, double> PolicyBuilder::getPolicy(std::list<int> &validChoices)
    return policy;
 }
 
-/*
-void PolicyBuilder::normalize(std::map<int, double> &policy)
-{
-   double total=0.0;
-   for(auto p : policy)
-   {
-      std::cout << "first = " << p.first << " second = " << p.second << std::endl;
-      total += p.second;
-   }
-
-   std::cout << "Total " << total << std::endl;
-   for( auto &p : policy )
-   {
-      p.second = p.second / total;
-      std::cout << "new first = " << p.first << " second = " << p.second << std::endl;
-   }
-}
-*/
 
 int PolicyBuilder::getPolicyChoice()
 {

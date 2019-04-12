@@ -26,7 +26,6 @@ namespace l5r
          int getPolicyChoice();
 
       private:
-         void normalize(std::map<int, double> &policy);
          int furthestBit(int num);
          int findSlot(int bit);
 

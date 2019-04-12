@@ -2,6 +2,7 @@
 #include "gamegraph.h"
 #include "gamesession.h"
 #include "gamestateencoder.h"
+#include "policyencoder.h"
 #include "engine.h"
 #include <unistd.h>
 #include "engine.h"
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
    //std::cout << "Neural Network Test" << std::endl;
 
    GamestateEncoder encoder;
+   PolicyEncoder polEncoder;
 
    std::cout << "L5R Game simulator" << std::endl;
 
@@ -44,8 +46,11 @@ int main(int argc, char *argv[])
    gamestate gs = game.getGameState();
    double *arr;
    encoder.setupMap(&gs);
+   polEncoder.setupMap(&gs);
    int layerSize=encoder.getTotalSize();
+   int outLayerSize=polEncoder.getTotalSize();
    std::cout << "Total layer size is " << layerSize << std::endl;
+   std::cout << "Output layer size is " << outLayerSize << std::endl;
    arr = new double[layerSize];
    encoder.encode(&gs, arr, layerSize);
    GameGraph fiverings(5, 0.01);
@@ -55,12 +60,12 @@ int main(int argc, char *argv[])
    fiverings.init(&sampleSession);
 
    double result;
-   double resultpolicy[24];
-   fiverings.compute(&sampleSession, arr, layerSize, &result, resultpolicy, 24);
+   double resultpolicy[outLayerSize];
+   fiverings.compute(&sampleSession, arr, layerSize, &result, resultpolicy, outLayerSize);
 
    std::cout << "result=" << result << std::endl;
 
-   for(int i=0;i < 24; i++)
+   for(int i=0;i < outLayerSize; i++)
    {
       std::cout << resultpolicy[i] << " ";
    }

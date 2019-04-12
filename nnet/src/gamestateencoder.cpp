@@ -347,15 +347,15 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
    {
       ps->honorDial[state->player2State.tokens.honorDial] = 1.0;
    }
-   if(state->player2State.conflict_state.militaryConflictsLeft < 2)
+   if(state->player2State.conflict_state.militaryConflictsLeft >= 0 && state->player2State.conflict_state.militaryConflictsLeft < 2)
    {
       ps->mil_left[state->player2State.conflict_state.militaryConflictsLeft] = 1.0;
    }
-   if(state->player2State.conflict_state.politicalConflictsLeft < 2)
+   if(state->player2State.conflict_state.politicalConflictsLeft >= 0 && state->player2State.conflict_state.politicalConflictsLeft < 2)
    {
       ps->pol_left[state->player2State.conflict_state.politicalConflictsLeft] = 1.0;
    }
-   if(state->player2State.conflict_state.totalConflictsLeft < 2)
+   if(state->player2State.conflict_state.totalConflictsLeft >= 0 && state->player2State.conflict_state.totalConflictsLeft < 2)
    {
       ps->conflicts_left[state->player2State.conflict_state.totalConflictsLeft] = 1.0;
    }
