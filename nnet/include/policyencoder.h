@@ -8,7 +8,13 @@ namespace l5r
 {
    class gamestate;
    class PolicyBuilder;
-   typedef std::map<choice, double> policyMap;
+   //typedef std::map<choice, double> policyMap;
+   typedef struct Policy
+   {
+      choice c;
+      double prob;
+   } Policy;
+   typedef std::list<Policy> PolicyList;
    class PolicyEncoder
    {
       public:
@@ -20,13 +26,20 @@ namespace l5r
          const int getTotalSize();
 
          // transforms choice list into doubles
-         void encode(policyMap pol, double *networkOutput, int size);
+         void encode(PolicyList pol, double *networkOutput, int size);
 
-         // transforms doubles into choice list
-         void decode(std::list<choice>, double *networkOutput, int size);
+         // transforms doubles into policymap
+         void decode(PolicyList &outputPolicy, double *networkOutput, int size);
 
       private:
+         int choiceToNumber(choice c);
+
          PolicyBuilder *builder;
+         int numCardsChoices;
+         int ringChoicesOffset;
+         int conflictTypesChoices;
+         int genericNumberChoicesOffset;
+         int passChoiceOffset;
    };
 }
 #endif // _POLICY_ENCODER_H_

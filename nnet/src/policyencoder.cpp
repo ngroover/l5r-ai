@@ -24,26 +24,22 @@ void PolicyEncoder::setupMap(gamestate *state)
    // to create a range for cards themselves
 
    // num card choices
-   int numCardsChoices = state->cardIds.size();
+   numCardsChoices = state->cardIds.size();
    std::cout << "Num cards" << numCardsChoices << std::endl;
 
    // 5 ring choices
-   int ringChoices = 5;
+   ringChoicesOffset = numCardsChoices;
 
    // military/political
-   int conflictTypeChoices = 2;
+   conflictTypesChoices = ringChoicesOffset+5; // add 5 rings
 
    // bids, fate, 
-   int genericNumberChoices = 50;
+   genericNumberChoicesOffset = conflictTypesChoices+2; // add 2 for conflict Choices
 
-   // pass choice
-   int passChoice = 1;
+   passChoiceOffset = genericNumberChoicesOffset+50; // add 50 generic number choices
 
-   int totalChoices = numCardsChoices +
-                     ringChoices +
-                     conflictTypeChoices +
-                     genericNumberChoices +
-                     passChoice;
+   // add 1 pass choice
+   int totalChoices = passChoiceOffset+1;
 
    std::cout << "Creating policy encoder with " << totalChoices << std::endl;
 
@@ -56,12 +52,96 @@ const int PolicyEncoder::getTotalSize()
    return builder->getTotalSize();
 }
 
-void PolicyEncoder::encode(policyMap pol, double *networkOutput, int size)
+void PolicyEncoder::encode(PolicyList pol, double *networkOutput, int size)
 {
+   std::map<int, double> polMap;
+   for( auto p : pol)
+   {
+      int choiceNum = choiceToNumber(p.c);
+
+      polMap.insert(
+         std::pair<int, double>(choiceNum, p.prob));
+   }
+
+   builder->setPolicy(polMap);
 }
 
 // transforms doubles into choice list
-void PolicyEncoder::decode(std::list<choice>, double *networkOutput, int size)
+void PolicyEncoder::decode(PolicyList &outputPolicy, double *networkOutput, int size)
 {
+   std::list<int> validBuilderChoices;
+   for( auto op : outputPolicy )
+   {
+      int choiceNum = choiceToNumber(op.c);
+      
+      validBuilderChoices.push_back(choiceNum);
+   }
+
+   auto polMap = builder->getPolicy(validBuilderChoices);
+   
+   outputPolicy.clear();
+   for( auto &ch : outputPolicy )
+   {
+      int choiceNum = choiceToNumber(ch.c);
+      
+      double prob = polMap[choiceNum];
+      ch.prob = prob;
+   }
+}
+
+int PolicyEncoder::choiceToNumber(choice c)
+{
+   int choiceNum = -1;
+   switch(c.getType())
+   {
+      // TODO: condense all the choices to just card
+      case choicetype::card:
+      case choicetype::province_play:
+      case choicetype::province_attack:
+         choiceNum = c.getNumber();
+         break;
+      case choicetype::ring:
+         switch(c.getChosenRing())
+         {
+            case ring::air:
+               choiceNum = ringChoicesOffset;
+               break;
+            case ring::fire:
+               choiceNum = ringChoicesOffset+1;
+               break;
+            case ring::earth:
+               choiceNum = ringChoicesOffset+2;
+               break;
+            case ring::water:
+               choiceNum = ringChoicesOffset+3;
+               break;
+            case ring::_void:
+               choiceNum = ringChoicesOffset+4;
+               break;
+         }
+         break;
+      case choicetype::conflict_type:
+         switch(c.getConflictType())
+         {
+            case conflicttype::military:
+               choiceNum = conflictTypesChoices;
+               break;
+            case conflicttype::political:
+               choiceNum = conflictTypesChoices+1;
+               break;
+         }
+         break;
+      case choicetype::bid:
+      case choicetype::fate:
+         choiceNum = genericNumberChoicesOffset+c.getNumber();
+         break;
+      case choicetype::pass:
+         choiceNum = passChoiceOffset;
+         break;
+       default:
+         std::cout << "Invalid choice type" << std::endl;
+         break;
+   }
+   return choiceNum;
 }
 
