@@ -9,11 +9,16 @@ namespace l5r
    class gamestate;
    class PolicyBuilder;
    //typedef std::map<choice, double> policyMap;
-   typedef struct Policy
+   class Policy
    {
-      choice c;
-      double prob;
-   } Policy;
+      public:
+         Policy(choice c);
+         ~Policy();
+
+         choice c;
+         double prob;
+   };
+
    typedef std::list<Policy> PolicyList;
    class PolicyEncoder
    {

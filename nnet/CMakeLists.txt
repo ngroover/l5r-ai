@@ -11,8 +11,9 @@ add_executable( nnet_app src/main.cpp
                      src/policybuilder.cpp
                      src/policyencoder.cpp)
 
-add_executable( nnet_unittest test/main.cpp src/gamestatebuilder.cpp test/gamestatebuildertest.cpp src/policybuilder.cpp test/policybuildertest.cpp)
+add_executable( nnet_unittest test/main.cpp src/gamestatebuilder.cpp test/gamestatebuildertest.cpp src/policybuilder.cpp test/policybuildertest.cpp
+                  test/policyencodertest.cpp src/policyencoder.cpp)
 
 target_link_libraries( nnet_app tfwrapper tensorflow decks engine cards)
 
-target_link_libraries( nnet_unittest cppunit )
+target_link_libraries( nnet_unittest cppunit engine cards decks)
