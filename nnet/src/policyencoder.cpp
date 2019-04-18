@@ -25,7 +25,6 @@ void PolicyEncoder::setupMap(gamestate *state)
 
    // num card choices
    numCardsChoices = state->cardIds.size();
-   std::cout << "Num cards " << numCardsChoices << std::endl;
 
    // 5 ring choices
    ringChoicesOffset = numCardsChoices;
@@ -41,7 +40,6 @@ void PolicyEncoder::setupMap(gamestate *state)
    // add 1 pass choice
    int totalChoices = passChoiceOffset+1;
 
-   std::cout << "Creating policy encoder with " << totalChoices << std::endl;
 
    // create builder
    builder = new PolicyBuilder(totalChoices);
@@ -64,6 +62,13 @@ void PolicyEncoder::encode(PolicyList pol, double *networkOutput, int size)
    }
 
    builder->setPolicy(polMap);
+
+   double *rawData = builder->getRawData();
+
+   for(int i=0;i < size; i++)
+   {
+      networkOutput[i] = rawData[i];
+   }
 }
 
 // transforms doubles into choice list
@@ -75,6 +80,13 @@ void PolicyEncoder::decode(PolicyList &outputPolicy, double *networkOutput, int 
       int choiceNum = choiceToNumber(op.c);
       
       validBuilderChoices.push_back(choiceNum);
+   }
+
+   double *rawData = builder->getRawData();
+
+   for(int i=0;i < size; i++)
+   {
+      rawData[i] = networkOutput[i];
    }
 
    auto polMap = builder->getPolicy(validBuilderChoices);
