@@ -3,7 +3,7 @@
 
 using namespace l5r;
 
-MctsActionNode::MctsActionNode(choice c): c(c)
+MctsActionNode::MctsActionNode(choice c, double probability, MctsStateNodeWeakPtr parent): c(c),probability(probability), parent(parent)
 {
 }
 
@@ -21,7 +21,7 @@ double MctsActionNode::getProbability()
    return probability;
 }
 
-double MctsActionNode::getVisits()
+int MctsActionNode::getVisits()
 {
    return visits;
 }

@@ -3,6 +3,7 @@
 
 #include <list>
 #include <memory>
+#include "state/gamestate.h"
 
 namespace l5r
 {
@@ -19,12 +20,17 @@ namespace l5r
          bool isLeaf();
          gamestate &getState();
 
+         double *getPolicy();
+         int getPolicySize();
+
+         void addChildAction(MctsActionNode action);
+
       private:
          std::list<MctsActionNode> childActions;
          gamestate state;
          int visits;
          double value;
-         bool isLeaf;
+         bool leaf;
 
    };
 };

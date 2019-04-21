@@ -2,6 +2,7 @@
 #define _MCTS_TREE_H_
 
 #include <memory>
+#include <list>
 
 namespace l5r
 {

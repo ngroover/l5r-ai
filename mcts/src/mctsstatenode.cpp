@@ -3,27 +3,28 @@
 
 using namespace l5r;
 
-MctsStateNode::MctsStateNode()
+MctsStateNode::MctsStateNode(gamestate &gs)
 {
+   state = gs;
 }
 
 MctsStateNode::~MctsStateNode()
 {
 }
 
-MctsStateNode::hasChildActions()
+bool MctsStateNode::hasChildActions()
 {
    return ( childActions.size() != 0 );
 }
 
-MctsStateNode::getState()
+gamestate &MctsStateNode::getState()
 {
    return state;
 }
 
-MctsStateNode::isLeaf()
+bool MctsStateNode::isLeaf()
 {
-   return isLeaf;
+   return leaf;
 }
 
 

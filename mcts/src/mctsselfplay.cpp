@@ -1,4 +1,6 @@
 #include "mctsselfplay.h"
+#include "mctstree.h"
+#include "mctsstatenode.h"
 #include <iostream>
 #include "engine.h"
 #include "decision.h"
@@ -36,11 +38,9 @@ void MctsSelfPlay::episode(MctsStateNodePtr statenode)
    {
       for(int i=0;i < iterations; i++)
       {
-         if( !tree.getCurrent().hasChildActions() )
+         done = false;
+         while(!done)
          {
-            done = false;
-            while(!done)
-            {
                // traverse tree
                //action = traverse
 
@@ -55,8 +55,10 @@ void MctsSelfPlay::episode(MctsStateNodePtr statenode)
                // get probabilities from nn
 
                //tree.getCurrent()->setValue(12345);  // from network
+            if( !tree.getCurrent()->hasChildActions() )
+            {
+               
             }
-            
          }
       }
    }

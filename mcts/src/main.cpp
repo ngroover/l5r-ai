@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
    l5r::engine game(std::move(player1), std::move(player2)); 
 
-   l5r::MctsSelfPlay mcts(&game, 1);
+   l5r::MctsSelfPlay mcts(&game, 1, 1);
 
    mcts.playout();
 

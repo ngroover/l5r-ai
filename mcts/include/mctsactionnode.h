@@ -11,7 +11,7 @@ namespace l5r
    class MctsActionNode
    {
       public:
-         MctsActionNode(choice c);
+         MctsActionNode(choice c, double probability, MctsStateNodeWeakPtr parent);
          ~MctsActionNode();
 
          double getReward();

@@ -1,6 +1,8 @@
 #ifndef _MCTS_SELF_PLAY_H_
 #define _MCTS_SELF_PLAY_H_
 
+#include "mctstree.h"
+
 namespace l5r
 {
    class engine;
