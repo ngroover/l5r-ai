@@ -7,6 +7,7 @@ namespace l5r
 {
    class MctsStateNode;
    class PolicyEncoder;
+   class engine;
    typedef std::shared_ptr<MctsStateNode> MctsStateNodePtr;
    class MctsActionBuilder
    {

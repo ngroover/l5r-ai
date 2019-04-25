@@ -1,5 +1,8 @@
 #include "mctsactionbuilder.h"
 #include "policyencoder.h"
+#include "mctsactionnode.h"
+#include "mctsstatenode.h"
+#include "engine.h"
 
 using namespace l5r;
 

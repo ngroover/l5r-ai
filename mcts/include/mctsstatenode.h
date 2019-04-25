@@ -13,7 +13,7 @@ namespace l5r
    class MctsStateNode
    {
       public:
-         MctsStateNode(gamestate &gs);
+         MctsStateNode(gamestate &gs, double *policy, int policySize, double value);
          ~MctsStateNode();
 
          bool hasChildActions();
@@ -23,15 +23,16 @@ namespace l5r
          double *getPolicy();
          int getPolicySize();
 
-         void addChildAction(MctsActionNode action);
+         void addChildAction(MctsActionNodePtr child);
 
       private:
-         std::list<MctsActionNode> childActions;
+         std::list<MctsActionNodePtr> childActions;
          gamestate state;
          int visits;
          double value;
          bool leaf;
-
+         double *policy;
+         int policySize;
    };
 };
 #endif // _MCTS_STATE_NODE_H_

@@ -19,13 +19,13 @@ MctsSelfPlay::~MctsSelfPlay()
 void MctsSelfPlay::playout()
 {
    gamestate gs = eng->getGameState();
-   auto root = std::make_shared<MctsStateNode>(gs);
-   tree.addNewState(root);
+   //auto root = std::make_shared<MctsStateNode>(gs);
+   //tree.addNewState(root);
 
    for(int e=0;e < episodes; e++)
    {
       std::cout << "Episode: " << e << std::endl;
-      episode(root);
+      //episode(root);
    }
 }
 
