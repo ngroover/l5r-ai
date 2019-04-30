@@ -96,6 +96,7 @@ void PolicyEncoder::decode(PolicyList &outputPolicy, double *networkOutput, int 
       int choiceNum = choiceToNumber(ch.c);
       
       double prob = polMap[choiceNum];
+      std::cout << "raw prob " << prob << std::endl;
       ch.prob = prob;
    }
 }

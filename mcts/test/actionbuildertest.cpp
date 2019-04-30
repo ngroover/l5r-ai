@@ -5,6 +5,8 @@
 #include "humanagent.h"
 #include "cpuagent.h"
 #include "starterdecklists.h"
+#include "mctsstatenode.h"
+#include "mctsactionnode.h"
 #include <cstring>
 
 using namespace l5r;
@@ -32,5 +34,26 @@ void ActionBuilderTest::tearDown()
 
 void ActionBuilderTest::checkBuild()
 {
-   CPPUNIT_ASSERT(true);
+   double policy[255];
+   for(int i=0;i<255; i++)
+   {
+      policy[i] = 0.5;
+   }
+
+   std::cout << "Sizeof policy=" << sizeof(policy) << std::endl;
+   std::cout << "polencoder =" << polEncoder->getTotalSize() << std::endl;
+
+   gamestate gs = game->getGameState();
+
+   MctsStateNodePtr stateNode = std::make_shared<MctsStateNode>(gs, policy, polEncoder->getTotalSize(), 0.75);
+
+   builder->buildActions(stateNode);
+
+   std::list<MctsActionNodePtr> listActions = stateNode->getChildActions();
+   for( auto l : listActions)
+   {
+      std::cout << l->getChoice().getText() << " Probability = " << l->getProbability() << std::endl;
+   }
+
+   //CPPUNIT_ASSERT_EQUAL();
 }

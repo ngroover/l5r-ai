@@ -3,6 +3,7 @@
 #include "mctsactionnode.h"
 #include "mctsstatenode.h"
 #include "engine.h"
+#include <iostream>
 
 using namespace l5r;
 
@@ -39,6 +40,7 @@ void MctsActionBuilder::buildActions(MctsStateNodePtr stateNode)
 
       for( auto p : pl )
       {
+         std::cout << "prob is " << p.prob << std::endl;
          MctsActionNodePtr a = std::make_shared<MctsActionNode>(p.c, p.prob, stateNode);
          stateNode->addChildAction(a);
       }

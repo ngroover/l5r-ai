@@ -26,3 +26,7 @@ int MctsActionNode::getVisits()
    return visits;
 }
 
+choice MctsActionNode::getChoice()
+{
+   return c;
+}

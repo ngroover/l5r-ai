@@ -129,6 +129,7 @@ void PolicyBuilder::setPolicy(std::map<int, double> &policyMap)
 std::map<int, double> PolicyBuilder::getPolicy(std::list<int> &validChoices)
 {
    std::map<int, double> policy;
+   double totalProbability = 0.0;
 
    for( auto c : validChoices )
    {
@@ -154,6 +155,12 @@ std::map<int, double> PolicyBuilder::getPolicy(std::list<int> &validChoices)
          baseArrayOffset += (1 << b);
       }
       policy.insert(std::pair<int, double>(c, probability));
+      totalProbability += probability;
+   }
+
+   for( auto &p : policy )
+   {
+      p.second = p.second / totalProbability;
    }
 
    return policy;

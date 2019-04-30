@@ -25,6 +25,8 @@ namespace l5r
 
          void addChildAction(MctsActionNodePtr child);
 
+         std::list<MctsActionNodePtr> getChildActions();
+
       private:
          std::list<MctsActionNodePtr> childActions;
          gamestate state;

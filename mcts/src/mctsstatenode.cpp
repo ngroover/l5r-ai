@@ -6,7 +6,7 @@ using namespace l5r;
 MctsStateNode::MctsStateNode(gamestate &gs, double *policy, int policySize, double value)
 {
    state = gs;
-   policy = new double[policySize];
+   this->policy = new double[policySize];
    for(int i=0;i < policySize;i++)
    {
       this->policy[i] =  policy[i];
@@ -47,4 +47,9 @@ double *MctsStateNode::getPolicy()
 int MctsStateNode::getPolicySize()
 {
    return policySize;
+}
+
+std::list<MctsActionNodePtr> MctsStateNode::getChildActions()
+{
+   return childActions;
 }

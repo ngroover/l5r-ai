@@ -20,6 +20,8 @@ namespace l5r
 
          int getVisits();
 
+         choice getChoice();
+
       private:
          int visits;
          double reward;
