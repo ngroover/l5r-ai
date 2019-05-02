@@ -3,6 +3,7 @@
 
 #include <list>
 #include <memory>
+#include <vector>
 #include "state/gamestate.h"
 
 namespace l5r
@@ -10,18 +11,20 @@ namespace l5r
    class gamestate;
    class MctsActionNode;
    typedef std::shared_ptr<MctsActionNode> MctsActionNodePtr;
+   typedef std::vector<double> PolicyVector;
    class MctsStateNode
    {
       public:
-         MctsStateNode(gamestate &gs, double *policy, int policySize, double value);
+         // constructor
+         MctsStateNode(gamestate gs, PolicyVector policy, double stateValue, bool leafNode);
+         // destructor
          ~MctsStateNode();
 
          bool hasChildActions();
          bool isLeaf();
-         gamestate &getState();
+         gamestate getState();
 
-         double *getPolicy();
-         int getPolicySize();
+         PolicyVector getPolicy();
 
          void addChildAction(MctsActionNodePtr child);
 
@@ -33,8 +36,7 @@ namespace l5r
          int visits;
          double value;
          bool leaf;
-         double *policy;
-         int policySize;
+         PolicyVector policy;
    };
 };
 #endif // _MCTS_STATE_NODE_H_

@@ -1,18 +1,13 @@
 #include "mctsstatenode.h"
 #include "mctsactionnode.h"
+#include <iostream>
 
 using namespace l5r;
 
-MctsStateNode::MctsStateNode(gamestate &gs, double *policy, int policySize, double value)
+
+MctsStateNode::MctsStateNode(gamestate gs, PolicyVector policy, double stateValue, bool leaf) : state(gs), policy(policy), value(stateValue), leaf(leaf)
 {
-   state = gs;
-   this->policy = new double[policySize];
-   for(int i=0;i < policySize;i++)
-   {
-      this->policy[i] =  policy[i];
-   }
-   this->policySize = policySize;
-   this->value = value;
+   visits = 0;
 }
 
 MctsStateNode::~MctsStateNode()
@@ -24,7 +19,7 @@ bool MctsStateNode::hasChildActions()
    return ( childActions.size() != 0 );
 }
 
-gamestate &MctsStateNode::getState()
+gamestate MctsStateNode::getState()
 {
    return state;
 }
@@ -39,14 +34,9 @@ void MctsStateNode::addChildAction(MctsActionNodePtr child)
    childActions.push_back(child);
 }
 
-double *MctsStateNode::getPolicy()
+PolicyVector MctsStateNode::getPolicy()
 {
    return policy;
-}
-
-int MctsStateNode::getPolicySize()
-{
-   return policySize;
 }
 
 std::list<MctsActionNodePtr> MctsStateNode::getChildActions()

@@ -27,7 +27,7 @@ namespace l5r
          // useful for testing
          gamestate getGameState();
 
-         void setGameState(gamestate &gs);
+         void setGameState(gamestate gs);
 
          decision getDecision();
 

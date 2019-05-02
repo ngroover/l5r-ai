@@ -36,7 +36,9 @@ void MctsActionBuilder::buildActions(MctsStateNodePtr stateNode)
       }
 
       // decode the neural net output
-      encoder->decode(pl, stateNode->getPolicy(), stateNode->getPolicySize());
+      PolicyVector pv = stateNode->getPolicy();
+
+      encoder->decode(pl, pv.data(), pv.size());
 
       for( auto p : pl )
       {

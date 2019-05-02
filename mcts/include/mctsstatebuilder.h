@@ -7,21 +7,30 @@
 
 namespace l5r
 {
-   class GamestateBuilder;
+   class GamestateEncoder;
+   class PolicyEncoder;
+   class GameSession;
    class GameGraph;
    class engine;
+   typedef std::vector<double> GamestateVector;
 
    class MctsStateBuilder
    {
       public:
-         MctsStateBuilder(GamestateBuilder *builder, GameGraph *graph);
+         MctsStateBuilder(GamestateEncoder *encoder, PolicyEncoder *polEncoder, GameGraph *graph, GameSession *session);
          ~MctsStateBuilder();
 
 
-         MctsStateNode buildState(gamestate &state);
+         MctsStateNode buildState(gamestate state);
       private:
-         GamestateBuilder *builder;
+         // TODO: use less pointers. this is c++!
+         GamestateEncoder *encoder;
+         PolicyEncoder *polEncoder;
          GameGraph *graph;
+         GameSession *session;
+
+         PolicyVector policyVector;
+         GamestateVector gameVector;
    };
 }
 #endif // _MCTS_STATE_BUILDER_H_

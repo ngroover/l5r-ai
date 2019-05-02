@@ -59,7 +59,7 @@ gamestate engine::getGameState()
    return *state;
 }
 
-void engine::setGameState(gamestate &gs)
+void engine::setGameState(gamestate gs)
 {
    *state = gs;
 }
