@@ -5,6 +5,7 @@ using namespace l5r;
 
 MctsActionNode::MctsActionNode(choice c, double probability, MctsStateNodeWeakPtr parent): c(c),probability(probability), parent(parent)
 {
+   visits=0;
 }
 
 MctsActionNode::~MctsActionNode()
@@ -26,7 +27,27 @@ int MctsActionNode::getVisits()
    return visits;
 }
 
+void MctsActionNode::addVisit()
+{
+   visits++;
+}
+
 choice MctsActionNode::getChoice()
 {
    return c;
+}
+
+std::list<MctsStateNodeWeakPtr> MctsActionNode::getChildStates()
+{
+   return child_states;
+}
+
+void MctsActionNode::addChildState(MctsStateNodeWeakPtr node)
+{
+   child_states.push_back(node);
+}
+
+void MctsActionNode::adjustReward(double value)
+{
+   reward = (visits * reward + value)/(visits+1);
 }

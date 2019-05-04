@@ -1,4 +1,5 @@
 #include "mctsstatebuilder.h"
+#include "mctsstatenode.h"
 #include "policyencoder.h"
 #include "gamegraph.h"
 #include "gamesession.h"
@@ -22,8 +23,21 @@ MctsStateBuilder::~MctsStateBuilder()
 {
 }
 
-MctsStateNode MctsStateBuilder::buildState(gamestate state)
+MctsStateNodePtr MctsStateBuilder::buildState(gamestate state)
 {
+   // TODO: check already existing nodes
+
+   // search entire list so we can reuse
+   for(auto s : entireList)
+   {
+      if(state == s->getState())
+      {
+         std::cout << "Found state. Reusing it" << std::endl;
+         // found it return
+         return s;
+      }
+   }
+
    double value = 0.0;
    bool leaf = false;
    if( state.currentPhase == phase::gameover)
@@ -45,5 +59,9 @@ MctsStateNode MctsStateBuilder::buildState(gamestate state)
       graph->compute(session, gameVector.data(), gameVector.size(), &value, policyVector.data(), policyVector.size());
    }
 
-   return MctsStateNode(state, policyVector, value, leaf);
+   MctsStateNodePtr newState = std::make_shared<MctsStateNode>(state, policyVector, value, leaf);
+
+   entireList.push_back(newState);
+
+   return newState;
 }

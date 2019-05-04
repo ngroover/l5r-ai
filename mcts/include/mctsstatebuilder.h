@@ -3,7 +3,6 @@
 
 #include <memory>
 #include "state/gamestate.h"
-#include "mctsstatenode.h"
 
 namespace l5r
 {
@@ -12,7 +11,10 @@ namespace l5r
    class GameSession;
    class GameGraph;
    class engine;
+   class MctsStateNode;
+   typedef std::shared_ptr<MctsStateNode> MctsStateNodePtr;
    typedef std::vector<double> GamestateVector;
+   typedef std::vector<double> PolicyVector;
 
    class MctsStateBuilder
    {
@@ -21,7 +23,7 @@ namespace l5r
          ~MctsStateBuilder();
 
 
-         MctsStateNode buildState(gamestate state);
+         MctsStateNodePtr buildState(gamestate state);
       private:
          // TODO: use less pointers. this is c++!
          GamestateEncoder *encoder;
@@ -31,6 +33,8 @@ namespace l5r
 
          PolicyVector policyVector;
          GamestateVector gameVector;
+
+         std::list<MctsStateNodePtr> entireList;
    };
 }
 #endif // _MCTS_STATE_BUILDER_H_

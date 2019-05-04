@@ -3,6 +3,7 @@
 
 #include "choice.h"
 #include <memory>
+#include <list>
 
 namespace l5r
 {
@@ -21,6 +22,14 @@ namespace l5r
          int getVisits();
 
          choice getChoice();
+
+         std::list<MctsStateNodeWeakPtr> getChildStates();
+
+         void addVisit();
+
+         void addChildState(MctsStateNodeWeakPtr node);
+
+         void adjustReward(double value);
 
       private:
          int visits;

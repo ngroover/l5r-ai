@@ -30,6 +30,14 @@ namespace l5r
 
          std::list<MctsActionNodePtr> getChildActions();
 
+         // true if player1s turn otherwise player2s turn
+         bool player1Turn();
+
+         void addVisit();
+         int getVisits();
+
+         double getValue();
+
       private:
          std::list<MctsActionNodePtr> childActions;
          gamestate state;

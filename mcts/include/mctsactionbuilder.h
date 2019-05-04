@@ -9,16 +9,17 @@ namespace l5r
    class PolicyEncoder;
    class engine;
    typedef std::shared_ptr<MctsStateNode> MctsStateNodePtr;
+   typedef std::shared_ptr<engine> enginePtr;
    class MctsActionBuilder
    {
       public:
-         MctsActionBuilder(engine *eng, PolicyEncoder *encoder);
+         MctsActionBuilder(enginePtr eng, PolicyEncoder *encoder);
          ~MctsActionBuilder();
 
 
          void buildActions(MctsStateNodePtr stateNode);
       private:
-         engine *eng;
+         enginePtr eng;
          PolicyEncoder *encoder;
    };
 }

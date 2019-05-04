@@ -29,6 +29,11 @@ bool MctsStateNode::isLeaf()
    return leaf;
 }
 
+int MctsStateNode::getVisits()
+{
+   return visits;
+}
+
 void MctsStateNode::addChildAction(MctsActionNodePtr child)
 {
    childActions.push_back(child);
@@ -42,4 +47,19 @@ PolicyVector MctsStateNode::getPolicy()
 std::list<MctsActionNodePtr> MctsStateNode::getChildActions()
 {
    return childActions;
+}
+
+bool MctsStateNode::player1Turn()
+{
+   return (state.currentTurn == player::player1);
+}
+
+void MctsStateNode::addVisit()
+{
+   visits++;
+}
+
+double MctsStateNode::getValue()
+{
+   return value;
 }

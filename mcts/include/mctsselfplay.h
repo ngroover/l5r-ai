@@ -1,26 +1,31 @@
 #ifndef _MCTS_SELF_PLAY_H_
 #define _MCTS_SELF_PLAY_H_
 
-#include "mctstree.h"
+#include <memory>
+#include <list>
 
 namespace l5r
 {
-   class engine;
    class MctsTree;
+   typedef std::unique_ptr<MctsTree> MctsTreePtr;
+   class MctsActionNode;
+   typedef std::shared_ptr<MctsActionNode> MctsActionNodePtr;
+
    class MctsSelfPlay
    {
       public:
-         MctsSelfPlay(engine *eng, int episodes, int iterations);
+         MctsSelfPlay(MctsTreePtr tree, int episodes, int iterations);
          ~MctsSelfPlay();
 
          void playout();
 
       private:
-         void episode(MctsStateNodePtr statenode);
 
-         engine *eng;
+         void backPropagate(std::list<MctsActionNodePtr> history);
+         void episode();
+
          int episodes, iterations;
-         MctsTree tree;
+         MctsTreePtr tree;
    };
 };
 #endif // _MCTS_SELF_PLAY_H_

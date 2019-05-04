@@ -56,8 +56,8 @@ void StateBuilderTest::checkBuild()
 
    gamestate gs = game->getGameState();
 
-   MctsStateNode node = builder->buildState(gs);
+   MctsStateNodePtr node = builder->buildState(gs);
 
-   CPPUNIT_ASSERT_EQUAL(node.isLeaf(), false);
-   CPPUNIT_ASSERT_EQUAL(node.hasChildActions(),false);
+   CPPUNIT_ASSERT_EQUAL(node->isLeaf(), false);
+   CPPUNIT_ASSERT_EQUAL(node->hasChildActions(),false);
 }

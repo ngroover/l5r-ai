@@ -7,7 +7,7 @@
 
 using namespace l5r;
 
-MctsActionBuilder::MctsActionBuilder(engine *eng, PolicyEncoder *encoder)
+MctsActionBuilder::MctsActionBuilder(enginePtr eng, PolicyEncoder *encoder)
 {
    this->eng = eng;
    this->encoder = encoder;
