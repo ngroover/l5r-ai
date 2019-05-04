@@ -12,15 +12,15 @@ namespace l5r
    class UctGuide : public MctsGuide
    {
       public:
-         UctGuide(double exploration);
+         UctGuide(double exploration, bool maximize);
          ~UctGuide();
 
          
          virtual MctsActionNodePtr chooseAction(int stateNodeVisits,
-                                 std::list<MctsActionNodePtr> actions,
-                                 bool negativeValue);
+                                 std::list<MctsActionNodePtr> actions);
       private:
          double exploration;
+         bool maximize;
    };
 };
 #endif // _UCT_GUIDE_H_

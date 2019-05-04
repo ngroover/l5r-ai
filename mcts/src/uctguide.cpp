@@ -6,7 +6,8 @@
 
 using namespace l5r;
 
-UctGuide::UctGuide(double exploration) : exploration(exploration)
+UctGuide::UctGuide(double exploration, bool maximize) : exploration(exploration),
+maximize(maximize)
 {
 }
 
@@ -16,14 +17,13 @@ UctGuide::~UctGuide()
 
 
 MctsActionNodePtr UctGuide::chooseAction(int stateNodeVisits,
-                                 std::list<MctsActionNodePtr> actions,
-                                 bool negativeValue)
+                                 std::list<MctsActionNodePtr> actions)
 {
    double maxUpperConfidence=std::numeric_limits<double>::lowest();
    MctsActionNodePtr maxAction;
    for(auto a : actions)
    {
-      double val = (negativeValue ? -a->getReward() : a->getReward());
+      double val = (maximize ? a->getReward() : -a->getReward());
 
       double prob = a->getProbability();
 

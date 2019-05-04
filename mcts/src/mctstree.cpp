@@ -4,12 +4,11 @@
 #include "engine.h"
 #include "mctsactionnode.h"
 #include <iostream>
+#include "mctsguide.h"
 
 using namespace l5r;
 
-MctsTree::MctsTree(MctsGuidePtr player1Guide, MctsGuidePtr player2Guide, MctsActionBuilderPtr actionBuilder, MctsStateBuilderPtr stateBuilder, enginePtr game, MctsStateNodePtr initial) : 
-player1Guide(std::move(player1Guide)),
-player2Guide(std::move(player2Guide)),
+MctsTree::MctsTree(MctsActionBuilderPtr actionBuilder, MctsStateBuilderPtr stateBuilder, enginePtr game, MctsStateNodePtr initial) : 
 actionBuilder(std::move(actionBuilder)),
 stateBuilder(std::move(stateBuilder)),
 game(std::move(game)), initialState(initial)
@@ -31,24 +30,13 @@ void MctsTree::setCurrent(MctsStateNodePtr newState)
 }
 
 
-bool MctsTree::traverse()
+bool MctsTree::traverse(MctsGuidePtr guide)
 {
    actionBuilder->buildActions(currentState);
 
-   // negative value in neural network for player2
-   bool negativeValue = !currentState->player1Turn();
-
-
    MctsActionNodePtr chosenAction;
-   //TODO: pass in the MctsGuide as arg
-   if(currentState->player1Turn())
-   {
-      chosenAction = player1Guide->chooseAction(currentState->getVisits(), currentState->getChildActions(), negativeValue);
-   }
-   else
-   {
-      chosenAction = player2Guide->chooseAction(currentState->getVisits(), currentState->getChildActions(), negativeValue);
-   }
+
+   chosenAction = guide->chooseAction(currentState->getVisits(), currentState->getChildActions());
 
    game->doAction(chosenAction->getChoice());
    

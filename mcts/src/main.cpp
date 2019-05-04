@@ -44,15 +44,14 @@ int main(int argc, char *argv[])
 
    std::unique_ptr<MctsActionBuilder> mctsActionbuilder = std::make_unique<MctsActionBuilder>(game, &polEncoder);
 
-   std::unique_ptr<MctsGuide> p1Guide = std::make_unique<UctGuide>(0.1);
-   std::unique_ptr<MctsGuide> p2Guide = std::make_unique<UctGuide>(0.1);
+   std::unique_ptr<MctsGuide> p1Guide = std::make_unique<UctGuide>(0.1, true);
+   std::unique_ptr<MctsGuide> p2Guide = std::make_unique<UctGuide>(0.1, false);
 
-   std::unique_ptr<MctsTree> tree = std::make_unique<MctsTree>(
-      std::move(p1Guide), std::move(p2Guide), std::move(mctsActionbuilder), std::move(mctsStatebuilder),
+   std::unique_ptr<MctsTree> tree = std::make_unique<MctsTree>(std::move(mctsActionbuilder), std::move(mctsStatebuilder),
       std::move(game), initial);
 
 
-   l5r::MctsSelfPlay mcts(std::move(tree), 1, 1);
+   l5r::MctsSelfPlay mcts(std::move(p1Guide), std::move(p2Guide), std::move(tree), 1, 1);
 
    mcts.playout();
 

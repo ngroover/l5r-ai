@@ -10,11 +10,14 @@ namespace l5r
    typedef std::unique_ptr<MctsTree> MctsTreePtr;
    class MctsActionNode;
    typedef std::shared_ptr<MctsActionNode> MctsActionNodePtr;
+   class MctsGuide;
+   typedef std::unique_ptr<MctsGuide> MctsGuideUniquePtr;
+   typedef std::shared_ptr<MctsGuide> MctsGuidePtr;
 
    class MctsSelfPlay
    {
       public:
-         MctsSelfPlay(MctsTreePtr tree, int episodes, int iterations);
+         MctsSelfPlay(MctsGuideUniquePtr player1Guide, MctsGuideUniquePtr player2Guide, MctsTreePtr tree, int episodes, int iterations);
          ~MctsSelfPlay();
 
          void playout();
@@ -26,6 +29,8 @@ namespace l5r
 
          int episodes, iterations;
          MctsTreePtr tree;
+         MctsGuidePtr player1Guide;
+         MctsGuidePtr player2Guide;
    };
 };
 #endif // _MCTS_SELF_PLAY_H_

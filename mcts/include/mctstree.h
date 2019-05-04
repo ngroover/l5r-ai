@@ -13,7 +13,7 @@ namespace l5r
    class MctsActionNode;
    typedef std::shared_ptr<MctsActionNode> MctsActionNodePtr;
    class MctsGuide;
-   typedef std::unique_ptr<MctsGuide> MctsGuidePtr;
+   typedef std::shared_ptr<MctsGuide> MctsGuidePtr;
    class engine;
    typedef std::shared_ptr<engine> enginePtr;
    class MctsActionBuilder;
@@ -23,10 +23,10 @@ namespace l5r
    class MctsTree
    {
       public:
-         MctsTree(MctsGuidePtr player1Guide, MctsGuidePtr player2Guide, MctsActionBuilderPtr actionBuilder, MctsStateBuilderPtr stateBuilder, enginePtr game, MctsStateNodePtr initial);
+         MctsTree(MctsActionBuilderPtr actionBuilder, MctsStateBuilderPtr stateBuilder, enginePtr game, MctsStateNodePtr initial);
          ~MctsTree();
 
-         bool traverse();
+         bool traverse(MctsGuidePtr guide);
          
          bool hasReachedLeaf();
 
@@ -43,20 +43,12 @@ namespace l5r
          std::list<MctsActionNodePtr> getHistory();
 
       private:
-         //TODO: move this to the state builder
-         // to ensure nodes are unique
-         MctsStateNodePtr findNode(gamestate state);
-
-         std::list<MctsStateNodePtr> globalStateList;
          MctsStateNodePtr currentState;
          
-         MctsGuidePtr player1Guide;
-         MctsGuidePtr player2Guide;
          MctsActionBuilderPtr actionBuilder;
          MctsStateBuilderPtr stateBuilder;
          enginePtr game;
 
-         //eventually have a gamestatebuilder that can generate random initial states
          MctsStateNodePtr initialState;
          MctsStateNodePtr checkpt;
 

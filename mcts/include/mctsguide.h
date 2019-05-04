@@ -15,8 +15,7 @@ namespace l5r
          ~MctsGuide();
 
       virtual MctsActionNodePtr chooseAction(int stateNodeVisits,
-                                 std::list<MctsActionNodePtr> actions,
-                                 bool negativeValue)=0;
+                                 std::list<MctsActionNodePtr> actions)=0;
       
    };
 };

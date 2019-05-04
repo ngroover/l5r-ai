@@ -9,7 +9,9 @@
 
 using namespace l5r;
 
-MctsSelfPlay::MctsSelfPlay(MctsTreePtr tree, int episodes, int iterations):
+MctsSelfPlay::MctsSelfPlay(MctsGuideUniquePtr player1Guide, MctsGuideUniquePtr player2Guide, MctsTreePtr tree, int episodes, int iterations):
+player1Guide(std::move(player1Guide)),
+player2Guide(std::move(player2Guide)),
 episodes(episodes), iterations(iterations), 
 tree(std::move(tree))
 {
@@ -36,7 +38,6 @@ void MctsSelfPlay::episode()
 
    //TODO: call this file exploration self play
 
-   // add tree checkpoints for root node
    while( !tree->hasReachedLeaf() )
    {
       for(int i=0;i < iterations; i++)
@@ -47,8 +48,18 @@ void MctsSelfPlay::episode()
 
          while(!done)
          {
+            bool negativeValue = !tree->getCurrent()->player1Turn();
+            bool newNode;
+
             // traverse tree using lookahead traversal
-            bool newNode = tree->traverse();
+            if(tree->getCurrent()->player1Turn())
+            {
+               newNode = tree->traverse(player1Guide);
+            }
+            else
+            {
+               newNode = tree->traverse(player2Guide);
+            }
 
             if(tree->hasReachedLeaf() || newNode)
             {
