@@ -11,7 +11,8 @@ using namespace l5r;
 MctsTree::MctsTree(MctsActionBuilderPtr actionBuilder, MctsStateBuilderPtr stateBuilder, enginePtr game, MctsStateNodePtr initial) : 
 actionBuilder(std::move(actionBuilder)),
 stateBuilder(std::move(stateBuilder)),
-game(std::move(game)), initialState(initial)
+game(std::move(game)), initialState(initial),
+currentState(initial)
 {
 }
 

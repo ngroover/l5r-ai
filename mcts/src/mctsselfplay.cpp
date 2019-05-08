@@ -9,11 +9,12 @@
 
 using namespace l5r;
 
-MctsSelfPlay::MctsSelfPlay(MctsGuideUniquePtr player1Guide, MctsGuideUniquePtr player2Guide, MctsTreePtr tree, int episodes, int iterations):
+MctsSelfPlay::MctsSelfPlay(MctsGuideUniquePtr player1Guide, MctsGuideUniquePtr player2Guide, MctsGuideUniquePtr checkpointGuide, MctsTreePtr uniquetree, int episodes, int iterations):
 player1Guide(std::move(player1Guide)),
 player2Guide(std::move(player2Guide)),
+checkpointGuide(std::move(checkpointGuide)),
 episodes(episodes), iterations(iterations), 
-tree(std::move(tree))
+tree(std::move(uniquetree))
 {
 }
 
@@ -34,7 +35,7 @@ void MctsSelfPlay::playout()
 void MctsSelfPlay::episode()
 {
    bool done = false;
-   tree.reset();
+   tree->reset();
 
    //TODO: call this file exploration self play
 
@@ -42,6 +43,7 @@ void MctsSelfPlay::episode()
    {
       for(int i=0;i < iterations; i++)
       {
+         std::cout << "set checkpoint" << std::flush << std::endl;
          tree->setCheckpoint();
 
          done = false;
@@ -51,6 +53,7 @@ void MctsSelfPlay::episode()
             bool negativeValue = !tree->getCurrent()->player1Turn();
             bool newNode;
 
+            std::cout << "traversing " << std::flush << std::endl;
             // traverse tree using lookahead traversal
             if(tree->getCurrent()->player1Turn())
             {
@@ -60,9 +63,13 @@ void MctsSelfPlay::episode()
             {
                newNode = tree->traverse(player2Guide);
             }
+            
+            std::cout << "input key...";
+            std::cin.get();
 
             if(tree->hasReachedLeaf() || newNode)
             {
+               std::cout << "reached leaf " << std::flush << std::endl;
                std::list<MctsActionNodePtr> actionHistory = tree->getHistory();
                backPropagate(actionHistory);
                tree->restoreCheckpoint();
@@ -71,9 +78,8 @@ void MctsSelfPlay::episode()
          }
       }
 
-         //traverse randomly weighted by traversal distribution
-         //TODO: split off the guides to pass into traverse
-         //tree->traverse
+      // actually move the checkpoint
+      tree->traverse(checkpointGuide);
    }
 }
 

@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 2.8.11)
+
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+
 project(l5r-ai)
 
 include_directories("engine/include")

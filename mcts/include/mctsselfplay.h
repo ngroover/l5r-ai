@@ -17,7 +17,7 @@ namespace l5r
    class MctsSelfPlay
    {
       public:
-         MctsSelfPlay(MctsGuideUniquePtr player1Guide, MctsGuideUniquePtr player2Guide, MctsTreePtr tree, int episodes, int iterations);
+         MctsSelfPlay(MctsGuideUniquePtr player1Guide, MctsGuideUniquePtr player2Guide, MctsGuideUniquePtr checkpointGuide, MctsTreePtr uniquetree, int episodes, int iterations);
          ~MctsSelfPlay();
 
          void playout();
@@ -31,6 +31,7 @@ namespace l5r
          MctsTreePtr tree;
          MctsGuidePtr player1Guide;
          MctsGuidePtr player2Guide;
+         MctsGuidePtr checkpointGuide;
    };
 };
 #endif // _MCTS_SELF_PLAY_H_

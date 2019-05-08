@@ -9,10 +9,12 @@
 #include "mctsselfplay.h"
 #include "mctstree.h"
 #include "uctguide.h"
+#include "mostvisitedguide.h"
 #include "policyencoder.h"
 #include "gamestateencoder.h"
 #include "gamegraph.h"
 #include "gamesession.h"
+#include "mctsstatenode.h"
 
 using namespace std;
 using namespace l5r;
@@ -37,6 +39,7 @@ int main(int argc, char *argv[])
    GameGraph graph(5, 0.5);
 
    GameSession session(&graph);
+   graph.init(&session);
 
    std::unique_ptr<MctsStateBuilder> mctsStatebuilder = std::make_unique<MctsStateBuilder>(&encoder, &polEncoder, &graph, &session);
 
@@ -46,12 +49,13 @@ int main(int argc, char *argv[])
 
    std::unique_ptr<MctsGuide> p1Guide = std::make_unique<UctGuide>(0.1, true);
    std::unique_ptr<MctsGuide> p2Guide = std::make_unique<UctGuide>(0.1, false);
+   std::unique_ptr<MctsGuide> checkpointGuide = std::make_unique<MostVisitedGuide>();
 
    std::unique_ptr<MctsTree> tree = std::make_unique<MctsTree>(std::move(mctsActionbuilder), std::move(mctsStatebuilder),
       std::move(game), initial);
 
 
-   l5r::MctsSelfPlay mcts(std::move(p1Guide), std::move(p2Guide), std::move(tree), 1, 1);
+   l5r::MctsSelfPlay mcts(std::move(p1Guide), std::move(p2Guide), std::move(checkpointGuide), std::move(tree), 1, 1);
 
    mcts.playout();
 
