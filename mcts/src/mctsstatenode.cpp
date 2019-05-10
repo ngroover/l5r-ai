@@ -51,7 +51,7 @@ std::list<MctsActionNodePtr> MctsStateNode::getChildActions()
 
 bool MctsStateNode::player1Turn()
 {
-   return (state.currentTurn == player::player1);
+   return (state.currentAction == player::player1);
 }
 
 void MctsStateNode::addVisit()

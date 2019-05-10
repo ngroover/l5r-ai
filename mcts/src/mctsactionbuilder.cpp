@@ -33,6 +33,7 @@ void MctsActionBuilder::buildActions(MctsStateNodePtr stateNode)
          Policy p(cl);
          p.prob = 0.0;
          pl.push_back(p);
+         std::cout << "Available choice is " << cl.getText() << " " << cl.getNumber() << std::endl;
       }
 
       // decode the neural net output

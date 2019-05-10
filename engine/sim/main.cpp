@@ -24,12 +24,12 @@ int main(int argc, char *argv[])
    cout << "Choose your deck: ";
    cin >> decknum;
 
-   std::unique_ptr<l5r::agent> me = std::make_unique<l5r::cpuagent>(name, l5r::decklists[decknum-1]);
+   std::unique_ptr<l5r::agent> me = std::make_unique<l5r::humanagent>(name, l5r::decklists[decknum-1]);
 
    cout << "Choose cpu deck: ";
    cin >> decknum;
 
-   std::unique_ptr<l5r::agent> cpu = std::make_unique<l5r::cpuagent>("cpu", l5r::decklists[decknum-1]);
+   std::unique_ptr<l5r::agent> cpu = std::make_unique<l5r::humanagent>("cpu", l5r::decklists[decknum-1]);
 
    l5r::engine game(std::move(me), std::move(cpu)); 
 

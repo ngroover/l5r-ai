@@ -39,6 +39,9 @@ bool MctsTree::traverse(MctsGuidePtr guide)
 
    chosenAction = guide->chooseAction(currentState->getVisits(), currentState->getChildActions());
 
+   std::cout << "The final choice is " << chosenAction->getChoice().getNumber() << std::endl;
+   game->setGameState(currentState->getState());
+
    game->doAction(chosenAction->getChoice());
    
    gamestate newstate = game->getGameState();

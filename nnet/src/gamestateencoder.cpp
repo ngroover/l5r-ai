@@ -537,7 +537,8 @@ void GamestateEncoder::encodeProvinceCard(int provNum, int dynastyCard, int prov
             cs->province4 = 1.0;
             break;
          default:
-            std::cout << "Invalid province number" << std::endl;
+            // this is normal
+            //std::cout << "Invalid province number" << std::endl;
             break;
       }
       if(!facedownDynasty)
@@ -566,7 +567,8 @@ void GamestateEncoder::encodeProvinceCard(int provNum, int dynastyCard, int prov
             hs->province4 = 1.0;
             break;
          default:
-            std::cout << "Invalid province number" << std::endl;
+            // this is normal
+            //std::cout << "Invalid province number" << std::endl;
             break;
       }
       if(!facedownDynasty)

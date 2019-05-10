@@ -22,6 +22,7 @@ MctsActionNodePtr MostVisitedGuide::chooseAction(int stateNodeVisits,
    for(auto a : actions)
    {
       probs.push_back(a->getVisits());
+      std::cout << "prob action vists=" << a->getVisits() << std::endl;
    }
    std::discrete_distribution<int> d(probs.begin(), probs.end());
 
@@ -32,6 +33,7 @@ MctsActionNodePtr MostVisitedGuide::chooseAction(int stateNodeVisits,
    {
       if(choice == i)
       {
+         std::cout << "Chose action of " << a->getChoice().getNumber() << std::endl;
          return a;
       }
    }

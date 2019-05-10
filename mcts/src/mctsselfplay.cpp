@@ -57,10 +57,12 @@ void MctsSelfPlay::episode()
             // traverse tree using lookahead traversal
             if(tree->getCurrent()->player1Turn())
             {
+               std::cout << "player1's turn" << std::endl;
                newNode = tree->traverse(player1Guide);
             }
             else
             {
+               std::cout << "player2's turn" << std::endl;
                newNode = tree->traverse(player2Guide);
             }
             

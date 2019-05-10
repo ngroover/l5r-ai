@@ -22,9 +22,9 @@ using namespace l5r;
 int main(int argc, char *argv[])
 {
    std::cout << "Self play simulator" << std::endl;
-   std::unique_ptr<l5r::agent> player1 = std::make_unique<l5r::cpuagent>("lion", l5r::decklists[0]);
+   std::unique_ptr<l5r::agent> player1 = std::make_unique<l5r::humanagent>("lion", l5r::decklists[0]);
 
-   std::unique_ptr<l5r::agent> player2 = std::make_unique<l5r::cpuagent>("crane", l5r::decklists[1]);
+   std::unique_ptr<l5r::agent> player2 = std::make_unique<l5r::humanagent>("crane", l5r::decklists[1]);
 
    
    std::shared_ptr<engine> game = std::make_shared<engine>(std::move(player1), std::move(player2)); 

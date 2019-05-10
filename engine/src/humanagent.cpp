@@ -20,6 +20,7 @@ choice humanagent::chooseAction(decision d)
    for (auto ch : d.getChoiceList())
    {
       std::cout << "[" << idx++ << "]. " << ch.getText() << std::endl;
+      std::cout << "Number is " << ch.getNumber() << std::endl;
    }
    std::cin >> choice;
    
