@@ -67,11 +67,12 @@ void MctsSelfPlay::episode()
             }
             
             std::cout << "input key...";
-            std::cin.get();
+            //std::cin.get();
 
             if(tree->hasReachedLeaf() || newNode)
             {
                std::cout << "reached leaf " << std::flush << std::endl;
+               std::cout << "leaf is " <<( tree->hasReachedLeaf() ? "true" : "false") << std::endl;
                std::list<MctsActionNodePtr> actionHistory = tree->getHistory();
                backPropagate(actionHistory);
                tree->restoreCheckpoint();
@@ -88,8 +89,10 @@ void MctsSelfPlay::episode()
 void MctsSelfPlay::backPropagate(std::list<MctsActionNodePtr> history)
 {
    double value = tree->getCurrent()->getValue();
+   std::cout << "backpropagating value=" << value << std::endl;
    for(auto h : history)
    {
       h->adjustReward(value);
    }
+   //std::cin.get();
 }

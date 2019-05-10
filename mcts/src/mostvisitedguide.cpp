@@ -27,7 +27,7 @@ MctsActionNodePtr MostVisitedGuide::chooseAction(int stateNodeVisits,
    std::discrete_distribution<int> d(probs.begin(), probs.end());
 
    int choice = d(gen);
-   std::cout << "Randomly chose " << choice << std::endl;
+   std::cout << "RANDOMLY chose " << choice << std::endl;
    int i=0;
    for(auto a : actions)
    {
@@ -36,5 +36,7 @@ MctsActionNodePtr MostVisitedGuide::chooseAction(int stateNodeVisits,
          std::cout << "Chose action of " << a->getChoice().getNumber() << std::endl;
          return a;
       }
+      i++;
    }
+   std::cout << "didn't find a choice!" << std::endl;
 }

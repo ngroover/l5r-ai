@@ -1,5 +1,6 @@
 #include "mctsactionnode.h"
 #include "mctsstatenode.h"
+#include <iostream>
 
 using namespace l5r;
 
@@ -49,5 +50,8 @@ void MctsActionNode::addChildState(MctsStateNodeWeakPtr node)
 
 void MctsActionNode::adjustReward(double value)
 {
+   std::cout << "Action " << c.getText() << std::endl;
+   std::cout << "Old value is " << reward << std::endl;
    reward = (visits * reward + value)/(visits+1);
+   std::cout << "New value is " << reward << std::endl;
 }
