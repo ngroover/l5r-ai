@@ -24,6 +24,9 @@ namespace l5r
 
 
          MctsStateNodePtr buildState(gamestate state);
+
+         std::list<MctsStateNodePtr> getStateList();
+
       private:
          // TODO: use less pointers. this is c++!
          GamestateEncoder *encoder;

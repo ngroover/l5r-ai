@@ -33,7 +33,7 @@ void MctsActionBuilder::buildActions(MctsStateNodePtr stateNode)
          Policy p(cl);
          p.prob = 0.0;
          pl.push_back(p);
-         std::cout << "Available choice is " << cl.getText() << " " << cl.getNumber() << std::endl;
+         //std::cout << "Available choice is " << cl.getText() << " " << cl.getNumber() << std::endl;
       }
 
       // decode the neural net output
@@ -43,7 +43,7 @@ void MctsActionBuilder::buildActions(MctsStateNodePtr stateNode)
 
       for( auto p : pl )
       {
-         std::cout << "prob is " << p.prob << std::endl;
+         //std::cout << "prob is " << p.prob << std::endl;
          MctsActionNodePtr a = std::make_shared<MctsActionNode>(p.c, p.prob, stateNode);
          stateNode->addChildAction(a);
       }

@@ -19,7 +19,7 @@ namespace l5r
    class MctsActionBuilder;
    typedef std::unique_ptr<MctsActionBuilder> MctsActionBuilderPtr;
    class MctsStateBuilder;
-   typedef std::unique_ptr<MctsStateBuilder> MctsStateBuilderPtr;
+   typedef std::shared_ptr<MctsStateBuilder> MctsStateBuilderPtr;
    class MctsTree
    {
       public:

@@ -65,3 +65,8 @@ MctsStateNodePtr MctsStateBuilder::buildState(gamestate state)
 
    return newState;
 }
+
+std::list<MctsStateNodePtr> MctsStateBuilder::getStateList()
+{
+   return entireList;
+}

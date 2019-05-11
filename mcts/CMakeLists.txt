@@ -9,7 +9,8 @@ add_library( mcts SHARED src/mctsselfplay.cpp
                         src/mctsstatebuilder.cpp
                         src/uctguide.cpp
                         src/mctsguide.cpp
-                        src/mostvisitedguide.cpp)
+                        src/mostvisitedguide.cpp
+                        src/gameplaytrainer.cpp)
 
 add_executable( selfplay_unittest test/main.cpp test/actionbuildertest.cpp test/statebuildertest.cpp)
 

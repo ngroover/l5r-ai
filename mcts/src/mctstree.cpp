@@ -39,9 +39,7 @@ bool MctsTree::traverse(MctsGuidePtr guide)
 
    chosenAction = guide->chooseAction(currentState->getVisits(), currentState->getChildActions());
 
-   if(chosenAction == nullptr)
-      throw "caught null";
-   std::cout << "The final choice is " << chosenAction->getChoice().getNumber() << std::endl;
+   //std::cout << "The final choice is " << chosenAction->getChoice().getNumber() << std::endl;
    game->setGameState(currentState->getState());
 
    game->doAction(chosenAction->getChoice());
@@ -56,7 +54,7 @@ bool MctsTree::traverse(MctsGuidePtr guide)
       auto caPtr = ca.lock();
       if(caPtr->getState() == newstate)
       {
-         std::cout << "Already reached state before" << std::endl;
+         //std::cout << "Already reached state before" << std::endl;
          currentState = caPtr;
          found = true;
       }

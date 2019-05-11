@@ -52,6 +52,7 @@ void MctsActionNode::adjustReward(double value)
 {
    std::cout << "Action " << c.getText() << std::endl;
    std::cout << "Old value is " << reward << std::endl;
+   std::cout << "visits=" << visits << std::endl;
    reward = (visits * reward + value)/(visits+1);
    std::cout << "New value is " << reward << std::endl;
 }
