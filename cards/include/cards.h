@@ -9,15 +9,18 @@ namespace l5r
       shizuka_toshi, // crane
       yojin_no_shiro,// lion
       
+      // roles
+      keeper_of_water,
+      seeker_of_air,
+
       // provinces
 
-      // crane
       the_art_of_peace,
+      fertile_fields,
       entrenched_position,
       night_raid,
       rally_to_the_cause,
       shameful_display,
-      // lion
       the_art_of_war,
       ancestral_lands,
       manicured_gardens,
@@ -107,6 +110,21 @@ namespace l5r
       strength_in_numbers,
       vengeful_oathkeeper,
       way_of_the_lion
+
+      // pheonix
+      display_of_power,
+      seeker_of_knowledge,
+      magnificent_kimono,
+      pacifism,
+      know_the_world,
+
+      // unicorn
+      iuchi_wayfinder,
+      ide_messenger,
+      favored_mount,
+      spyglass,
+      breakthrough,
+      captive_audience
    };
 };
 
