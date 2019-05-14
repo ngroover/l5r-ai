@@ -109,7 +109,7 @@ namespace l5r
       stand_your_ground,
       strength_in_numbers,
       vengeful_oathkeeper,
-      way_of_the_lion
+      way_of_the_lion,
 
       // pheonix
       display_of_power,
