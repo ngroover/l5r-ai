@@ -58,18 +58,56 @@ namespace l5r
          */
          ~CardData();
 
+         /** @brief Name of card
+         */
          const std::string name;
+
+         /** @brief Type of card
+         */
          const cardtype type;
+
+         /** @brief True if province can be chosen as a stronghold province
+         */
          const bool canBeStronghold;
+
+         /** @brief Strength of province
+         */
          const int provinceStr;
+
+         /** @brief Amount of starting honor stronghold provides
+         */
          const int strongholdHonor;
+
+         /** @brief Amount of fate either character, events, or attachments cost
+         */
          const int fateCost;
+
+         /** @brief Type of dynasty card. (Applies only to dynasty)
+         */
          const dynastycardtype dynastyType;
+
+         /** @brief Base military skill
+         */
          const int militarySkill;
+
+         /** @brief Base political skill
+         */
          const int politicalSkill;
+
+         /** @brief Base glory skill
+         */
          const int glory;
+
+         /** @brief True if character has a miiltary skill dash
+         */
          const bool militaryDash;
+
+         /** @brief True if character has a political skill dash
+         */
          const bool politicalDash;
+
+         /** @brief Amount of defensive bonus provided by a holding
+         */
          const int holdingBonus;
    };
 
