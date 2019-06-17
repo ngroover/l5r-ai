@@ -13,3 +13,4 @@ tf/tf_app
 nnet/nnet_app
 nnet/nnet_unittest
 mcts/selfplay_unittest
+cards/cards_test
