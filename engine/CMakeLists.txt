@@ -32,15 +32,15 @@ add_library( engine SHARED src/engine.cpp
 
 add_executable( simulator sim/main.cpp )
 
-add_executable( unittest test/main.cpp test/pregametest.cpp 
-                           test/gamestatetest.cpp
-                           test/dynastytest.cpp
-                           test/biddingtest.cpp
-                           test/choicesimulation.cpp
-                           test/conflicttest.cpp
-                           test/regrouptest.cpp
-                           test/deckreshuffle.cpp)
+#add_executable( unittest test/main.cpp test/pregametest.cpp 
+                           #test/gamestatetest.cpp
+                           #test/dynastytest.cpp
+                           ##test/biddingtest.cpp
+                           #test/choicesimulation.cpp
+                           #test/conflicttest.cpp
+                           #test/regrouptest.cpp
+                           #test/deckreshuffle.cpp)
 
 target_link_libraries( simulator decks engine cards )
 
-target_link_libraries( unittest cppunit decks engine cards boost_serialization)
+#target_link_libraries( unittest cppunit decks engine cards boost_serialization)

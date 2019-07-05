@@ -6,6 +6,7 @@
 #include "state/gamestate.h"
 #include "state/province.h"
 #include <iostream>
+#include <cstring>
 
 using namespace l5r;
 

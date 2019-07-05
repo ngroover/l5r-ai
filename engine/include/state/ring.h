@@ -1,7 +1,6 @@
 #ifndef _RING_H_
 #define _RING_H_
 
-#include <boost/serialization/version.hpp>
 #include <string>
 
 namespace l5r
@@ -38,13 +37,6 @@ namespace l5r
    class unclaimedring
    {
    public:
-      template<class Archive>
-      void serialize(Archive & ar, const unsigned int version)
-      {
-         ar & type;
-         ar & fate;
-      }
-
       unclaimedring();
       ~unclaimedring();
 

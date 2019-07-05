@@ -2,6 +2,7 @@
 #define _CONFLICT_CARD_MANAGER_H_
 
 #include "choice.h"
+#include <memory>
 
 namespace l5r
 {

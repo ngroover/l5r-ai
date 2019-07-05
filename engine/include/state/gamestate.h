@@ -4,11 +4,6 @@
 #include <list>
 #include <vector>
 #include "cards.h"
-#include <boost/serialization/list.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/serialization/version.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 
 #include "state/phase.h"
 #include "state/ring.h"
@@ -35,21 +30,6 @@ namespace l5r
          ~gamestate();
 
          bool operator==(const gamestate &gs);
-         friend class boost::serialization::access;
-         template<class Archive>
-         void serialize(Archive & ar, const unsigned int version)
-         {
-            ar & BOOST_SERIALIZATION_NVP(cardIds);
-            ar & currentPhase;
-            ar & currentSubPhase;
-            ar & currentTurn;
-            ar & currentConflict;
-            ar & currentAction;
-            ar & winner;
-            ar & player1State;
-            ar & player2State;
-            ar & conflict_state;
-         }
 
          // global card ids
          std::vector<cards> cardIds;
@@ -66,6 +46,5 @@ namespace l5r
          conflictState conflict_state;
    };
 };
-BOOST_CLASS_VERSION(l5r::gamestate, 1);
 
 #endif //_GAMESTATE_H_

@@ -11,19 +11,6 @@ namespace l5r
    class conflictPlayerState
    {
    public:
-      friend class boost::serialization::access;
-      template<class Archive>
-      void serialize(Archive & ar, const unsigned int version)
-      {
-         ar & BOOST_SERIALIZATION_NVP(inConflict);
-         ar & BOOST_SERIALIZATION_NVP(claimed_rings);
-         ar & politicalConflictsLeft;
-         ar & militaryConflictsLeft;
-         ar & totalConflictsLeft;
-         ar & numConflicts;
-         ar & hasImperialFavor;
-      }
-
       conflictPlayerState();
       ~conflictPlayerState();
 
@@ -51,17 +38,6 @@ namespace l5r
    class conflictState
    {
    public:
-      friend class boost::serialization::access;
-      template<class Archive>
-      void serialize(Archive & ar, const unsigned int version)
-      {
-         ar & contested_ring;
-         ar & conflict_type;
-         ar & contested_province;
-         ar & BOOST_SERIALIZATION_NVP(unclaimed_rings);
-         ar & favorType;
-      }
-
       conflictState();
       ~conflictState();
 
