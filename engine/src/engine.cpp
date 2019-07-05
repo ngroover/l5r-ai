@@ -54,7 +54,7 @@ decision engine::getDecision()
    return phaseMgr->getDecision();
 }
 
-gamestate engine::getGameState()
+gamestate &engine::getGameState()
 {
    return *state;
 }

@@ -28,13 +28,65 @@ TEST(PregameTest, StrongholdChoice) {
                         "Meditations on the Tao",
                         "The Art of War"};
    auto choiceListIter = d.getChoiceList().begin();
+   auto chosenStronghold = d.getChoiceList().begin();
    while(choiceListIter != d.getChoiceList().end())
    {
       choiceList.insert(choiceListIter->getText());
+      if(choiceListIter->getText() == "Pilgrimage")
+      {
+         chosenStronghold = choiceListIter;
+      }
       choiceListIter++;
    }
    
    ASSERT_EQ(choiceList, expectedChoices);
+
+   gameEngine->doAction(*chosenStronghold);
+
+   auto gs = gameEngine->getGameState();
+
+   ASSERT_EQ(gs.cardIds[gs.player1State.cards.strongholdProvince], cards::pilgrimage);
+
+   delete gameEngine;
+}
+
+TEST(PregameTest, StrongholdChoice2) { 
+   std::unique_ptr<agent> lion = std::make_unique<humanagent>("testplayer1", decklists[0]);
+   std::unique_ptr<agent> crane = std::make_unique<humanagent>("testplayer2", decklists[1]);
+
+   engine *gameEngine = new engine(std::move(lion), std::move(crane)); 
+
+   // change it to player 2
+   //TODO: build gamestate from scratch instead of using engine constructor
+   auto &gs = gameEngine->getGameState();
+   gs.currentAction = player::player2;
+
+   decision d = gameEngine->getDecision();
+
+   std::set<std::string> choiceList;
+   std::set<std::string> expectedChoices={"Entrenched Position",
+                                          "Night Raid",
+                                          "Rally to the Cause",
+                                          "Shameful Display",
+                                          "The Art of Peace"};
+   auto choiceListIter = d.getChoiceList().begin();
+   auto chosenStronghold = d.getChoiceList().begin();
+   while(choiceListIter != d.getChoiceList().end())
+   {
+      std::cout << choiceListIter->getText() << std::endl;
+      choiceList.insert(choiceListIter->getText());
+      if(choiceListIter->getText() == "Entrenched Position")
+      {
+         chosenStronghold = choiceListIter;
+      }
+      choiceListIter++;
+   }
+   
+   ASSERT_EQ(choiceList, expectedChoices);
+
+   gameEngine->doAction(*chosenStronghold);
+
+   ASSERT_EQ(gs.cardIds[gs.player2State.cards.strongholdProvince], cards::entrenched_position);
 
    delete gameEngine;
 }

@@ -25,7 +25,8 @@ namespace l5r
          ~engine();
 
          // useful for testing
-         gamestate getGameState();
+         // probably deprecating this soon
+         gamestate &getGameState();
 
          void setGameState(gamestate gs);
 
