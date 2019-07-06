@@ -106,7 +106,22 @@ namespace l5r
       stand_your_ground,
       strength_in_numbers,
       vengeful_oathkeeper,
-      way_of_the_lion
+      way_of_the_lion,
+
+      //unicorn
+      iuchi_wayfinder,
+      ide_messenger,
+      favored_mount,
+      spyglass,
+      breakthrough,
+      captive_audience,
+
+      //pheonix
+      display_of_power,
+      seeker_of_knowledge,
+      magnificent_kimono,
+      pacifism,
+      know_the_world
    };
 };
 
