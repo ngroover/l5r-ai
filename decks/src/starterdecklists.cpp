@@ -16,7 +16,7 @@ namespace l5r
             // provinces
             cards::the_art_of_war,
             cards::ancestral_lands,
-            cards::manicured_gardens,
+            cards::manicured_garden,
             cards::meditations_on_the_tao,
             cards::pilgrimage,
 

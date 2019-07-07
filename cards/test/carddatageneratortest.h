@@ -13,6 +13,8 @@ class CardDataGeneratorTest : public CppUnit::TestFixture
    CPPUNIT_TEST_SUITE( CardDataGeneratorTest );
    CPPUNIT_TEST( characterTest );
    CPPUNIT_TEST( holdingTest );
+   CPPUNIT_TEST( strongholdTest );
+   CPPUNIT_TEST( provinceTest );
    CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -21,6 +23,8 @@ public:
 
    void characterTest();
    void holdingTest();
+   void strongholdTest();
+   void provinceTest();
 
 private:
    std::unique_ptr<l5r::CardDataGenerator> generator;

@@ -23,12 +23,18 @@ void CardAreaManager::setupCards(decklist deck, std::vector<cards> &cardIds)
       // add to global table for unique id
       cardIds.push_back(c);
 
-      switch(cardMgr->getCardType(c))
+      switch(cardMgr->getSide(c))
       {
-         case cardtype::dynasty:
+         case deckside::dynasty:
             cardArea->dynastyDeck.push_back(cardIds.size() - 1);
             break;
-         case cardtype::province:
+         case deckside::province:
+            if(cardMgr->getCardType(c) == cardtype::stronghold)
+            {
+               // actually a stronghold
+               cardArea->stronghold = cardIds.size() - 1;
+            }
+            else
             {
                provinceStack ps;
                ps.provinceCard = cardIds.size() -1;
@@ -39,10 +45,7 @@ void CardAreaManager::setupCards(decklist deck, std::vector<cards> &cardIds)
                cardArea->provinceArea.push_back(ps);
             }
             break;
-         case cardtype::stronghold:
-            cardArea->stronghold = cardIds.size() - 1;
-            break;
-         case cardtype::conflict:
+         case deckside::conflict:
             cardArea->conflictDeck.push_back(cardIds.size() - 1);
             break;
          default:

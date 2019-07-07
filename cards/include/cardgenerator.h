@@ -3,9 +3,10 @@
 
 #include <list>
 #include <map>
-#include <card.h>
+#include <carddata.h>
 #include <cards.h>
 #include <decklist.h>
+#include "carddatagenerator.h"
 
 namespace l5r
 {
@@ -15,9 +16,13 @@ namespace l5r
          cardgenerator();
          ~cardgenerator();
 
-         card generateCard(cards c);
+         CardDataSharedPtr generateCard(cards c);
 
-         std::map<cards,card> generateCards(decklist deck);
+         std::map<cards,CardDataSharedPtr> generateCards(decklist deck);
+
+      private:
+         std::string getStringId(cards c);
+         CardDataGenerator generator;
    };
 };
 

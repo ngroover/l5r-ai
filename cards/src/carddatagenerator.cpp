@@ -24,7 +24,7 @@ CardDataGenerator::CardDataGenerator(std::string pathToCardData)
          std::string fname(ent->d_name);
          if( fname != "." && fname != ".." )
          {
-            ifile.open(pathToCardData+fname);
+            ifile.open(pathToCardData+"/"+fname);
             if(ifile.is_open())
             {
                std::stringstream ss;
@@ -38,6 +38,10 @@ CardDataGenerator::CardDataGenerator(std::string pathToCardData)
                   data += ", ";
                }
                data += ss.str();
+            }
+            else
+            {
+               LOG(ERROR) << "Failed to load " << fname << std::endl;;
             }
          }
       }
@@ -197,6 +201,10 @@ CardDataGenerator::~CardDataGenerator()
 
 CardDataSharedPtr CardDataGenerator::generateCard(std::string targetCard)
 {
+   if(cardMap.find(targetCard) == cardMap.end())
+   {
+      LOG(ERROR) << "Could not find " << targetCard << std::endl;
+   }
    return cardMap[targetCard];
 }
 

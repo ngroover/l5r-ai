@@ -1,5 +1,4 @@
 #include "carddatamanager.h"
-#include <iostream>
 
 using namespace l5r;
 
@@ -11,60 +10,65 @@ cardDataManager::~cardDataManager()
 {
 }
 
+deckside cardDataManager::getSide(cards c)
+{
+   return cardMap[c]->side;
+}
+
 void cardDataManager::loadDecklist(decklist dl)
 {
    // fill in cardMap
-   std::map<cards,card> tmpList = cg.generateCards(dl);
+   std::map<cards,CardDataSharedPtr> tmpList = cg.generateCards(dl);
    // merge map
    cardMap.insert(tmpList.begin(), tmpList.end());
 }
 
 cardtype cardDataManager::getCardType(cards c)
 {
-   return cardMap[c].getType();
+   return cardMap[c]->type;
 }
 
-dynastycardtype cardDataManager::getDynastyCardType(int index)
+cardtype cardDataManager::getCardTypeFromCard(int index)
 {
-   return cardMap[state->cardIds[index]].getDynastyType();
+   return cardMap[state->cardIds[index]]->type;
 }
 
 std::string cardDataManager::getCardName(int index)
 {
-   return cardMap[state->cardIds[index]].getName();
+   return cardMap[state->cardIds[index]]->name;
 }
 
 int cardDataManager::getStrongholdHonor(int index)
 {
-   return cardMap[state->cardIds[index]].getStrongholdHonor();
+   return cardMap[state->cardIds[index]]->strongholdHonor;
 }
 
 int cardDataManager::getFateCost(int index)
 {
-   return cardMap[state->cardIds[index]].getFateCost();
+   return cardMap[state->cardIds[index]]->fateCost;
 }
 
 int cardDataManager::getMilitaryStr(int index)
 {
-   return cardMap[state->cardIds[index]].getMilitarySkill();
+   return cardMap[state->cardIds[index]]->militarySkill;
 }
 
 int cardDataManager::getPoliticalStr(int index)
 {
-   return cardMap[state->cardIds[index]].getPoliticalSkill();
+   return cardMap[state->cardIds[index]]->politicalSkill;
 }
 
 int cardDataManager::getProvinceStr(int index)
 {
-   return cardMap[state->cardIds[index]].getProvinceStr();
+   return cardMap[state->cardIds[index]]->provinceStr;
 }
 
 int cardDataManager::getGlory(int index)
 {
-   return cardMap[state->cardIds[index]].getGlory();
+   return cardMap[state->cardIds[index]]->glory;
 }
 
 int cardDataManager::getHoldingBonus(int index)
 {
-   return cardMap[state->cardIds[index]].getHoldingBonus();
+   return cardMap[state->cardIds[index]]->holdingBonus;
 }

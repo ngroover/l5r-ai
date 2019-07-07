@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "cardgenerator.h"
-#include "card.h"
+#include "carddata.h"
 #include "state/gamestate.h"
 
 namespace l5r
@@ -19,7 +19,9 @@ namespace l5r
          // shortcut functions
          cardtype getCardType(cards c);
 
-         dynastycardtype getDynastyCardType(int index);
+         cardtype getCardTypeFromCard(int index);
+
+         deckside getSide(cards c);
 
          std::string getCardName(int index);
          int getStrongholdHonor(int index);
@@ -32,7 +34,7 @@ namespace l5r
          int getGlory(int index);
 
       private:
-         std::map<cards,card> cardMap;
+         std::map<cards,CardDataSharedPtr> cardMap;
          std::shared_ptr<gamestate> state;
 
          cardgenerator cg;

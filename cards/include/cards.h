@@ -20,7 +20,7 @@ namespace l5r
       // lion
       the_art_of_war,
       ancestral_lands,
-      manicured_gardens,
+      manicured_garden,
       meditations_on_the_tao,
       pilgrimage,
 

@@ -109,7 +109,7 @@ bool GamestateEncoder::checkIfProvince(cards c)
       c == cards::shameful_display ||
       c == cards::the_art_of_war ||
       c == cards::ancestral_lands ||
-      c == cards::manicured_gardens ||
+      c == cards::manicured_garden ||
       c == cards::meditations_on_the_tao ||
       c == cards::pilgrimage);
 }

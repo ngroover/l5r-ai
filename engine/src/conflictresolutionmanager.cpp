@@ -148,7 +148,7 @@ int ConflictResolutionManager::findHoldingBonus()
    {
       if(prov.provinceCard == global->contested_province)
       {
-         if(cardMgr->getDynastyCardType(prov.dynastyCard) == dynastycardtype::holding)
+         if(cardMgr->getCardTypeFromCard(prov.dynastyCard) == cardtype::holding)
          {
             return cardMgr->getHoldingBonus(prov.dynastyCard);
          }

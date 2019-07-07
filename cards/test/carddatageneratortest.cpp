@@ -53,3 +53,15 @@ void CardDataGeneratorTest::holdingTest()
    CPPUNIT_ASSERT(storehouse->side ==  deckside::dynasty);
    CPPUNIT_ASSERT(storehouse->type == cardtype::holding);
 }
+
+void CardDataGeneratorTest::strongholdTest()
+{
+   auto yojin = generator->generateCard("yojin-no-shiro");
+   CPPUNIT_ASSERT(yojin->side == deckside::province);
+}
+
+void CardDataGeneratorTest::provinceTest()
+{
+   auto manicured = generator->generateCard("manicured-garden");
+   CPPUNIT_ASSERT(manicured->side == deckside::province);
+}
