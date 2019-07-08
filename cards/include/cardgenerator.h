@@ -16,12 +16,12 @@ namespace l5r
          cardgenerator();
          ~cardgenerator();
 
-         CardDataSharedPtr generateCard(cards c);
+         CardDataSharedPtr generateCard(std::string c);
 
-         std::map<cards,CardDataSharedPtr> generateCards(decklist deck);
+         std::map<cards,CardDataSharedPtr> generateCards(Decklist deck);
 
       private:
-         std::string getStringId(cards c);
+         cards fromStringId(std::string c);
          CardDataGenerator generator;
    };
 };

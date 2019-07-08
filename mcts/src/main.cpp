@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "humanagent.h"
 #include "cpuagent.h"
-#include "starterdecklists.h"
+#include "decklistmanager.h"
 #include "mctsstatebuilder.h"
 #include "mctsactionbuilder.h"
 #include "mctsselfplay.h"
@@ -23,9 +23,10 @@ using namespace l5r;
 int main(int argc, char *argv[])
 {
    std::cout << "Self play simulator" << std::endl;
-   std::unique_ptr<l5r::agent> player1 = std::make_unique<l5r::humanagent>("lion", l5r::decklists[0]);
+   std::unique_ptr<DecklistManager> deckManager = std::make_unique<DecklistManager>("./decks/data");
 
-   std::unique_ptr<l5r::agent> player2 = std::make_unique<l5r::humanagent>("crane", l5r::decklists[1]);
+   std::unique_ptr<agent> player1 = std::make_unique<humanagent>("testplayer1", *deckManager->findDeck("Lion Suggested Deck"));
+   std::unique_ptr<agent> player2 = std::make_unique<humanagent>("testplayer2", *deckManager->findDeck("Crane Suggested Deck"));
 
    
    std::shared_ptr<engine> game = std::make_shared<engine>(std::move(player1), std::move(player2)); 

@@ -3,7 +3,7 @@
 
 using namespace l5r;
 
-cpuagent::cpuagent(std::string name, decklist deck) :
+cpuagent::cpuagent(std::string name, Decklist deck) :
    agent(name, deck)
 {
 }

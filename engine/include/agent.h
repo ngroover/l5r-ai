@@ -11,17 +11,17 @@ namespace l5r
    class agent
    {
       public:
-         agent(std::string name, decklist deck);
+         agent(std::string name, Decklist deck);
          ~agent();
 
          std::string getName();
-         decklist getDeckList();
+         Decklist getDeckList();
 
          virtual choice chooseAction(decision d) = 0;
 
       private:
          std::string name;
-         decklist deck;
+         Decklist deck;
    };
 }
 

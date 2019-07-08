@@ -2,7 +2,7 @@
 
 using namespace l5r;
 
-agent::agent(std::string name, decklist deck) :
+agent::agent(std::string name, Decklist deck) :
    name(name), deck(deck)
 {
 }
@@ -16,7 +16,7 @@ std::string agent::getName()
    return name;
 }
 
-decklist agent::getDeckList()
+Decklist agent::getDeckList()
 {
    return deck;
 }

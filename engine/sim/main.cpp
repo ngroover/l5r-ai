@@ -3,13 +3,15 @@
 #include "engine.h"
 #include "humanagent.h"
 #include "cpuagent.h"
-#include "starterdecklists.h"
+#include "decklistmanager.h"
+#include <memory>
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
    cout << "L5R Game simulator" << endl;
+   std::unique_ptr<l5r::DecklistManager> deckManager = std::make_unique<l5r::DecklistManager>("./decks/data");
 
    std::string name;
    cout << "Name:";
@@ -17,19 +19,21 @@ int main(int argc, char *argv[])
 
    int i=1;
    int decknum=0;
-   for(auto d: l5r::decklists)
+   std::vector<std::string> deck_choices = {"Lion Suggested Deck", "Crane Suggested Deck"};
+
+   for(auto d: deck_choices)
    {
-      cout << "[" << i++ << ".] " << d.getName() <<endl;
+      cout << "[" << i++ << ".] " << d <<endl;
    }
    cout << "Choose your deck: ";
    cin >> decknum;
 
-   std::unique_ptr<l5r::agent> me = std::make_unique<l5r::humanagent>(name, l5r::decklists[decknum-1]);
+   std::unique_ptr<l5r::agent> me = std::make_unique<l5r::humanagent>(name, *deckManager->findDeck(deck_choices[decknum-1]));
 
    cout << "Choose cpu deck: ";
    cin >> decknum;
 
-   std::unique_ptr<l5r::agent> cpu = std::make_unique<l5r::humanagent>("cpu", l5r::decklists[decknum-1]);
+   std::unique_ptr<l5r::agent> cpu = std::make_unique<l5r::humanagent>("cpu", *deckManager->findDeck(deck_choices[decknum-1]));
 
    l5r::engine game(std::move(me), std::move(cpu)); 
 

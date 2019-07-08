@@ -12,7 +12,7 @@ namespace l5r
    class humanagent : public agent
    {
       public:
-         humanagent(std::string name, decklist deck);
+         humanagent(std::string name, Decklist deck);
          ~humanagent();
 
          virtual choice chooseAction(decision d);

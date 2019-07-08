@@ -14,7 +14,7 @@ namespace l5r
          cardDataManager(std::shared_ptr<gamestate> state);
          ~cardDataManager();
 
-         void loadDecklist(decklist dl);
+         void loadDecklist(Decklist dl);
 
          // shortcut functions
          cardtype getCardType(cards c);

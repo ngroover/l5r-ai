@@ -2,25 +2,26 @@
 #define _DECKLIST_H_
 
 #include <string>
-#include <list>
-#include "cards.h"
+#include <vector>
+#include <memory>
 
 namespace l5r
 {
-   class decklist
+   class Decklist
    {
       public:
-         decklist(std::string name, std::list<cards> cardList);
-         ~decklist();
+         Decklist(std::string name, std::vector<std::string> cardList);
+         ~Decklist();
 
          std::string getName();
 
-         std::list<cards> getList();
+         std::vector<std::string> getList();
 
       private:
          std::string name;
-         std::list<cards> cardList;
+         std::vector<std::string> cardList;
    };
+   typedef std::shared_ptr<Decklist> DecklistSharedPtr;
 };
 
 #endif //_DECKLIST_H_

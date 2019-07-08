@@ -5,7 +5,7 @@
 #include "policyencoder.h"
 #include "humanagent.h"
 #include "cpuagent.h"
-#include "starterdecklists.h"
+#include "decklistmanager.h"
 #include "mctsstatenode.h"
 #include "mctsactionnode.h"
 #include "gamegraph.h"
@@ -18,8 +18,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( StateBuilderTest );
 
 void StateBuilderTest::setUp()
 {
-   std::unique_ptr<l5r::agent> me = std::make_unique<l5r::cpuagent>("me", l5r::decklists[0]);
-   std::unique_ptr<l5r::agent> cpu = std::make_unique<l5r::cpuagent>("cpu", l5r::decklists[1]);
+   std::unique_ptr<DecklistManager> deckManager = std::make_unique<DecklistManager>("./decks/data");
+
+   std::unique_ptr<agent> me = std::make_unique<humanagent>("me", *deckManager->findDeck("Lion Suggested Deck"));
+   std::unique_ptr<agent> cpu = std::make_unique<humanagent>("cpu", *deckManager->findDeck("Crane Suggested Deck"));
 
    game = new engine(std::move(me), std::move(cpu)); 
    gamestate gs = game->getGameState();

@@ -3,7 +3,7 @@
 
 using namespace l5r;
 
-humanagent::humanagent(std::string name, decklist deck) :
+humanagent::humanagent(std::string name, Decklist deck) :
    agent(name, deck)
 {
 }

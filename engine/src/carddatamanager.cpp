@@ -15,7 +15,7 @@ deckside cardDataManager::getSide(cards c)
    return cardMap[c]->side;
 }
 
-void cardDataManager::loadDecklist(decklist dl)
+void cardDataManager::loadDecklist(Decklist dl)
 {
    // fill in cardMap
    std::map<cards,CardDataSharedPtr> tmpList = cg.generateCards(dl);

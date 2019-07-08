@@ -2,20 +2,22 @@
 
 #include "humanagent.h"
 #include "cpuagent.h"
-#include "starterdecklists.h"
-//#include "pregametest.h"
+#include "decklistmanager.h"
 #include "decision.h"
 #include "choicesimulation.h"
 #include <algorithm>
 #include <fstream>
 #include <set>
 #include <gtest/gtest.h>
+#include <memory>
 
 using namespace l5r;
 
 TEST(PregameTest, StrongholdChoice) { 
-   std::unique_ptr<agent> lion = std::make_unique<humanagent>("testplayer1", decklists[0]);
-   std::unique_ptr<agent> crane = std::make_unique<humanagent>("testplayer2", decklists[1]);
+   std::unique_ptr<DecklistManager> deckManager = std::make_unique<DecklistManager>("./decks/data");
+
+   std::unique_ptr<agent> lion = std::make_unique<humanagent>("testplayer1", *deckManager->findDeck("Lion Suggested Deck"));
+   std::unique_ptr<agent> crane = std::make_unique<humanagent>("testplayer2", *deckManager->findDeck("Crane Suggested Deck"));
 
    engine *gameEngine = new engine(std::move(lion), std::move(crane)); 
 
@@ -51,8 +53,10 @@ TEST(PregameTest, StrongholdChoice) {
 }
 
 TEST(PregameTest, StrongholdChoice2) { 
-   std::unique_ptr<agent> lion = std::make_unique<humanagent>("testplayer1", decklists[0]);
-   std::unique_ptr<agent> crane = std::make_unique<humanagent>("testplayer2", decklists[1]);
+   std::unique_ptr<DecklistManager> deckManager = std::make_unique<DecklistManager>("./decks/data");
+
+   std::unique_ptr<agent> lion = std::make_unique<humanagent>("testplayer1", *deckManager->findDeck("Lion Suggested Deck"));
+   std::unique_ptr<agent> crane = std::make_unique<humanagent>("testplayer2", *deckManager->findDeck("Crane Suggested Deck"));
 
    engine *gameEngine = new engine(std::move(lion), std::move(crane)); 
 

@@ -19,9 +19,10 @@ namespace l5r
          ~CardAreaManager();
 
          // put the cards in their rightful stacks
-         void setupCards(decklist deck, std::vector<cards> &cardIds);
+         void setupCards(Decklist deck, std::vector<cards> &cardIds);
 
       private:
+         cards fromStringId(std::string c);
          cardarea *cardArea;
          std::string name;
          std::shared_ptr<cardDataManager> cardMgr;

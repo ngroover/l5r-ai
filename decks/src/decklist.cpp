@@ -2,22 +2,22 @@
 
 using namespace l5r;
 
-decklist::decklist(std::string name, std::list<cards> cardList)
+Decklist::Decklist(std::string name, std::vector<std::string> cardList)
 {
    this->name = name;
    this->cardList = cardList;
 }
 
-decklist::~decklist()
+Decklist::~Decklist()
 {
 }
 
-std::string decklist::getName()
+std::string Decklist::getName()
 {
    return name;
 }
 
-std::list<cards> decklist::getList()
+std::vector<std::string> Decklist::getList()
 {
    return cardList;
 }

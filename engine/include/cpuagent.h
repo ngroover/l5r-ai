@@ -13,7 +13,7 @@ namespace l5r
    class cpuagent : public agent
    {
       public:
-         cpuagent(std::string name, decklist deck);
+         cpuagent(std::string name, Decklist deck);
          ~cpuagent();
 
          virtual choice chooseAction(decision d);

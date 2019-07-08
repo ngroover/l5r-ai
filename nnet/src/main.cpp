@@ -8,13 +8,14 @@
 #include "engine.h"
 #include "humanagent.h"
 #include "cpuagent.h"
-#include "starterdecklists.h"
+#include "decklistmanager.h"
 
 using namespace l5r;
 
 int main(int argc, char *argv[])
 {
    //std::cout << "Neural Network Test" << std::endl;
+   std::unique_ptr<DecklistManager> deckManager = std::make_unique<DecklistManager>("./decks/data");
 
    GamestateEncoder encoder;
    PolicyEncoder polEncoder;
@@ -27,19 +28,21 @@ int main(int argc, char *argv[])
 
    int i=1;
    int decknum=0;
-   for(auto d: l5r::decklists)
+   std::vector<std::string> deck_choices = {"Lion Suggested Deck", "Crane Suggested Deck"};
+
+   for(auto d: deck_choices)
    {
-      std::cout << "[" << i++ << ".] " << d.getName() << std::endl;
+      std::cout << "[" << i++ << ".] " << d << std::endl;
    }
    std::cout << "Choose your deck: ";
    std::cin >> decknum;
 
-   std::unique_ptr<l5r::agent> me = std::make_unique<l5r::cpuagent>(name, l5r::decklists[decknum-1]);
+   std::unique_ptr<l5r::agent> me = std::make_unique<l5r::humanagent>(name, *deckManager->findDeck(deck_choices[decknum-1]));
 
    std::cout << "Choose cpu deck: ";
    std::cin >> decknum;
 
-   std::unique_ptr<l5r::agent> cpu = std::make_unique<l5r::cpuagent>("cpu", l5r::decklists[decknum-1]);
+   std::unique_ptr<l5r::agent> cpu = std::make_unique<l5r::humanagent>("cpu", *deckManager->findDeck(deck_choices[decknum-1]));
 
    l5r::engine game(std::move(me), std::move(cpu)); 
 
