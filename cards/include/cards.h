@@ -8,6 +8,10 @@ namespace l5r
       // strongholds
       shizuka_toshi, // crane
       yojin_no_shiro,// lion
+
+      // roles
+      keeper_of_water,
+      seeker_of_air,
       
       // provinces
 
@@ -17,6 +21,7 @@ namespace l5r
       night_raid,
       rally_to_the_cause,
       shameful_display,
+      fertile_fields,
       // lion
       the_art_of_war,
       ancestral_lands,
@@ -95,6 +100,8 @@ namespace l5r
       fine_katana,
       ornate_fan,
       cloud_the_mind,
+      keeper_initiate,
+      seeker_initiate,
 
       //lion
       for_greater_glory,

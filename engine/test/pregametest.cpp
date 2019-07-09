@@ -24,17 +24,14 @@ TEST(PregameTest, StrongholdChoice) {
    decision d = gameEngine->getDecision();
 
    std::set<std::string> choiceList;
-   std::set<std::string> expectedChoices={"Pilgrimage", 
-                        "Manicured Garden",
-                        "Ancestral Lands",
-                        "Meditations on the Tao",
-                        "The Art of War"};
+   std::set<std::string> expectedChoices={ "Ancestral Lands", "Manicured Garden", "Night Raid", "Shameful Display", "The Art of War" };
+
    auto choiceListIter = d.getChoiceList().begin();
    auto chosenStronghold = d.getChoiceList().begin();
    while(choiceListIter != d.getChoiceList().end())
    {
       choiceList.insert(choiceListIter->getText());
-      if(choiceListIter->getText() == "Pilgrimage")
+      if(choiceListIter->getText() == "Ancestral Lands")
       {
          chosenStronghold = choiceListIter;
       }
@@ -47,7 +44,7 @@ TEST(PregameTest, StrongholdChoice) {
 
    auto gs = gameEngine->getGameState();
 
-   ASSERT_EQ(gs.cardIds[gs.player1State.cards.strongholdProvince], cards::pilgrimage);
+   ASSERT_EQ(gs.cardIds[gs.player1State.cards.strongholdProvince], cards::ancestral_lands);
 
    delete gameEngine;
 }
@@ -69,8 +66,8 @@ TEST(PregameTest, StrongholdChoice2) {
 
    std::set<std::string> choiceList;
    std::set<std::string> expectedChoices={"Entrenched Position",
-                                          "Night Raid",
-                                          "Rally to the Cause",
+                                          "Meditations on the Tao",
+                                          "Fertile Fields",
                                           "Shameful Display",
                                           "The Art of Peace"};
    auto choiceListIter = d.getChoiceList().begin();

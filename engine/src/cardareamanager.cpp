@@ -174,6 +174,40 @@ cards CardAreaManager::fromStringId(std::string c)
       return cards::vengeful_oathkeeper;
    if(c == "way-of-the-lion")
       return cards::way_of_the_lion;
+   if(c == "fertile-fields")
+      return cards::fertile_fields;
+   if(c == "keeper-of-water")
+      return cards::keeper_of_water;
+   if(c == "seeker-of-air")
+      return cards::seeker_of_air;
+   if(c == "keeper-initiate")
+      return cards::keeper_initiate;
+   if(c == "seeker-initiate")
+      return cards::seeker_initiate;
+   if(c == "iuchi-wayfinder")
+      return cards::iuchi_wayfinder;
+   if(c == "ide-messenger")
+      return cards::ide_messenger;
+   if(c == "favored-mount")
+      return cards::favored_mount;
+   if(c == "spyglass")
+      return cards::spyglass;
+   if(c == "breakthrough")
+      return cards::breakthrough;
+   if(c == "captive-audience")
+      return cards::captive_audience;
+   if(c == "display-of-power")
+      return cards::display_of_power;
+   if(c == "seeker-of-knowledge")
+      return cards::seeker_of_knowledge;
+   if(c == "magnificent-kimono")
+      return cards::magnificent_kimono;
+   if(c == "pacifism")
+      return cards::pacifism;
+   if(c == "know-the-world")
+      return cards::know_the_world;
+
+   throw std::runtime_error("Didn't match "+c);
 }
 
 void CardAreaManager::setupCards(Decklist deck, std::vector<cards> &cardIds)
