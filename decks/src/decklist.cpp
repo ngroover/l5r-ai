@@ -12,12 +12,12 @@ Decklist::~Decklist()
 {
 }
 
-std::string Decklist::getName()
+std::string Decklist::getName() const
 {
    return name;
 }
 
-std::vector<std::string> Decklist::getList()
+std::vector<std::string> Decklist::getList() const
 {
    return cardList;
 }

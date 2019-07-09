@@ -13,9 +13,9 @@ namespace l5r
          Decklist(std::string name, std::vector<std::string> cardList);
          ~Decklist();
 
-         std::string getName();
+         std::string getName() const;
 
-         std::vector<std::string> getList();
+         std::vector<std::string> getList() const;
 
       private:
          std::string name;

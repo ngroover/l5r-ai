@@ -20,6 +20,7 @@ namespace l5r
       private:
          std::map< std::string, CardDataSharedPtr> cardMap;
    };
+   typedef std::shared_ptr<CardDataGenerator> CardDataGeneratorSharedPtr;
 };
 
 #endif //_CARD_DATA_GENERATOR_H_
