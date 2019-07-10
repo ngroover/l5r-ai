@@ -29,6 +29,7 @@ void CardDataGeneratorTest::characterTest()
    CPPUNIT_ASSERT(!lpb->militaryDash);
    CPPUNIT_ASSERT(!lpb->politicalDash);
    CPPUNIT_ASSERT(lpb->type == cardtype::character);
+   CPPUNIT_ASSERT(lpb->clan == clantype::lion);
 
    // check a crane characters
    auto dc = generator->generateCard("doji-challenger");
@@ -42,6 +43,7 @@ void CardDataGeneratorTest::characterTest()
    CPPUNIT_ASSERT(!dc->militaryDash);
    CPPUNIT_ASSERT(!dc->politicalDash);
    CPPUNIT_ASSERT(dc->type ==  cardtype::character);
+   CPPUNIT_ASSERT(dc->clan == clantype::crane);
 }
 
 void CardDataGeneratorTest::holdingTest()

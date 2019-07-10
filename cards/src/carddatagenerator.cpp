@@ -177,8 +177,51 @@ CardDataGenerator::CardDataGenerator(std::string pathToCardData)
                holdingBonus = std::stoi(bonus);
             }
 
+            // detect clan
+            clantype clan;
+            if(!cd[0]["clan"].is_null())
+            {
+               std::string clanStr = cd[0]["clan"];
+               if(clanStr == "lion")
+               {
+                  clan = clantype::lion;
+               }
+               else if(clanStr == "crab")
+               {
+                  clan = clantype::crab;
+               }
+               else if(clanStr == "dragon")
+               {
+                  clan = clantype::dragon;
+               }
+               else if(clanStr == "phoenix")
+               {
+                  clan = clantype::phoenix;
+               }
+               else if(clanStr == "scorpion")
+               {
+                  clan = clantype::scorpion;
+               }
+               else if(clanStr == "crane")
+               {
+                  clan = clantype::crane;
+               }
+               else if(clanStr == "unicorn")
+               {
+                  clan = clantype::unicorn;
+               }
+               else if(clanStr == "neutral")
+               {
+                  clan = clantype::neutral;
+               }
+               else
+               {
+                  LOG(ERROR) << "Invalid clan for " << id;
+               }
+            }
+
             // generate actual carddata
-            cardMap[id] = std::make_shared<CardData>(name, id, ct, canBeStronghold, provinceStr, strongholdHonor, fateCost, strongholdFate, ds, militarySkill, politicalSkill, glory, militaryDash, politicalDash, holdingBonus);
+            cardMap[id] = std::make_shared<CardData>(name, id, ct, canBeStronghold, provinceStr, strongholdHonor, fateCost, strongholdFate, ds, militarySkill, politicalSkill, glory, militaryDash, politicalDash, holdingBonus, clan);
          }
          catch(const std::exception &e)
          {

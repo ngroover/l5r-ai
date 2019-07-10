@@ -27,6 +27,18 @@ namespace l5r
       none
    };
 
+   enum class clantype
+   {
+      lion,
+      crab,
+      dragon,
+      phoenix,
+      scorpion,
+      crane,
+      unicorn,
+      neutral
+   };
+
    class CardData
    {
       public:
@@ -37,7 +49,7 @@ namespace l5r
               int militarySkill,
               int politicalSkill, int glory,
               bool miiltaryDash, bool politicalDash,
-              int holdingBonus);
+              int holdingBonus, clantype clan);
 
          ~CardData();
 
@@ -70,6 +82,8 @@ namespace l5r
          const bool politicalDash;
 
          const int holdingBonus;
+
+         const clantype clan;
    };
 
    typedef std::shared_ptr<CardData> CardDataSharedPtr;

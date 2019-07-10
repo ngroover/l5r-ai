@@ -10,7 +10,7 @@ CardData::CardData(std::string name, std::string id, cardtype type,
       int militarySkill,
       int politicalSkill, int glory,
       bool militaryDash, bool politicalDash,
-      int holdingBonus) :
+      int holdingBonus, clantype clan) :
       name(name), id(id), type(type),
       canBeStronghold(canBeStronghold), provinceStr(provinceStr),
       strongholdHonor(strongholdHonor), fateCost(fateCost),
@@ -18,7 +18,7 @@ CardData::CardData(std::string name, std::string id, cardtype type,
       militarySkill(militarySkill),
       politicalSkill(politicalSkill), glory(glory),
       militaryDash(militaryDash), politicalDash(politicalDash),
-      holdingBonus(holdingBonus)
+      holdingBonus(holdingBonus), clan(clan)
 {
 }
 
