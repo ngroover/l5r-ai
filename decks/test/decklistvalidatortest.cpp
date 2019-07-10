@@ -40,3 +40,22 @@ TEST(DecklistValidator, tooManyStrongholds) {
    ASSERT_EQ(validator.getInvalidReason(), "Too many stronghold cards");
 }
 
+TEST(DecklistValidator, tooManyRoles) {
+   // not a full deck just some random cards; testing too many roles
+   Decklist deck("test deck", 
+      { "shizuka-toshi",
+      "seeker-of-air",
+      "seeker-of-water",
+      "asahina-artisan",
+      "doji-whisperer",
+      "brash-samurai",
+      "cautious-scout" });
+
+   CardDataGeneratorSharedPtr cardData = std::make_shared<CardDataGenerator>("./cards/data");
+   DecklistValidator validator(cardData);
+
+   ASSERT_FALSE(validator.isDeckValid(deck));
+   
+   ASSERT_EQ(validator.getInvalidReason(), "Too many role cards");
+}
+
