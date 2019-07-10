@@ -12,6 +12,7 @@ namespace l5r
    {
       public:
          DecklistValidator(CardDataGeneratorSharedPtr cardData);
+         DecklistValidator(CardDataGeneratorSharedPtr cardData, int dynastyMinimum, int conflictMinimum);
          ~DecklistValidator();
 
          bool isDeckValid(const Decklist &deck);
@@ -21,6 +22,9 @@ namespace l5r
       private:
          CardDataGeneratorSharedPtr cardData;
          std::string reasonString;
+
+         // allow smaller decks for beginner play
+         int dynastyMinimum, conflictMinimum;
    };
 };
 
