@@ -30,6 +30,8 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
    int numDynasty=0;
    int numConflict=0;
    int influencePool=0;
+   int numConflictCharacters=0;
+
 
    clantype strongholdType;
    std::set<clantype> dynastyClans;
@@ -60,6 +62,10 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
       {
          conflictClans.insert(card->clan);
          numConflict++;
+         if(card->type == cardtype::character)
+         {
+            numConflictCharacters++;
+         }
       }
    }
 
@@ -106,6 +112,13 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
       return false;
    }
 
+   // must have between 40 and 45 conflict cards
+   if(numConflict < conflictMinimum || numConflict > 45)
+   {
+      reasonString = "Invalid number of conflict cards";
+      return false;
+   }
+
    // loop back through and check splash cards
    // result is a set containing splash clan
    if(result.size() == 1)
@@ -126,10 +139,10 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
       }
    }
 
-   // must have between 40 and 45 conflict cards
-   if(numConflict < conflictMinimum || numConflict > 45)
+   // check for more than 10 conflict characters
+   if(numConflictCharacters > 10)
    {
-      reasonString = "Invalid number of conflict cards";
+      reasonString = "Too many conflict characters";
       return false;
    }
 
