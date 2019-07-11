@@ -31,12 +31,15 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
    int numConflict=0;
    int influencePool=0;
    int numConflictCharacters=0;
-
+   int provinceCount=0;
 
    clantype strongholdType;
    std::set<clantype> dynastyClans;
    std::set<clantype> conflictClans;
+   std::set<clantype> provinceClans;
    std::map<std::string, int> cardCount;
+   std::map<element, int> elementCount;
+   std::string roleId;
 
    for (const auto &c : deck.getList() )
    {
@@ -51,6 +54,7 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
       if(card->type == cardtype::role)
       {
          numRoles++;
+         roleId=card->id;
       }
 
       if(card->side == deckside::dynasty)
@@ -68,6 +72,13 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
             numConflictCharacters++;
          }
       }
+      if(card->type == cardtype::province)
+      {
+         elementCount[card->provinceElement]++;
+         provinceClans.insert(card->clan);
+         provinceCount++;
+      }
+
       cardCount[card->id]++;
    }
 
@@ -107,6 +118,7 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
       return false;
    }
 
+   result.clear();
    std::set_difference(conflictClans.begin(), conflictClans.end(), expectedClans.begin(), expectedClans.end(), std::inserter(result, result.end()));
    if(result.size() > 1)
    {
@@ -157,6 +169,63 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
          return false;
       }
    }
+
+   // check provinces
+   if(provinceCount != 5)
+   {
+      reasonString = "Not exactly 5 provinces";
+      return false;
+   }
+
+   bool seekerRole=false;
+   element seekerElement;
+   if(roleId == "seeker-of-air")
+   {
+      seekerRole=true;
+      seekerElement=element::air;
+   }
+   else if(roleId == "seeker-of-water")
+   {
+      seekerRole=true;
+      seekerElement=element::water;
+   }
+   else if(roleId == "seeker-of-fire")
+   {
+      seekerRole=true;
+      seekerElement=element::fire;
+   }
+   else if(roleId == "seeker-of-earth")
+   {
+      seekerRole=true;
+      seekerElement=element::earth;
+   }
+   else if(roleId == "seeker-of-void")
+   {
+      seekerRole=true;
+      seekerElement=element::_void;
+   }
+
+   // check correct element configuration
+   for(const auto &kv : elementCount)
+   {
+      if((kv.second != 1 && !(seekerRole && seekerElement == kv.first)) ||
+      ((seekerRole && seekerElement == kv.first) && kv.second > 2))
+      {
+         reasonString = "Invalid province elements";
+         return false;
+      }
+   }
+
+   // check out of clan province
+   result.clear();
+   std::set_difference(provinceClans.begin(), provinceClans.end(), expectedClans.begin(), expectedClans.end(), std::inserter(result, result.end()));
+   if(result.size() > 0)
+   {
+      reasonString = "Out of clan province";
+      return false;
+   }
+
+   // TODO: Handle toshi ranbo later
 
    return true;
 }
