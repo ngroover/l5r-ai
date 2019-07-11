@@ -29,10 +29,12 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
    int numRoles=0;
    int numDynasty=0;
    int numConflict=0;
+   int influencePool=0;
 
    clantype strongholdType;
    std::set<clantype> dynastyClans;
    std::set<clantype> conflictClans;
+
    for (const auto &c : deck.getList() )
    {
       auto card = cardData->generateCard(c);
@@ -41,6 +43,7 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
       {
          strongholdType = card->clan;
          numStrongholds++;
+         influencePool = card->influencePool;
       }
       if(card->type == cardtype::role)
       {
@@ -101,6 +104,26 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
    {
       reasonString = "Too many out of clan conflict cards";
       return false;
+   }
+
+   // loop back through and check splash cards
+   // result is a set containing splash clan
+   if(result.size() == 1)
+   {
+      int influenceCount=0;
+      for (const auto &c : deck.getList() )
+      {
+         auto card = cardData->generateCard(c);
+         if(card->clan == *result.begin())
+         {
+            influenceCount += card->influenceCost;
+         }
+      }
+      if(influenceCount > influencePool)
+      {
+         reasonString = "Too much influence cost";
+         return false;
+      }
    }
 
    // must have between 40 and 45 conflict cards
