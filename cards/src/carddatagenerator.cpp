@@ -220,8 +220,20 @@ CardDataGenerator::CardDataGenerator(std::string pathToCardData)
                }
             }
 
+            int influenceCost;
+            if(!cd[0]["influence_cost"].is_null())
+            {
+               influenceCost = cd[0]["influence_cost"];
+            }
+
+            int influencePool;
+            if(!cd[0]["influence_pool"].is_null())
+            {
+               influencePool = cd[0]["influence_pool"];
+            }
+
             // generate actual carddata
-            cardMap[id] = std::make_shared<CardData>(name, id, ct, canBeStronghold, provinceStr, strongholdHonor, fateCost, strongholdFate, ds, militarySkill, politicalSkill, glory, militaryDash, politicalDash, holdingBonus, clan);
+            cardMap[id] = std::make_shared<CardData>(name, id, ct, canBeStronghold, provinceStr, strongholdHonor, fateCost, strongholdFate, ds, militarySkill, politicalSkill, glory, militaryDash, politicalDash, holdingBonus, clan, influenceCost, influencePool);
          }
          catch(const std::exception &e)
          {

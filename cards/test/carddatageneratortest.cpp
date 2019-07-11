@@ -44,6 +44,9 @@ void CardDataGeneratorTest::characterTest()
    CPPUNIT_ASSERT(!dc->politicalDash);
    CPPUNIT_ASSERT(dc->type ==  cardtype::character);
    CPPUNIT_ASSERT(dc->clan == clantype::crane);
+
+   auto steward = generator->generateCard("steward-of-law");
+   CPPUNIT_ASSERT_EQUAL(steward->influenceCost, 1);
 }
 
 void CardDataGeneratorTest::holdingTest()
@@ -60,6 +63,7 @@ void CardDataGeneratorTest::strongholdTest()
 {
    auto yojin = generator->generateCard("yojin-no-shiro");
    CPPUNIT_ASSERT(yojin->side == deckside::province);
+   CPPUNIT_ASSERT_EQUAL(yojin->influencePool, 10);
 }
 
 void CardDataGeneratorTest::provinceTest()

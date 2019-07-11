@@ -9,11 +9,13 @@
 
 using namespace l5r;
 
-DecklistValidator::DecklistValidator(CardDataGeneratorSharedPtr cardData) : cardData(cardData), dynastyMinimum(40), conflictMinimum(40)
+DecklistValidator::DecklistValidator(CardDataGeneratorSharedPtr cardData)
+   : cardData(cardData), dynastyMinimum(40), conflictMinimum(40)
 {
 }
 
-DecklistValidator::DecklistValidator(CardDataGeneratorSharedPtr cardData, int dynastyMinimum, int conflictMinimum) : cardData(cardData), dynastyMinimum(dynastyMinimum), conflictMinimum(conflictMinimum)
+DecklistValidator::DecklistValidator(CardDataGeneratorSharedPtr cardData, int dynastyMinimum, int conflictMinimum)
+   : cardData(cardData), dynastyMinimum(dynastyMinimum), conflictMinimum(conflictMinimum)
 {
 }
 

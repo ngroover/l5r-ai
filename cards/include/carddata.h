@@ -49,7 +49,8 @@ namespace l5r
               int militarySkill,
               int politicalSkill, int glory,
               bool miiltaryDash, bool politicalDash,
-              int holdingBonus, clantype clan);
+              int holdingBonus, clantype clan, int influenceCost,
+              int influencePool);
 
          ~CardData();
 
@@ -84,6 +85,10 @@ namespace l5r
          const int holdingBonus;
 
          const clantype clan;
+
+         const int influenceCost;
+         
+         const int influencePool;
    };
 
    typedef std::shared_ptr<CardData> CardDataSharedPtr;
