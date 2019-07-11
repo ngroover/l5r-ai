@@ -70,4 +70,5 @@ void CardDataGeneratorTest::provinceTest()
 {
    auto manicured = generator->generateCard("manicured-garden");
    CPPUNIT_ASSERT(manicured->side == deckside::province);
+   CPPUNIT_ASSERT(manicured->provinceElement == element::air);
 }

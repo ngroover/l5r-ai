@@ -232,8 +232,43 @@ CardDataGenerator::CardDataGenerator(std::string pathToCardData)
                influencePool = cd[0]["influence_pool"];
             }
 
+            // check for element
+            element provinceElement;
+            if(!cd[0]["element"].is_null())
+            {
+               std::string elementStr = cd[0]["element"];
+               if(elementStr == "void")
+               {
+                  provinceElement = element::_void;
+               }
+               else if(elementStr == "water")
+               {
+                  provinceElement = element::water;
+               }
+               else if(elementStr == "fire")
+               {
+                  provinceElement = element::fire;
+               }
+               else if(elementStr == "air")
+               {
+                  provinceElement = element::air;
+               }
+               else if(elementStr == "earth")
+               {
+                  provinceElement = element::earth;
+               }
+               else if(elementStr == "all")
+               {
+                  provinceElement = element::all;
+               }
+               else
+               {
+                  LOG(ERROR) << "Invalid element for " << id;
+               }
+            }
+
             // generate actual carddata
-            cardMap[id] = std::make_shared<CardData>(name, id, ct, canBeStronghold, provinceStr, strongholdHonor, fateCost, strongholdFate, ds, militarySkill, politicalSkill, glory, militaryDash, politicalDash, holdingBonus, clan, influenceCost, influencePool);
+            cardMap[id] = std::make_shared<CardData>(name, id, ct, canBeStronghold, provinceStr, strongholdHonor, fateCost, strongholdFate, ds, militarySkill, politicalSkill, glory, militaryDash, politicalDash, holdingBonus, clan, influenceCost, influencePool, provinceElement);
          }
          catch(const std::exception &e)
          {

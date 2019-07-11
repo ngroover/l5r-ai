@@ -39,6 +39,16 @@ namespace l5r
       neutral
    };
 
+   enum class element
+   {
+      fire,
+      water,
+      earth,
+      _void,
+      air,
+      all
+   };
+
    class CardData
    {
       public:
@@ -50,7 +60,7 @@ namespace l5r
               int politicalSkill, int glory,
               bool miiltaryDash, bool politicalDash,
               int holdingBonus, clantype clan, int influenceCost,
-              int influencePool);
+              int influencePool, element provinceElement);
 
          ~CardData();
 
@@ -89,6 +99,8 @@ namespace l5r
          const int influenceCost;
          
          const int influencePool;
+
+         const element provinceElement;
    };
 
    typedef std::shared_ptr<CardData> CardDataSharedPtr;

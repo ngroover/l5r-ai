@@ -11,7 +11,8 @@ CardData::CardData(std::string name, std::string id, cardtype type,
       int politicalSkill, int glory,
       bool militaryDash, bool politicalDash,
       int holdingBonus, clantype clan,
-      int influenceCost, int influencePool) :
+      int influenceCost, int influencePool,
+      element provinceElement) :
       name(name), id(id), type(type),
       canBeStronghold(canBeStronghold), provinceStr(provinceStr),
       strongholdHonor(strongholdHonor), fateCost(fateCost),
@@ -20,7 +21,8 @@ CardData::CardData(std::string name, std::string id, cardtype type,
       politicalSkill(politicalSkill), glory(glory),
       militaryDash(militaryDash), politicalDash(politicalDash),
       holdingBonus(holdingBonus), clan(clan),
-      influenceCost(influenceCost), influencePool(influencePool)
+      influenceCost(influenceCost), influencePool(influencePool),
+      provinceElement(provinceElement)
 {
 }
 
