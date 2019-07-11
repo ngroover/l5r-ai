@@ -36,6 +36,7 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
    clantype strongholdType;
    std::set<clantype> dynastyClans;
    std::set<clantype> conflictClans;
+   std::map<std::string, int> cardCount;
 
    for (const auto &c : deck.getList() )
    {
@@ -67,6 +68,7 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
             numConflictCharacters++;
          }
       }
+      cardCount[card->id]++;
    }
 
    // check for 1 and only 1 stronghold
@@ -144,6 +146,16 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
    {
       reasonString = "Too many conflict characters";
       return false;
+   }
+
+   // card count
+   for(const auto &kv : cardCount)
+   {
+      if(kv.second > 3)
+      {
+         reasonString = "Too many copies of a card";
+         return false;
+      }
    }
 
    return true;

@@ -355,3 +355,86 @@ TEST(DecklistValidator, tooManyCharacters) {
 
    ASSERT_EQ(validator.getInvalidReason(), "Too many conflict characters");
 }
+
+TEST(DecklistValidator, tooManyOfACard) {
+   // not a full deck just some random cards; testing too many of a card
+   Decklist deck("test deck", 
+      { "shizuka-toshi",
+      "seeker-of-air",
+      "asahina-artisan",
+      "doji-whisperer",
+      "brash-samurai",
+      "cautious-scout",
+      "doji-gift-giver",
+      "savvy-politician",
+      "daidoji-nerishma",
+      "doji-challenger",
+      "kakita-asami",
+      "kakita-kaezin",
+      "asahina-storyteller",
+      "guest-of-honor",
+      "doji-hotaru",
+      "artisan-academy",
+      "otomo-courtier",
+      "otomo-courtier",
+      "otomo-courtier",
+      "seppun-guardsman",
+      "seppun-guardsman",
+      "seppun-guardsman",
+      "miya-mystic",
+      "miya-mystic",
+      "miya-mystic",
+      "seeker-initiate",
+      "seeker-initiate",
+      "wandering-ronin",
+      "wandering-ronin",
+      "wandering-ronin",
+      "favorable-ground",
+      "imperial-storehouse",
+      "asahina-artisan",
+      "doji-whisperer",
+      "brash-samurai",
+      "cautious-scout",
+      "political-rival",
+      "above-question",
+      "duelist-training",
+      "height-of-fashion",
+      "the-perfect-gift",
+      "voice-of-honor",
+      "way-of-the-crane",
+      "admit-defeat",
+      "noble-sacrifice",
+      "display-of-power",
+      "seeker-of-knowledge",
+      "magnificent-kimono",
+      "pacifism",
+      "know-the-world",
+      "fine-katana",
+      "fine-katana",
+      "ornate-fan",
+      "ornate-fan",
+      "banzai",
+      "banzai",
+      "contingency-plan",
+      "contingency-plan",
+      "court-games",
+      "court-games",
+      "for-shame",
+      "for-shame",
+      "good-omen",
+      "outwit",
+      "outwit",
+      "steward-of-law",
+      "steward-of-law",
+      "steward-of-law",
+      "steward-of-law"
+      });
+      // too many steward-of-law
+
+   CardDataGeneratorSharedPtr cardData = std::make_shared<CardDataGenerator>("./cards/data");
+   DecklistValidator validator(cardData, 30, 30);
+
+   ASSERT_FALSE(validator.isDeckValid(deck));
+
+   ASSERT_EQ(validator.getInvalidReason(), "Too many copies of a card");
+}
