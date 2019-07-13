@@ -133,6 +133,7 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
       return false;
    }
 
+
    // loop back through and check splash cards
    // result is a set containing splash clan
    if(result.size() == 1)
@@ -146,6 +147,15 @@ bool DecklistValidator::isDeckValid(const Decklist &deck)
             influenceCount += card->influenceCost;
          }
       }
+
+      // keeper role adds 3 influence
+      if(roleId == "keeper-of-air" || roleId == "keeper-of-water" ||
+         roleId == "keeper-of-void" || roleId == "keeper-of-earth" ||
+         roleId == "keeper-of-fire")
+      {
+         influencePool += 3;
+      }
+
       if(influenceCount > influencePool)
       {
          reasonString = "Too much influence cost";
