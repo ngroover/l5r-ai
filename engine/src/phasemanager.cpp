@@ -275,7 +275,7 @@ void phaseManager::doStrongholdSelection(choice c)
       provinceMgr->chooseStronghold(stateIntfc->getPlayerCards(), c.getCard());
       std::string name = stateIntfc->getPlayerName();
       std::cout << name
-         << " chose " << cardMgr->getCardName(c.getNumber()) 
+         << " chose " << c.getCard()->data->name 
          << " for a stronghold" << std::endl;
       if(turnMgr->ActionAndTurnDiffer())
       {

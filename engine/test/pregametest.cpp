@@ -87,7 +87,7 @@ TEST(PregameTest, StrongholdChoice2) {
 
    gameEngine->doAction(*chosenStronghold);
 
-   ASSERT_EQ(gs.player2State.cards.strongholdProvince->data->id, "entrenched_position");
+   ASSERT_EQ(gs.player2State.cards.strongholdProvince->data->id, "entrenched-position");
 
    delete gameEngine;
 }
