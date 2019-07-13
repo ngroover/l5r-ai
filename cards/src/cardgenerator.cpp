@@ -226,3 +226,7 @@ std::map<cards,CardDataSharedPtr> cardgenerator::generateCards(Decklist deck)
    return cardMap;
 }
 
+CardSharedPtr cardgenerator::getCard(std::string id)
+{
+   return std::make_shared<Card>(generator.generateCard(id));
+}

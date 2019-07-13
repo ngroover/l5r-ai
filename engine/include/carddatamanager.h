@@ -24,7 +24,7 @@ namespace l5r
          deckside getSide(cards c);
 
          std::string getCardName(int index);
-         int getStrongholdHonor(int index);
+         //int getStrongholdHonor(int index);
          int getFateCost(int index);
          int getProvinceStr(int index);
          int getHoldingBonus(int index);
@@ -32,6 +32,8 @@ namespace l5r
          int getMilitaryStr(int index);
          int getPoliticalStr(int index);
          int getGlory(int index);
+
+         CardSharedPtr getCard(std::string id);
 
       private:
          std::map<cards,CardDataSharedPtr> cardMap;

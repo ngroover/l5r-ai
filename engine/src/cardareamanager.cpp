@@ -232,7 +232,8 @@ void CardAreaManager::setupCards(Decklist deck, std::vector<cards> &cardIds)
             if(cardMgr->getCardType(c) == cardtype::stronghold)
             {
                // actually a stronghold
-               cardArea->stronghold = cardIds.size() - 1;
+               //cardArea->stronghold = cardIds.size() - 1;
+               cardArea->stronghold = cardMgr->getCard(cardStr);
             }
             else
             {

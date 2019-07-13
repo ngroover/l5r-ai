@@ -7,6 +7,7 @@
 #include <cards.h>
 #include <decklist.h>
 #include "carddatagenerator.h"
+#include "card.h"
 
 namespace l5r
 {
@@ -19,6 +20,8 @@ namespace l5r
          CardDataSharedPtr generateCard(std::string c);
 
          std::map<cards,CardDataSharedPtr> generateCards(Decklist deck);
+
+         CardSharedPtr getCard(std::string id);
 
       private:
          cards fromStringId(std::string c);

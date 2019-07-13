@@ -156,7 +156,7 @@ int ConflictResolutionManager::findHoldingBonus()
    }
    if(global->contested_province == defender->strongholdProvince)
    {
-      return cardMgr->getHoldingBonus(defender->stronghold);
+      return defender->stronghold->data->holdingBonus;
    }
    // no holding bonus
    return 0;

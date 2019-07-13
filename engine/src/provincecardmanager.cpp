@@ -28,7 +28,7 @@ void provinceCardManager::chooseStronghold(cardarea *cards, int provinceChoice)
 
 int provinceCardManager::getStartingHonor(cardarea *cards)
 {
-   return cardMgr->getStrongholdHonor(cards->stronghold);
+   return cards->stronghold->data->strongholdHonor;
 }
 
 std::list<choice> provinceCardManager::getStrongholdChoices(cardarea *cards)

@@ -3,6 +3,7 @@
 
 #include "state/province.h"
 #include "state/character.h"
+#include "card.h"
 #include <list>
 
 namespace l5r
@@ -25,7 +26,8 @@ namespace l5r
          int pendingFateCard; // card awaiting fate
          std::list<provinceStack> provinceArea;
          int strongholdProvince;
-         int stronghold;
+         //int stronghold;
+         CardSharedPtr stronghold;
          std::list<inplaycharacter> atHome;
    };
 };

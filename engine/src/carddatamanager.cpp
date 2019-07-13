@@ -38,10 +38,12 @@ std::string cardDataManager::getCardName(int index)
    return cardMap[state->cardIds[index]]->name;
 }
 
+/*
 int cardDataManager::getStrongholdHonor(int index)
 {
    return cardMap[state->cardIds[index]]->strongholdHonor;
 }
+*/
 
 int cardDataManager::getFateCost(int index)
 {
@@ -71,4 +73,9 @@ int cardDataManager::getGlory(int index)
 int cardDataManager::getHoldingBonus(int index)
 {
    return cardMap[state->cardIds[index]]->holdingBonus;
+}
+
+CardSharedPtr cardDataManager::getCard(std::string id)
+{
+   return cg.getCard(id);
 }
