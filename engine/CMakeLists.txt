@@ -7,7 +7,6 @@ add_library( engine SHARED src/engine.cpp
                         src/state/player.cpp
                         src/state/cardarea.cpp
                         src/state/character.cpp
-                        src/state/province.cpp
                         src/state/conflict.cpp
                         src/state/ring.cpp
                         src/state/tokens.cpp

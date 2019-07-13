@@ -44,7 +44,7 @@ TEST(PregameTest, StrongholdChoice) {
 
    auto gs = gameEngine->getGameState();
 
-   ASSERT_EQ(gs.cardIds[gs.player1State.cards.strongholdProvince], cards::ancestral_lands);
+   ASSERT_EQ(gs.player1State.cards.strongholdProvince->data->id, "ancestral-lands");
 
    delete gameEngine;
 }
@@ -87,7 +87,7 @@ TEST(PregameTest, StrongholdChoice2) {
 
    gameEngine->doAction(*chosenStronghold);
 
-   ASSERT_EQ(gs.cardIds[gs.player2State.cards.strongholdProvince], cards::entrenched_position);
+   ASSERT_EQ(gs.player2State.cards.strongholdProvince->data->id, "entrenched_position");
 
    delete gameEngine;
 }

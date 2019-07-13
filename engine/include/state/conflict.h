@@ -4,6 +4,7 @@
 #include <list>
 #include "state/ring.h"
 #include "state/character.h"
+#include "card.h"
 
 namespace l5r
 {
@@ -50,7 +51,8 @@ namespace l5r
       conflicttype conflict_type;
 
       // current contested province
-      int contested_province;
+      CardSharedPtr contestedProvince;
+      //int contested_province;
 
       // unclaimed rings
       std::list<unclaimedring> unclaimed_rings;

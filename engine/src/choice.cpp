@@ -50,3 +50,13 @@ conflicttype choice::getConflictType() const
 {
    return conflictType;
 }
+
+void choice::setCard(CardSharedPtr card)
+{
+   this->card = card;
+}
+
+CardSharedPtr choice::getCard()
+{
+   return card;
+}

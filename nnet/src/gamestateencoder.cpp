@@ -4,7 +4,6 @@
 #include "provinceslot.h"
 #include "gamestatebuilder.h"
 #include "state/gamestate.h"
-#include "state/province.h"
 #include <iostream>
 #include <cstring>
 
@@ -142,7 +141,7 @@ void GamestateEncoder::encode(gamestate *state, double *networkInput, int size)
    int provNum=1;
    for(auto p : state->player1State.cards.provinceArea)
    {
-      encodeProvinceCard(provNum, p.dynastyCard, p.provinceCard, p.facedownDynasty,
+      encodeProvinceCard(provNum, p->dynastyCard, p->provinceCard, p->facedownDynasty,
          (p.provinceStatus == provinceCardStatus::broken), // broken
          (p.provinceCard == state->conflict_state.contested_province), // contested
          (p.provinceCard == state->player1State.cards.strongholdProvince || p.provinceCard == state->player2State.cards.strongholdProvince)); // stronghold

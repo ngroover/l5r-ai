@@ -2,6 +2,7 @@
 #define _CONFLICT_RESOLUTION_MANAGER_H_
 
 #include <memory>
+#include "card.h"
 
 namespace l5r
 {
@@ -35,7 +36,7 @@ namespace l5r
 
       private:
          int findHoldingBonus();
-         void breakProvince(cardarea *cards, int cardIndex);
+         void breakProvince(cardarea *cards, CardSharedPtr cardIndex);
          int calculateStr(conflictPlayerState *player);
 
          cardarea *attacker, *defender;

@@ -231,19 +231,21 @@ void CardAreaManager::setupCards(Decklist deck, std::vector<cards> &cardIds)
          case deckside::province:
             if(cardMgr->getCardType(c) == cardtype::stronghold)
             {
-               // actually a stronghold
-               //cardArea->stronghold = cardIds.size() - 1;
                cardArea->stronghold = cardMgr->getCard(cardStr);
             }
             else
             {
-               provinceStack ps;
-               ps.provinceCard = cardIds.size() -1;
-               ps.dynastyCard = -1;// no dynasty card yet
-               ps.facedownDynasty = false;
-               ps.provinceStatus = provinceCardStatus::unrevealed;
+               CardSharedPtr prov = cardMgr->getCard(cardStr);
+               prov->dynastyCard = -1;
+               prov->facedownDynasty = false;
+               prov->provinceStatus = provinceCardStatus::unrevealed;
+               //provinceStack ps;
+               //ps.provinceCard = cardIds.size() -1;
+               //ps.dynastyCard = -1;// no dynasty card yet
+               //ps.facedownDynasty = false;
+               //ps.provinceStatus = provinceCardStatus::unrevealed;
 
-               cardArea->provinceArea.push_back(ps);
+               cardArea->provinceArea.push_back(prov);
             }
             break;
          case deckside::conflict:

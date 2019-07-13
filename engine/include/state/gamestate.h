@@ -7,7 +7,6 @@
 
 #include "state/phase.h"
 #include "state/ring.h"
-#include "state/province.h"
 #include "state/character.h"
 #include "state/conflict.h"
 #include "state/player.h"

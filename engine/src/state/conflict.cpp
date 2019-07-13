@@ -45,7 +45,7 @@ bool conflictState::operator==(const conflictState &cs)
 
    return (contested_ring == cs.contested_ring &&
       conflict_type == cs.conflict_type &&
-      contested_province == cs.contested_province &&
+      contestedProvince == cs.contestedProvince &&
       unclaimedSet == CsUnclaimedSet &&
       favorType == cs.favorType);
 }

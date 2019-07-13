@@ -13,15 +13,14 @@ provinceCardManager::~provinceCardManager()
 {
 }
 
-void provinceCardManager::chooseStronghold(cardarea *cards, int provinceChoice)
+void provinceCardManager::chooseStronghold(cardarea *cards, CardSharedPtr provinceChoice)
 {
    for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov)
    {
-      if(prov->provinceCard == provinceChoice)
+      if((*prov) == provinceChoice)
       {
-         cards->provinceArea.erase(prov);
          cards->strongholdProvince = provinceChoice;
-         prov = cards->provinceArea.end();
+         prov = cards->provinceArea.erase(prov);
       }
    }
 }
@@ -36,8 +35,9 @@ std::list<choice> provinceCardManager::getStrongholdChoices(cardarea *cards)
    std::list<choice> list;
    for(auto prov:cards->provinceArea)
    {
-      choice c(cardMgr->getCardName(prov.provinceCard), choicetype::card);
-      c.setNumber(prov.provinceCard);
+      choice c(prov->data->name, choicetype::card);
+      //c.setNumber(prov.provinceCard);
+      c.setCard(prov);
       list.push_back(c);
    }
    return list;

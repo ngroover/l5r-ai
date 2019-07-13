@@ -17,10 +17,10 @@ void MulliganManager::chooseDynastyMulligan(int cardChoice)
 {
    for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov)
    {
-      if(prov->dynastyCard == cardChoice)
+      if((*prov)->dynastyCard == cardChoice)
       {
          // set no card on top of province
-         prov->dynastyCard = -1;
+         (*prov)->dynastyCard = -1;
          cards->pendingMulligan.push_back(cardChoice);
       }
    }
@@ -98,10 +98,10 @@ std::list<choice> MulliganManager::getDynastyMulliganChoices()
    std::list<choice> list;
    for(auto prov:cards->provinceArea)
    {
-      if(prov.dynastyCard != -1)
+      if(prov->dynastyCard != -1)
       {
-         choice c(cardMgr->getCardName(prov.dynastyCard), choicetype::card);
-         c.setNumber(prov.dynastyCard);
+         choice c(cardMgr->getCardName(prov->dynastyCard), choicetype::card);
+         c.setNumber(prov->dynastyCard);
          list.push_back(c);
       }
    }

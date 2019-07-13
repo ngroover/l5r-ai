@@ -42,13 +42,13 @@ ConflictResult ConflictResolutionManager::resolveConflict()
    {
       cr.winner = conflictwinner::attacker;
       int holdingBonus = findHoldingBonus();
-      int provinceStr = cardMgr->getProvinceStr(global->contested_province) + holdingBonus;
+      int provinceStr = global->contestedProvince->data->provinceStr + holdingBonus;
       std::cout << "Province Strength: " << provinceStr << std::endl;
       if((attackerStr - defenderStr) >= provinceStr)
       {
          cr.brokeProvince = true;
-         breakProvince(stateIntfc->getPlayerCards(), global->contested_province);
-         if(defender->strongholdProvince == global->contested_province)
+         breakProvince(stateIntfc->getPlayerCards(), global->contestedProvince);
+         if(defender->strongholdProvince == global->contestedProvince)
          {
             throw EndGameException(wintype::conquest);
          }
@@ -126,16 +126,16 @@ int ConflictResolutionManager::calculateStr(conflictPlayerState *player)
    return strength;
 }
 
-void ConflictResolutionManager::breakProvince(cardarea *cards, int cardIndex)
+void ConflictResolutionManager::breakProvince(cardarea *cards, CardSharedPtr cardIndex)
 {
    // nothing happens for stronghold
    // handled outside this
    for(auto &p:cards->provinceArea)
    {
-      if(p.provinceCard == cardIndex)
+      if(p == cardIndex)
       {
-         std::cout << cardMgr->getCardName(cardIndex) << " breaks!" << std::endl;
-         p.provinceStatus = provinceCardStatus::broken;
+         std::cout << cardIndex->data->name << " breaks!" << std::endl;
+         p->provinceStatus = provinceCardStatus::broken;
       }
    }
 }
@@ -146,15 +146,15 @@ int ConflictResolutionManager::findHoldingBonus()
 
    for(auto prov: defender->provinceArea)
    {
-      if(prov.provinceCard == global->contested_province)
+      if(prov == global->contestedProvince)
       {
-         if(cardMgr->getCardTypeFromCard(prov.dynastyCard) == cardtype::holding)
+         if(cardMgr->getCardTypeFromCard(prov->dynastyCard) == cardtype::holding)
          {
-            return cardMgr->getHoldingBonus(prov.dynastyCard);
+            return cardMgr->getHoldingBonus(prov->dynastyCard);
          }
       }
    }
-   if(global->contested_province == defender->strongholdProvince)
+   if(global->contestedProvince == defender->strongholdProvince)
    {
       return defender->stronghold->data->holdingBonus;
    }

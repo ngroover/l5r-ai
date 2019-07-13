@@ -78,21 +78,23 @@ decision ConflictPhaseManager::getAttackProvinceDecision()
    auto cards = stateIntfc->getOpponentCards();
    for(auto pc:cards->provinceArea)
    {
-      if(pc.provinceStatus != provinceCardStatus::broken)
+      if(pc->provinceStatus != provinceCardStatus::broken)
       {
-         choice c(cardMgr->getCardName(pc.provinceCard), choicetype::card);
-         c.setNumber(pc.provinceCard);
+         choice c(pc->data->name, choicetype::card);
+         //c.setNumber(pc->provinceCard);
+         c.setCard(pc);
          list.push_back(c);
       }
-      if(pc.provinceStatus == provinceCardStatus::broken)
+      if(pc->provinceStatus == provinceCardStatus::broken)
       {
          brokenCount++;
       }
    }
    if(brokenCount >= 3)
    {
-      choice c(cardMgr->getCardName(cards->strongholdProvince), choicetype::card);
-      c.setNumber(cards->strongholdProvince);
+      choice c(cards->strongholdProvince->data->name, choicetype::card);
+      //c.setNumber(cards->strongholdProvince);
+      c.setCard(cards->strongholdProvince);
       list.push_back(c);
    }
    decision d("Choose province", list);
@@ -258,10 +260,10 @@ void ConflictPhaseManager::doChooseProvince(choice c)
    {
       std::string name = stateIntfc->getPlayerName();
       // TODO: move to a conflict manager
-      global->contested_province = c.getNumber();
+      global->contestedProvince = c.getCard();
       std::cout << name << " initiated a " << getConflictTypeName(global->conflict_type)
          << " " << getRingName(global->contested_ring) << " "
-         << "at " << cardMgr->getCardName(global->contested_province) << " with" << std::endl;
+         << "at " << global->contestedProvince->data->name << " with" << std::endl;
       printParticipating(attacker);
 
       state->currentSubPhase = subphase::choose_defenders;

@@ -4,6 +4,7 @@
 #include "state/gamestate.h"
 #include "carddatamanager.h"
 #include "choice.h"
+#include "card.h"
 
 
 namespace l5r
@@ -16,7 +17,7 @@ namespace l5r
          ~provinceCardManager();
 
          // chooses a stronghold for the currently active player
-         void chooseStronghold(cardarea *cards, int provinceChoice);
+         void chooseStronghold(cardarea *cards, CardSharedPtr provinceChoice);
 
          void breakProvince(cardarea *cards, int cardIndex);
          int getStartingHonor(cardarea *cards);

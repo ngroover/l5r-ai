@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "cards.h"
+#include "card.h"
 #include "state/gamestate.h"
 
 namespace l5r
@@ -39,6 +40,9 @@ namespace l5r
          void setConflictType(conflicttype type);
          conflicttype getConflictType() const;
 
+         void setCard(CardSharedPtr card);
+         CardSharedPtr getCard();
+
       private:
          std::string text;
          choicetype type;
@@ -46,6 +50,7 @@ namespace l5r
          int number;
          ring chosenring;
          conflicttype conflictType;
+         CardSharedPtr card;
    };
 };
 

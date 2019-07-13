@@ -272,7 +272,7 @@ void phaseManager::doStrongholdSelection(choice c)
 {
    if(c.getType() == choicetype::card)
    {
-      provinceMgr->chooseStronghold(stateIntfc->getPlayerCards(), c.getNumber());
+      provinceMgr->chooseStronghold(stateIntfc->getPlayerCards(), c.getCard());
       std::string name = stateIntfc->getPlayerName();
       std::cout << name
          << " chose " << cardMgr->getCardName(c.getNumber()) 

@@ -6,6 +6,13 @@
 
 namespace l5r
 {
+   enum class provinceCardStatus
+   {
+      unrevealed,
+      revealed,
+      broken
+   };
+
    class Card
    {
       public:
@@ -13,6 +20,11 @@ namespace l5r
          ~Card();
 
          const CardDataSharedPtr data;
+
+         // temporary until we get rid of integer based cards
+         int dynastyCard;
+         bool facedownDynasty;
+         provinceCardStatus provinceStatus;
 
       private:
          std::string cardId;

@@ -1,10 +1,10 @@
 #ifndef _CARD_AREA_H_
 #define _CARD_AREA_H_
 
-#include "state/province.h"
 #include "state/character.h"
 #include "card.h"
 #include <list>
+#include <vector>
 
 namespace l5r
 {
@@ -24,9 +24,10 @@ namespace l5r
          std::list<int> conflictHand;
          std::list<int> pendingMulligan;
          int pendingFateCard; // card awaiting fate
-         std::list<provinceStack> provinceArea;
-         int strongholdProvince;
-         //int stronghold;
+         //std::list<provinceStack> provinceArea;
+         std::vector<CardSharedPtr> provinceArea;
+         //int strongholdProvince;
+         CardSharedPtr strongholdProvince;
          CardSharedPtr stronghold;
          std::list<inplaycharacter> atHome;
    };
