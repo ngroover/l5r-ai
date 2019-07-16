@@ -152,7 +152,7 @@ void phaseManager::doRegroupDiscard(choice c)
 
    if(c.getType() == choicetype::card)
    {
-      dynastyMgr->discardProvinceCard(stateIntfc->getPlayerCards(), c.getNumber());
+      dynastyMgr->discardProvinceCard(stateIntfc->getPlayerCards(), c.getCard());
    }
    else if((c.getType() == choicetype::pass) || 
       (c.getType() == choicetype::none))
@@ -345,7 +345,7 @@ void phaseManager::doDynastyMulligan(choice c)
 
    if(c.getType() == choicetype::card)
    {
-      mulligan.chooseDynastyMulligan(c.getNumber());
+      mulligan.chooseDynastyMulligan(c.getCard());
    }
    else if(c.getType() == choicetype::pass)
    {
@@ -378,7 +378,7 @@ void phaseManager::doConflictMulligan(choice c)
 
    if(c.getType() == choicetype::card)
    {
-      mulligan.chooseConflictMulligan(c.getNumber());
+      mulligan.chooseConflictMulligan(c.getCard());
    }
    else if(c.getType() == choicetype::pass)
    {
@@ -450,7 +450,7 @@ void phaseManager::doProvincePlayAction(choice c)
 
    if(c.getType() == choicetype::card)
    {
-      dynastyMgr->chooseCharacterToPlay(stateIntfc->getPlayerCards(), c.getNumber());
+      dynastyMgr->chooseCharacterToPlay(stateIntfc->getPlayerCards(), c.getCard());
       goToAdditionalFate();
    }
    else if(c.getType() == choicetype::pass)
@@ -698,7 +698,7 @@ void phaseManager::doChooseFateDiscard(choice c)
    RingManager rings(stateIntfc, cardMgr);
    if(c.getType() == choicetype::card)
    {
-      dynastyMgr->discardCharacter(stateIntfc->getPlayerCards(), c.getNumber());
+      dynastyMgr->discardCharacter(stateIntfc->getPlayerCards(), c.getCard());
    }
    else if(c.getType() == choicetype::none)
    {

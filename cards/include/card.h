@@ -26,6 +26,8 @@ namespace l5r
          bool facedownDynasty;
          provinceCardStatus provinceStatus;
 
+         int fateAttached;
+         bool bowed;
       private:
          std::string cardId;
    };

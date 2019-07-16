@@ -25,10 +25,10 @@ decision ConflictPhaseManager::getAttackersDecision()
    for(auto ch=cards->atHome.begin();ch!=cards->atHome.end();ch++)
    {
       // TODO: check dashed types can't be mixed into conflict
-      if(!ch->bowed)
+      if(!(*ch)->bowed)
       {
-         choice c(cardMgr->getCardName(ch->characterCard), choicetype::card);
-         c.setNumber(ch->characterCard);
+         choice c((*ch)->data->name, choicetype::card);
+         c.setCard(*ch);
          list.push_back(c);
       }
    }
@@ -108,10 +108,10 @@ decision ConflictPhaseManager::getDefendersDecision()
    for(auto ch=cards->atHome.begin();ch!=cards->atHome.end();ch++)
    {
       // TODO: check dashed types can't be mixed into conflict
-      if(!ch->bowed)
+      if(!(*ch)->bowed)
       {
-         choice c(cardMgr->getCardName(ch->characterCard), choicetype::card);
-         c.setNumber(ch->characterCard);
+         choice c((*ch)->data->name, choicetype::card);
+         c.setCard(*ch);
          list.push_back(c);
       }
    }
@@ -141,7 +141,7 @@ void ConflictPhaseManager::doChooseAttackers(choice c)
    if(c.getType() == choicetype::card)
    {
       // move character in
-      manipulator.moveCharacterToConflict(stateIntfc->getAttackerConflictState(), stateIntfc->getPlayerCards(), c.getNumber());
+      manipulator.moveCharacterToConflict(stateIntfc->getAttackerConflictState(), stateIntfc->getPlayerCards(), c.getCard());
    }
    else if(c.getType() == choicetype::pass)
    {
@@ -281,7 +281,7 @@ void ConflictPhaseManager::printParticipating(conflictPlayerState *cps)
    {
       for(auto ch=cps->inConflict.begin();ch!=cps->inConflict.end();ch++)
       {
-         std::cout << " " << cardMgr->getCardName(ch->characterCard) << std::endl;
+         std::cout << " " << (*ch)->data->name << std::endl;
       }
    }
    else
@@ -300,7 +300,7 @@ void ConflictPhaseManager::doChooseDefenders(choice c)
 
    if(c.getType() == choicetype::card)
    {
-      manipulator.moveCharacterToConflict(stateIntfc->getDefenderConflictState(), stateIntfc->getPlayerCards(), c.getNumber());
+      manipulator.moveCharacterToConflict(stateIntfc->getDefenderConflictState(), stateIntfc->getPlayerCards(), c.getCard());
    }
    else if(c.getType() == choicetype::pass)
    {

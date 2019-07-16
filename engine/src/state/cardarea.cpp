@@ -12,6 +12,7 @@ cardarea::~cardarea()
 {
 }
 
+/*
 bool cardarea::operator==(const cardarea &ca)
 {
    std::set<int> handSet(conflictHand.begin(), conflictHand.end());
@@ -33,3 +34,4 @@ bool cardarea::operator==(const cardarea &ca)
       stronghold == ca.stronghold &&
       atHomeSet == caAtHomeSet);
 }
+*/

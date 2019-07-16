@@ -214,42 +214,34 @@ void CardAreaManager::setupCards(Decklist deck, std::vector<cards> &cardIds)
 {
    // shouldn't be cards here but clear just in case
    cardArea->dynastyDeck.clear();
-   cardArea->pendingFateCard = -1;
+   cardArea->pendingFateCard = nullptr;
 
    for(auto cardStr : deck.getList())
    {
       cards c = fromStringId(cardStr);
+      CardSharedPtr csp = cardMgr->getCard(cardStr);
 
-      // add to global table for unique id
-      cardIds.push_back(c);
-
-      switch(cardMgr->getSide(c))
+      switch(csp->data->side)
       {
          case deckside::dynasty:
-            cardArea->dynastyDeck.push_back(cardIds.size() - 1);
+            cardArea->dynastyDeck.push_back(csp);
             break;
          case deckside::province:
-            if(cardMgr->getCardType(c) == cardtype::stronghold)
+            if(csp->data->type == cardtype::stronghold)
             {
-               cardArea->stronghold = cardMgr->getCard(cardStr);
+               cardArea->stronghold = csp;
             }
             else
             {
-               CardSharedPtr prov = cardMgr->getCard(cardStr);
-               prov->dynastyCard = -1;
-               prov->facedownDynasty = false;
-               prov->provinceStatus = provinceCardStatus::unrevealed;
-               //provinceStack ps;
-               //ps.provinceCard = cardIds.size() -1;
-               //ps.dynastyCard = -1;// no dynasty card yet
-               //ps.facedownDynasty = false;
-               //ps.provinceStatus = provinceCardStatus::unrevealed;
-
-               cardArea->provinceArea.push_back(prov);
+               CardSharedPtr prov = csp;
+               csp->provinceStatus = provinceCardStatus::unrevealed;
+               csp->facedownDynasty = false;
+               cardArea->provinceArea.push_back(csp);
+               cardArea->dynastyArea.push_back(nullptr);
             }
             break;
          case deckside::conflict:
-            cardArea->conflictDeck.push_back(cardIds.size() - 1);
+            cardArea->conflictDeck.push_back(csp);
             break;
          default:
             break;

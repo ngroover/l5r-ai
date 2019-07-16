@@ -10,6 +10,7 @@ gamestate::~gamestate()
 {
 }
 
+/*
 bool gamestate::operator==(const gamestate &gs)
 {
    // assume all the card ids are the same to get some performance for comparision
@@ -24,4 +25,5 @@ bool gamestate::operator==(const gamestate &gs)
       player2State == gs.player2State &&
       conflict_state == gs.conflict_state);
 }
+*/
 

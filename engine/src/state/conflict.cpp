@@ -15,6 +15,7 @@ conflictPlayerState::~conflictPlayerState()
 {
 }
 
+/*
 bool conflictPlayerState::operator==(const conflictPlayerState &cps)
 {
    std::set<inplaycharacter> inConflictSet(inConflict.begin(), inConflict.end());   
@@ -29,6 +30,7 @@ bool conflictPlayerState::operator==(const conflictPlayerState &cps)
       totalConflictsLeft == cps.totalConflictsLeft &&
       hasImperialFavor == cps.hasImperialFavor);
 }
+*/
 
 conflictState::conflictState()
 {

@@ -22,12 +22,12 @@ void CharacterManipulator::bowParticipants()
    std::cout << "Bowing characters" << std::endl;
    for(auto &a:attacker->inConflict)
    {
-      a.bowed = true;
+      a->bowed = true;
    }
 
    for(auto &a:defender->inConflict)
    {
-      a.bowed = true;
+      a->bowed = true;
    }
 }
 
@@ -40,24 +40,24 @@ void CharacterManipulator::movePartipantsHome()
 
    for(auto c: attackerState->inConflict)
    {
-      std::cout << " " << cardMgr->getCardName(c.characterCard) << std::endl;
+      std::cout << " " << c->data->name << std::endl;
       attacker->atHome.push_back(c);
    }
    attackerState->inConflict.clear();
 
    for(auto c: defenderState->inConflict)
    {
-      std::cout << " " << cardMgr->getCardName(c.characterCard) << std::endl;
+      std::cout << " " << c->data->name << std::endl;
       defender->atHome.push_back(c);
    }
    defenderState->inConflict.clear();
 }
 
-void CharacterManipulator::moveCharacterToConflict(conflictPlayerState *cps, cardarea *ca, int cardChoice)
+void CharacterManipulator::moveCharacterToConflict(conflictPlayerState *cps, cardarea *ca, CardSharedPtr cardChoice)
 {
    for(auto ch=ca->atHome.begin();ch!=ca->atHome.end();ch++)
    {
-      if(ch->characterCard == cardChoice)
+      if((*ch) == cardChoice)
       {
          ca->atHome.erase(ch);
          cps->inConflict.push_back(*ch);

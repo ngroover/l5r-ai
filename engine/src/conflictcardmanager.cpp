@@ -46,7 +46,7 @@ void conflictCardManager::drawCards(int numCards, cardarea *cards, tokenManager 
          {
             // add to hand
             cards->conflictHand.push_back(*conflictDeckIter);
-            std::cout << " " << cardMgr->getCardName(*conflictDeckIter) << std::endl; 
+            std::cout << " " << (*conflictDeckIter)->data->name << std::endl; 
 
             // erase from deck
             conflictDeckIter = cards->conflictDeck.erase(conflictDeckIter);

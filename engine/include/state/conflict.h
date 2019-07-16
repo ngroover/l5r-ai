@@ -15,11 +15,11 @@ namespace l5r
       conflictPlayerState();
       ~conflictPlayerState();
 
-      bool operator==(const conflictPlayerState &cps);
+      //bool operator==(const conflictPlayerState &cps);
 
 
       // list of cards in conflict
-      std::list<inplaycharacter> inConflict;
+      std::list<CardSharedPtr> inConflict;
 
       // conflicts available
       int politicalConflictsLeft;

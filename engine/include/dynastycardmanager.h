@@ -32,9 +32,9 @@ namespace l5r
 
          // sets aside a mulligan dynasty card
          
-         void chooseCharacterToPlay(cardarea *cards, int cardChoice);
+         void chooseCharacterToPlay(cardarea *cards, CardSharedPtr cardChoice);
 
-         inplaycharacter removeCharacterFromHome(cardarea *cards, int cardChoice);
+         CardSharedPtr removeCharacterFromHome(cardarea *cards, int cardChoice);
 
          // performs the dynasty mulligan
 
@@ -42,7 +42,7 @@ namespace l5r
          std::list<choice> getProvinceDynastyChoicesWithFateCost(cardarea *cards, dynastyCardStatus dcs, int fateCost);
 
          // get pending dynasty card
-         int getPendingFateCard(cardarea *cards);
+         CardSharedPtr getPendingFateCard(cardarea *cards);
 
          // play pending character
          void playCharacter(cardarea *cards, std::string playerName, int extraFate);
@@ -57,17 +57,17 @@ namespace l5r
 
          int conflictTotal(playerstate &pState);
 
-         void sendCharactersHome(std::list<inplaycharacter> charlist, cardarea *cards);
+         void sendCharactersHome(std::vector<CardSharedPtr> charlist, cardarea *cards);
 
          int countFavorGlory(cardarea *cards);
 
          std::list<choice> getCharactersWithNoFate(cardarea *cards);
 
-         void discardCharacter(cardarea *cards, int cardIndex);
+         void discardCharacter(cardarea *cards, CardSharedPtr cardIndex);
 
          void removeFateFromCharacters(cardarea *cards);
 
-         void discardProvinceCard(cardarea *cards, int cardIndex);
+         void discardProvinceCard(cardarea *cards, CardSharedPtr cardIndex);
          
          void readyAllCharacters(cardarea *cards);
 

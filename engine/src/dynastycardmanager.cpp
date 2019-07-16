@@ -18,9 +18,10 @@ dynastyCardManager::~dynastyCardManager()
 void dynastyCardManager::fillProvinces(cardarea *cards, tokenManager *tokens, std::string playerName)
 {
    auto dynastyDeck = cards->dynastyDeck.begin();
-   for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov)
+   auto dynastyArea = cards->dynastyArea.begin();
+   for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov,++dynastyArea)
    {
-      if((*prov)->dynastyCard == -1)
+      if(*dynastyArea == nullptr)
       {
          if(dynastyDeck == cards->dynastyDeck.end())
          {
@@ -29,14 +30,14 @@ void dynastyCardManager::fillProvinces(cardarea *cards, tokenManager *tokens, st
             cards->dynastyDiscard.clear();
             tokens->loseHonor(5);
             dynastyDeck = cards->dynastyDeck.begin();
-            std::cout << " top card is " << cardMgr->getCardName(*dynastyDeck) << std::endl;
+            std::cout << " top card is " << (*dynastyDeck)->data->name << std::endl;
             
          }
-         (*prov)->dynastyCard = *dynastyDeck;
+         *dynastyArea = *dynastyDeck;
          (*prov)->facedownDynasty = true;
          dynastyDeck = cards->dynastyDeck.erase(dynastyDeck);
          std::cout << playerName
-            << " placed " << cardMgr->getCardName((*prov)->dynastyCard)
+            << " placed " << (*dynastyArea)->data->name 
             << " on top of " << (*prov)->data->name
             << std::endl;
       }
@@ -46,13 +47,14 @@ void dynastyCardManager::fillProvinces(cardarea *cards, tokenManager *tokens, st
 void dynastyCardManager::flipAllDynastyFaceup(cardarea *cards, std::string playerName)
 {
    auto dynastyDeck = cards->dynastyDeck.begin();
-   for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov)
+   auto dynastyArea = cards->dynastyArea.begin();
+   for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end() && dynastyArea!=cards->dynastyArea.end();++prov,++dynastyArea)
    {
       if((*prov)->facedownDynasty)
       {
          (*prov)->facedownDynasty = false;
          std::cout << playerName
-            << " flipped " << cardMgr->getCardName((*prov)->dynastyCard)
+            << " flipped " << (*dynastyArea)->data->name
             << " faceup " << std::endl;
       }
    }
@@ -61,17 +63,19 @@ void dynastyCardManager::flipAllDynastyFaceup(cardarea *cards, std::string playe
 std::list<choice> dynastyCardManager::getProvinceDynastyChoices(cardarea *cards, dynastyCardStatus dcs)
 {
    std::list<choice> list;
+   auto dynastyArea = cards->dynastyArea.begin();
    for(auto prov:cards->provinceArea)
    {
       if( ((dcs == dynastyCardStatus::facedown && prov->facedownDynasty) ||
          (dcs == dynastyCardStatus::faceup && !prov->facedownDynasty) ||
          (dcs == dynastyCardStatus::either))
-         && prov->dynastyCard != -1)
+         && (*dynastyArea != nullptr))
       {
-         choice c(cardMgr->getCardName(prov->dynastyCard), choicetype::card);
-         c.setNumber(prov->dynastyCard);
+         choice c( (*dynastyArea)->data->name, choicetype::card);
+         c.setCard(*dynastyArea);
          list.push_back(c);
       }
+      dynastyArea++;
    }
    return list;
 }
@@ -79,21 +83,23 @@ std::list<choice> dynastyCardManager::getProvinceDynastyChoices(cardarea *cards,
 std::list<choice> dynastyCardManager::getProvinceDynastyChoicesWithFateCost(cardarea *cards, dynastyCardStatus dcs, int fateCost)
 {
    std::list<choice> list;
+   auto dynastyArea = cards->dynastyArea.begin();
    for(auto prov:cards->provinceArea)
    {
-      if(prov->dynastyCard != -1 && cardMgr->getCardTypeFromCard(prov->dynastyCard) == cardtype::character)
+      if((*dynastyArea) != nullptr && (*dynastyArea)->data->type == cardtype::character)
       {
-         int cardCost = cardMgr->getFateCost(prov->dynastyCard);
+         int cardCost = (*dynastyArea)->data->fateCost;
          if( ((dcs == dynastyCardStatus::facedown && prov->facedownDynasty) ||
             (dcs == dynastyCardStatus::faceup && !prov->facedownDynasty) ||
             (dcs == dynastyCardStatus::either))
             && cardCost <= fateCost)
          {
-            choice c(cardMgr->getCardName(prov->dynastyCard), choicetype::card);
-            c.setNumber(prov->dynastyCard);
+            choice c( (*dynastyArea)->data->name, choicetype::card);
+            c.setCard(*dynastyArea);
             list.push_back(c);
          }
       }
+      dynastyArea++;
    }
    return list;
 }
@@ -103,49 +109,48 @@ std::list<choice> dynastyCardManager::getCharactersWithNoFate(cardarea *cards)
    std::list<choice> list;
    for(auto ch:cards->atHome)
    {
-      if(ch.fateAttached == 0)
+      if(ch->fateAttached == 0)
       {
-         choice c(cardMgr->getCardName(ch.characterCard), choicetype::card);
-         c.setNumber(ch.characterCard);
+         choice c(ch->data->name, choicetype::card);
+         c.setCard(ch);
          list.push_back(c);
       }
    }
    return list;
 }
 
-void dynastyCardManager::chooseCharacterToPlay(cardarea *cards, int index)
+void dynastyCardManager::chooseCharacterToPlay(cardarea *cards, CardSharedPtr index)
 {
    cards->pendingFateCard = index;
 }
 
-int dynastyCardManager::getPendingFateCard(cardarea *cards)
+CardSharedPtr dynastyCardManager::getPendingFateCard(cardarea *cards)
 {
    return cards->pendingFateCard;
 }
 
 int dynastyCardManager::getPendingCharCost(cardarea *cards)
 {
-   return cardMgr->getFateCost(cards->pendingFateCard);
+   return cards->pendingFateCard->data->fateCost;
 }
 
 void dynastyCardManager::playCharacter(cardarea *cards, std::string playerName, int extraFate)
 {
-   for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end();++prov)
+   auto dynastyArea = cards->dynastyArea.begin();
+   for(auto prov=cards->provinceArea.begin();prov!=cards->provinceArea.end() && dynastyArea != cards->dynastyArea.end();++prov,++dynastyArea)
    {
-      if((*prov)->dynastyCard == cards->pendingFateCard)
+      if(*dynastyArea == cards->pendingFateCard)
       {
          std::cout << "Playing " << 
-            cardMgr->getCardName((*prov)->dynastyCard) << std::endl;
+            (*dynastyArea)->data->name << std::endl;
          // set no card on top of province
-         (*prov)->dynastyCard = -1;
-         inplaycharacter ipc;
-         ipc.characterCard = cards->pendingFateCard;
-         ipc.bowed = false;
-         ipc.fateAttached = extraFate;
-         cards->atHome.push_back(ipc);
+         (*dynastyArea) = nullptr;
+         cards->pendingFateCard->bowed = false;
+         cards->pendingFateCard->fateAttached = extraFate;
+         cards->atHome.push_back(cards->pendingFateCard);
       }
    }
-   cards->pendingFateCard = -1; // reset pending fate card
+   cards->pendingFateCard = nullptr; // reset pending fate card
 }
 
 
@@ -163,27 +168,27 @@ int dynastyCardManager::conflictTotal(playerstate &pState)
    return 0;
 }
 
-void dynastyCardManager::sendCharactersHome(std::list<inplaycharacter> charlist, cardarea *cards)
+void dynastyCardManager::sendCharactersHome(std::vector<CardSharedPtr> charlist, cardarea *cards)
 {
    std::cout << "Sent home" << std::endl;
-   for(auto c: charlist)
+   for(auto &c: charlist)
    {
-      std::cout << " " << cardMgr->getCardName(c.characterCard) << std::endl;
+      std::cout << " " << c->data->name << std::endl;
       cards->atHome.push_back(c);
    }
 }
 
 
-void dynastyCardManager::discardCharacter(cardarea *cards, int cardIndex)
+void dynastyCardManager::discardCharacter(cardarea *cards, CardSharedPtr cardIndex)
 {
    for(auto ptr=cards->atHome.begin();
       ptr!=cards->atHome.end();
       ptr++)
    {
-      if(ptr->characterCard == cardIndex)
+      if(*ptr == cardIndex)
       {
-         cards->dynastyDiscard.push_back(ptr->characterCard);
-         std::cout << "Discarding " << cardMgr->getCardName(cardIndex) << std::endl;
+         cards->dynastyDiscard.push_back(*ptr);
+         std::cout << "Discarding " << (*ptr)->data->name << std::endl;
          cards->atHome.erase(ptr);
          ptr = cards->atHome.end();
       }
@@ -194,25 +199,26 @@ void dynastyCardManager::removeFateFromCharacters(cardarea *cards)
 {
    for(auto &ch:cards->atHome)
    {
-      if(ch.fateAttached > 0)
+      if(ch->fateAttached > 0)
       {
-         ch.fateAttached--;
-         std::cout << "Removed 1 fate from " << cardMgr->getCardName(ch.characterCard) << std::endl;
+         ch->fateAttached--;
+         std::cout << "Removed 1 fate from " << ch->data->name << std::endl;
       }
    }
 }
 
-void dynastyCardManager::discardProvinceCard(cardarea *cards, int cardIndex)
+void dynastyCardManager::discardProvinceCard(cardarea *cards, CardSharedPtr cardIndex)
 {
+   auto dynastyArea = cards->dynastyArea.begin();
    for(auto ptr=cards->provinceArea.begin();
-      ptr!=cards->provinceArea.end();
-      ptr++)
+      ptr!=cards->provinceArea.end() && dynastyArea != cards->dynastyArea.end();
+      ptr++,++dynastyArea)
    {
-      if((*ptr)->dynastyCard == cardIndex)
+      if((*dynastyArea) == cardIndex)
       {
-         cards->dynastyDiscard.push_back((*ptr)->dynastyCard);
-         (*ptr)->dynastyCard = -1;
-         std::cout << "Discarding " << cardMgr->getCardName(cardIndex) << std::endl;
+         cards->dynastyDiscard.push_back(*dynastyArea);
+         (*dynastyArea) = nullptr;
+         std::cout << "Discarding " << cardIndex->data->name << std::endl;
       }
    }
 }
@@ -220,7 +226,7 @@ void dynastyCardManager::readyAllCharacters(cardarea *cards)
 {
    for(auto &ch:cards->atHome)
    {
-      ch.bowed = false;
-      std::cout << cardMgr->getCardName(ch.characterCard) << " readied" << std::endl;
+      ch->bowed = false;
+      std::cout << ch->data->name << " readied" << std::endl;
    }
 }

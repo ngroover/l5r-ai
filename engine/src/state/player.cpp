@@ -10,6 +10,7 @@ playerstate::~playerstate()
 {
 }
 
+/*
 bool playerstate::operator==(const playerstate &ps)
 {
    return (cards == ps.cards &&
@@ -17,3 +18,4 @@ bool playerstate::operator==(const playerstate &ps)
       tokens == ps.tokens &&
       passed == ps.passed);
 }
+*/

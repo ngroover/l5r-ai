@@ -16,11 +16,11 @@ namespace l5r
          MulliganManager(cardarea *cards, std::string name, std::shared_ptr<cardDataManager> cardMgr);
          ~MulliganManager();
 
-         void chooseDynastyMulligan(int cardChoice);
+         void chooseDynastyMulligan(CardSharedPtr cardChoice);
          void performDynastyMulligan();
          std::list<choice> getDynastyMulliganChoices();
 
-         void chooseConflictMulligan(int cardChoice);
+         void chooseConflictMulligan(CardSharedPtr cardChoice);
          void performConflictMulligan();
          std::list<choice> getConflictMulliganChoices();
 

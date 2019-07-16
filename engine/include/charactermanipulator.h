@@ -2,6 +2,7 @@
 #define _CHARACTER_MANIPULATOR_H_
 
 #include <memory>
+#include "card.h"
 
 namespace l5r
 {
@@ -19,7 +20,7 @@ namespace l5r
          void bowParticipants();
          void movePartipantsHome();
 
-         void moveCharacterToConflict(conflictPlayerState *cps, cardarea *cards, int cardChoice);
+         void moveCharacterToConflict(conflictPlayerState *cps, cardarea *cards, CardSharedPtr cardChoice);
 
       private:
          std::shared_ptr<GameStateIntfc> stateIntfc;

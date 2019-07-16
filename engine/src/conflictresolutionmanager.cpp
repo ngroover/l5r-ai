@@ -110,11 +110,11 @@ int ConflictResolutionManager::calculateStr(conflictPlayerState *player)
    {
       if(global->conflict_type == conflicttype::military)
       {
-         strength += cardMgr->getMilitaryStr(a.characterCard);
+         strength += a->data->militarySkill;
       }
       else
       {
-         strength += cardMgr->getPoliticalStr(a.characterCard);
+         strength += a->data->politicalSkill;
       }
    }
    if(player->hasImperialFavor &&
@@ -144,15 +144,17 @@ int ConflictResolutionManager::findHoldingBonus()
 {
    auto defender = stateIntfc->getDefenderCards();
 
+   auto dynastyArea = defender->dynastyArea.begin();
    for(auto prov: defender->provinceArea)
    {
       if(prov == global->contestedProvince)
       {
-         if(cardMgr->getCardTypeFromCard(prov->dynastyCard) == cardtype::holding)
+         if((*dynastyArea)->data->type  == cardtype::holding)
          {
-            return cardMgr->getHoldingBonus(prov->dynastyCard);
+            return (*dynastyArea)->data->holdingBonus;
          }
       }
+      dynastyArea++;
    }
    if(global->contestedProvince == defender->strongholdProvince)
    {

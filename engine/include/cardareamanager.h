@@ -26,6 +26,7 @@ namespace l5r
          cardarea *cardArea;
          std::string name;
          std::shared_ptr<cardDataManager> cardMgr;
+
    };
 };
 #endif 

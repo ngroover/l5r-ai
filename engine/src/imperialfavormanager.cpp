@@ -25,9 +25,9 @@ int ImperialFavorManager::countFavorGlory(cardarea *cards)
    int gloryCount=0;
    for(auto c: cards->atHome)
    {
-      if(!c.bowed)
+      if(!c->bowed)
       {
-         gloryCount += cardMgr->getGlory(c.characterCard);
+         gloryCount += c->data->glory;
       }
    }
    return gloryCount;

@@ -28,7 +28,7 @@ namespace l5r
          gamestate();
          ~gamestate();
 
-         bool operator==(const gamestate &gs);
+//         bool operator==(const gamestate &gs);
 
          // global card ids
          std::vector<cards> cardIds;
