@@ -5,7 +5,6 @@
 #include <vector>
 #include <memory>
 #include "decklist.h"
-#include "cards.h"
 
 namespace l5r
 {
@@ -19,10 +18,9 @@ namespace l5r
          ~CardAreaManager();
 
          // put the cards in their rightful stacks
-         void setupCards(Decklist deck, std::vector<cards> &cardIds);
+         void setupCards(Decklist deck);
 
       private:
-         cards fromStringId(std::string c);
          cardarea *cardArea;
          std::string name;
          std::shared_ptr<cardDataManager> cardMgr;

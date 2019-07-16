@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <string>
-#include "cards.h"
 #include "card.h"
 #include "state/gamestate.h"
 
@@ -46,7 +45,6 @@ namespace l5r
       private:
          std::string text;
          choicetype type;
-         cards targetCard;
          int number;
          ring chosenring;
          conflicttype conflictType;

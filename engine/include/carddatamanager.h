@@ -14,29 +14,10 @@ namespace l5r
          cardDataManager(std::shared_ptr<gamestate> state);
          ~cardDataManager();
 
-         void loadDecklist(Decklist dl);
-
-         // shortcut functions
-         cardtype getCardType(cards c);
-
-         cardtype getCardTypeFromCard(int index);
-
-         deckside getSide(cards c);
-
-         std::string getCardName(int index);
-         //int getStrongholdHonor(int index);
-         int getFateCost(int index);
-         int getProvinceStr(int index);
-         int getHoldingBonus(int index);
-
-         int getMilitaryStr(int index);
-         int getPoliticalStr(int index);
-         int getGlory(int index);
 
          CardSharedPtr getCard(std::string id);
 
       private:
-         std::map<cards,CardDataSharedPtr> cardMap;
          std::shared_ptr<gamestate> state;
 
          cardgenerator cg;

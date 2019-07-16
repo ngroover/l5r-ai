@@ -32,13 +32,11 @@ engine::engine(std::unique_ptr<agent> player1, std::unique_ptr<agent> player2): 
    std::cout << "First player is " << this->player1->getName() << std::endl;
    turnMgr->setCurrentTurnAndAction(1);
 
-   cardDataMgr->loadDecklist(this->player1->getDeckList());
-   cardDataMgr->loadDecklist(this->player2->getDeckList());
    CardAreaManager player1Cards(stateIntfc->getPlayerCards(), this->player1->getName(), cardDataMgr);
    CardAreaManager player2Cards(stateIntfc->getOpponentCards(), this->player2->getName(), cardDataMgr);
 
-   player1Cards.setupCards(this->player1->getDeckList(), state->cardIds);
-   player2Cards.setupCards(this->player2->getDeckList(), state->cardIds);
+   player1Cards.setupCards(this->player1->getDeckList());
+   player2Cards.setupCards(this->player2->getDeckList());
 
    // select stronghold is the first player decision
    phaseMgr->goToStrongholdSelection();

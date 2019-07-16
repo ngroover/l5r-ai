@@ -3,7 +3,6 @@
 
 #include <list>
 #include <vector>
-#include "cards.h"
 
 #include "state/phase.h"
 #include "state/ring.h"
@@ -28,10 +27,7 @@ namespace l5r
          gamestate();
          ~gamestate();
 
-//         bool operator==(const gamestate &gs);
 
-         // global card ids
-         std::vector<cards> cardIds;
 
          phase currentPhase;
          subphase currentSubPhase;
